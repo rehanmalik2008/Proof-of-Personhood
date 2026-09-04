@@ -1,0 +1,142 @@
+{
+  "_comment": "SHA-256 of the reproducible build artifacts. See REPRODUCIBLE-BUILDS.md.",
+  "generated_by": "scripts/repro_build.mjs",
+  "toolchain": {
+    "node": "24.14.0",
+    "circom2": "0.2.23",
+    "circomlib": "2.0.5",
+    "snarkjs": "0.7.6"
+  },
+  "ptau": {
+    "path": "build/pot15_final.ptau",
+    "sha256": "cfff419aa176b97cea40d29bc58baaa3c6c998586e764511ae93efa70d860725",
+    "bytes": 37750183,
+    "provenance": "see supply-chain/TRUSTED-SETUP.md"
+  },
+  "circuits": {
+    "wedge_mem_w8_d9_split": {
+      "note": "arity-8 depth-9, 4,309 constraints, split epoch (epoch_action + epoch_tree) -- the headline Phase-2 login circuit from v1.1",
+      "circom_src": "circuits/main_mem_w8_d9_split.circom",
+      "sha256": {
+        "circom_src_tree": "b40f234c1f69027af347b119a213997a4517bc4065132238a8871a6e8050fb7f",
+        "r1cs": "fbd04ecd35b39f62ffb3c0d3ad03389154264ef935f0657f71f46c2983eddc27",
+        "wasm_prover": "f016efcf0812d04062b8fe475f19946cfb05858023361a5beae74661b4def3a1",
+        "zkey_0_pre_ceremony": "cf9667a1a3cdd3fc290321f1ef178df7e5c58fee07359a2414afbd90d5f80f10"
+      },
+      "bytes": {
+        "r1cs": 3756792,
+        "wasm": 3212057,
+        "zkey_0": 5764588
+      }
+    },
+    "wedge_mem_w8_d9_split_rev64": {
+      "note": "split circuit + in-circuit non-membership against a 64-entry revocation list (+64 constraints, measured); Gate 6, individual revocation",
+      "circom_src": "circuits/main_mem_w8_d9_split_rev64.circom",
+      "sha256": {
+        "circom_src_tree": "9726155ccd6695105dfd1ed7207b4f613de44421ab7c2db3039d7c02b7aa7739",
+        "r1cs": "9807021631647135b8c5561ea9626af7fb0d1130bcb68b98e09cefa67dc91365",
+        "wasm_prover": "a2decac131abbf5bb5afc307aff211121cc5c3f89f6c9e080cf202ea60a11e0f",
+        "zkey_0_pre_ceremony": "108252dc32fc578d8819c46605d34e2fb839901fb7dd3f99a5c871c7e6d19cdd"
+      },
+      "bytes": {
+        "r1cs": 3767800,
+        "wasm": 3213899,
+        "zkey_0": 5816812
+      }
+    },
+    "wedge_mem_w8_d9": {
+      "note": "arity-8 depth-9, 4,309 constraints -- pre-split (v1.0); the benchmark measurements were taken on this",
+      "circom_src": "circuits/main_mem_w8_d9.circom",
+      "sha256": {
+        "circom_src_tree": "ee7d393515c8c7410574b5da01a44c1606e6fced4a579feef17d83f5bc079c68",
+        "r1cs": "b6f46f8fe2e5524ec266b9220aaaa7629ad22664268ed8343f127662a34ff65a",
+        "wasm_prover": "d5b327cc8401df5e9c77305172f729f90207683d1fc3b26a5cf81f11fa061b51",
+        "zkey_0_pre_ceremony": "658fb873451584c246ed30a7324ac8944475d018b825a6868ebe6a0cbbdd5e33"
+      },
+      "bytes": {
+        "r1cs": 3756784,
+        "wasm": 3212022,
+        "zkey_0": 5764224
+      }
+    },
+    "wedge_mem_w4_d8": {
+      "note": "arity-4 depth-8, 65,536-user variant",
+      "circom_src": "circuits/main_mem_w4_d8.circom",
+      "sha256": {
+        "circom_src_tree": "dff5ed09517d3d095f76d609ebebe11489a5bd872d7892ec22da171664dd1831",
+        "r1cs": "105f0b43beb22e3a0747663353152922eb8786fb6f294004294c756da97f4aaa",
+        "wasm_prover": "76f97783ba2fd000dba6e8507cdd36e9fc011c55317723a5e38162ad169f248b",
+        "zkey_0_pre_ceremony": "28c5ff26da2a8c435498c1be9b06f3b5f6e3726c369a3228fd52f3c461c5565f"
+      },
+      "bytes": {
+        "r1cs": 2468404,
+        "wasm": 2652220,
+        "zkey_0": 3729272
+      }
+    },
+    "wedge_mem_bin_d16": {
+      "note": "binary depth-16, guaranteed-sound backstop",
+      "circom_src": "circuits/main_mem_bin_d16.circom",
+      "sha256": {
+        "circom_src_tree": "856c40e884f6b190dc77cfd2acbb480c5fddec2c284fa3fed93fee2ca231479b",
+        "r1cs": "8a50f840177628f68793f077ad3f32298ad3c00bd2ce335104a25da50e57a60d",
+        "wasm_prover": "3c047e16ead0970aa5ed585521fab32c049b36f19053909193bc35892fe360be",
+        "zkey_0_pre_ceremony": "cda4a8699b3db60611530c157bab2739ffa7e77d28a90364184c62e5a0196c23"
+      },
+      "bytes": {
+        "r1cs": 2061204,
+        "wasm": 2406653,
+        "zkey_0": 2691128
+      }
+    }
+  },
+  "deployed_vkeys": {
+    "wedge_mem_w8_d9_split": {
+      "path": "build/wedge_mem_w8_d9_split_vkey.json",
+      "sha256": "a4428d64a70390eb4a4869c18387635315d7b9cb87835c4560f8ff12faecb356"
+    },
+    "wedge_mem_w8_d9_split_rev64": {
+      "path": "build/wedge_mem_w8_d9_split_rev64_vkey.json",
+      "sha256": "6331e9720e42863af65f5d708871096bdb39e84c8a971c17be799793a00ea37c"
+    },
+    "wedge_mem_w8_d9": {
+      "path": "build/wedge_mem_w8_d9_vkey.json",
+      "sha256": "5f165cf086a4904d3381d18976ec756f3e42f07fe20b38519595f3b06584da94"
+    },
+    "wedge_mem_w4_d8": {
+      "path": "build/wedge_mem_w4_d8_vkey.json",
+      "sha256": "f64c5927353522f7fb704b2718483c2462ac745953b51db1e7afb016f7c000d9"
+    },
+    "wedge_mem_bin_d16": {
+      "path": "build/wedge_mem_bin_d16_vkey.json",
+      "sha256": "02a9c3fa15b2a59171e7ed1d478b87258ccfd01c6180f55efe612d4d9b0d272b"
+    }
+  },
+  "deployed_final_zkeys": {
+    "wedge_mem_w8_d9_split": {
+      "path": "build/wedge_mem_w8_d9_split_final.zkey",
+      "sha256": "bd7169e44b7376eb1fc377c002b183c21a65dc0a01153cf1d5c91976a16acc47",
+      "note": "ceremony artifact -- verify with `snarkjs zkey verify`, not by hash-match"
+    },
+    "wedge_mem_w8_d9_split_rev64": {
+      "path": "build/wedge_mem_w8_d9_split_rev64_final.zkey",
+      "sha256": "683802d15b8f77590dd69b89d437746e8b7e460c75609fc8a1a04829eaf8bb84",
+      "note": "ceremony artifact -- verify with `snarkjs zkey verify`, not by hash-match"
+    },
+    "wedge_mem_w8_d9": {
+      "path": "build/wedge_mem_w8_d9_final.zkey",
+      "sha256": "826a73da718b12d5ced5c3b2173dba1482206f798f04fb01570a267c3bc7ff36",
+      "note": "ceremony artifact -- verify with `snarkjs zkey verify`, not by hash-match"
+    },
+    "wedge_mem_w4_d8": {
+      "path": "build/wedge_mem_w4_d8_final.zkey",
+      "sha256": "6e105f6dc92350e66998e5202ac8754dac01813ad3dbbe6de7398cb775892e25",
+      "note": "ceremony artifact -- verify with `snarkjs zkey verify`, not by hash-match"
+    },
+    "wedge_mem_bin_d16": {
+      "path": "build/wedge_mem_bin_d16_final.zkey",
+      "sha256": "4f8e1be709bf68576559029e60c7420935b3e2d0a6e1c7929852cfb8fd76c851",
+      "note": "ceremony artifact -- verify with `snarkjs zkey verify`, not by hash-match"
+    }
+  }
+}
