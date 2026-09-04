@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.zkey binary
+*.wasm binary
+*.ptau binary
+*.r1cs binary
+*.pdf binary

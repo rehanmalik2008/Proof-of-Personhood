@@ -1,0 +1,44 @@
+node_modules/
+*.log
+
+# ---------------------------------------------------------------------------
+# Build outputs. Regenerate with `node scripts/build.mjs` /
+# `node scripts/repro_build.mjs`. The reproducible parts are pinned by hash in
+# supply-chain/artifacts.lock.json, so a reviewer can verify a rebuild without
+# these being committed. 406 MB of derived artefacts do not belong in git.
+# ---------------------------------------------------------------------------
+build/*
+build-repro/
+build-repro-2/
+circuits/*_js/
+circuits/*.r1cs
+circuits/*.sym
+scratch_mem/
+
+# ...but DO publish the verification keys: they are small, they are what a
+# verifier actually needs, and without them nobody can check a proof.
+!build/*_vkey.json
+
+# The browser demo in web/ IS published (wasm + evaluation-only zkeys + vkeys)
+# so the "verify it yourself" quickstart works out of the box. See web/README.md
+# and NOTICE: those proving keys are from a throwaway single-contribution setup
+# and are for EVALUATION ONLY, never production.
+
+# ---------------------------------------------------------------------------
+# Not published: business material (pricing, revenue, moat, competitive
+# strategy, go-to-market). Everything technical is public.
+# ---------------------------------------------------------------------------
+PARTNER-BRIEF.md
+../private-business-notes/
+**/the-open-source-moat.md
+**/playing-against-giants.md
+**/surviving-due-diligence.md
+
+# paper build intermediates (the PDF itself IS committed)
+paper/_built.html
+paper/_chart*.svg
+paper/_proof.json
+paper/_appendixA.txt
+paper/_figs.*
+paper/_vp.txt
+paper/_paperproof.json

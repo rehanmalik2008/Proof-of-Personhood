@@ -1,0 +1,32 @@
+Sybil-Wedge — private proof-of-personhood login
+
+Licensed under the Apache License, Version 2.0 (the "License"). You may not use
+these files except in compliance with the License. A copy of the License is in
+the file LICENSE in this directory, and at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+This covers the specification, the circuits, the reference implementation, the
+benchmark harnesses, and the documentation in this repository.
+
+PATENT GRANT
+
+Section 3 of the Apache License, Version 2.0 grants a perpetual, worldwide,
+non-exclusive, no-charge, royalty-free, irrevocable patent license covering the
+patent claims necessarily infringed by the contributions in this repository.
+That grant is the patent commitment referred to in MASTER-SPECIFICATION.md §7.
+It is not conditional on any future licensing decision.
+
+RELICENSING
+
+MASTER-SPECIFICATION.md §7 states this license choice is committed irrevocably:
+no BSL, no SSPL, no future relicense of the material published under it.
+Apache-2.0 already makes the grant on already-published versions irrevocable;
+the statement in §7 extends that as a commitment about future releases.
+
+TRUSTED SETUP
+
+The Groth16 proving and verification keys distributed here (*_final.zkey,
+*_vkey.json) come from a throwaway single-contribution setup and are for
+evaluation only. They are not suitable for production. See
+supply-chain/TRUSTED-SETUP.md and MASTER-SPECIFICATION.md §6, gate 5.
