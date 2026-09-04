@@ -1,0 +1,1258 @@
+circomspect: /opt/circomspect/bin/circomspect
+circomspect 
+A static analyzer and linter for Circom programs
+
+    circomspect [OPTIONS] [INPUT]...
+
+ARGS:
+    <INPUT>...    Initial input file(s)
+
+OPTIONS:
+    -a, --allow <ID>             Ignore results from given analysis passes
+    -c, --curve <NAME>           Set curve (BN254, BLS12_381, or GOLDILOCKS) [default: BN254]
+    -h, --help                   Print help information
+    -l, --level <LEVEL>          Output level (INFO, WARNING, or ERROR) [default: WARNING]
+    -L, --library <LIBRARIES>    Library file paths
+    -s, --sarif-file <OUTPUT>    Output analysis results to a Sarif file
+    -v, --verbose                Enable verbose output
+circomlib: 2.0.5
+date (UTC): 2026-09-04T11:21:49Z
+======================================================================
+
+## circomspect [-l INFO]: main_mem_w8_d9_split.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_mem_w8_d9_split_rev64.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_mem_w8_d9_split_rev256.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_mem_w8_d9_split_rev1024.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_mem_w8_d9_rev64.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_mem_w8_d9_rev256.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_mem_w8_d9_rev1024.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_mem_w8_d9.circom
+circomspect: No issues found.
+## exit: 0
+
+## circomspect [-l INFO]: main_wedge_direct_k3.circom
+circomspect: No issues found.
+## exit: 0
+
+=== direct pass on template files (not just the thin main_ wrappers) ===
+
+## circomspect [-l INFO]: wedge_membership.circom
+circomspect: analyzing template 'WedgeMembershipWide'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:158:32
+    │
+158 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+    │                                ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:156:32
+    │
+156 │     for (var i = 0; i < depth; i++) {
+    │                                ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:156:21
+    │
+156 │     for (var i = 0; i < depth; i++) {
+    │                     ^^^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:158:25
+    │
+158 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+    │                         ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'Residual'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:108:13
+    │
+108 │     a1x <== N * signalHash;
+    │             ^^^^^^^^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:109:11
+    │
+109 │     y <== s + a1x;
+    │           ^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+circomspect: analyzing template 'MerkleBin'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:36:16
+   │
+36 │     signal cur[depth + 1];
+   │                ^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:43:9
+   │
+43 │         pathIndices[i] * (pathIndices[i] - 1) === 0;
+   │         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:44:18
+   │
+44 │         d[i] <== pathElements[i] - cur[i];
+   │                  ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:45:18
+   │
+45 │         l[i] <== cur[i]          + pathIndices[i] * d[i];
+   │                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:46:18
+   │
+46 │         r[i] <== pathElements[i] - pathIndices[i] * d[i];
+   │                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:50:13
+   │
+50 │         cur[i + 1] <== h[i].out;
+   │             ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:42:32
+   │
+42 │     for (var i = 0; i < depth; i++) {
+   │                                ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:42:21
+   │
+42 │     for (var i = 0; i < depth; i++) {
+   │                     ^^^^^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'WedgeMembershipWideSplit'
+warning: The signal `epochTree` is not used by the template.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:207:5
+    │
+207 │     signal input epochTree;
+    │     ^^^^^^^^^^^^^^^^^^^^^^ This signal is unused and could be removed.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-variable-or-parameter.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:222:32
+    │
+222 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+    │                                ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:220:32
+    │
+220 │     for (var i = 0; i < depth; i++) {
+    │                                ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:220:21
+    │
+220 │     for (var i = 0; i < depth; i++) {
+    │                     ^^^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:222:25
+    │
+222 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+    │                         ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'MerkleWide'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:63:16
+   │
+63 │     signal cur[depth + 1];
+   │                ^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:67:26
+   │
+67 │     signal selAcc[depth][W + 1];
+   │                          ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:68:26
+   │
+68 │     signal dotAcc[depth][W + 1];
+   │                          ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:76:23
+   │
+76 │             selAcc[i][j + 1] <== selAcc[i][j] + eq[i][j].out;
+   │                       ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:76:34
+   │
+76 │             selAcc[i][j + 1] <== selAcc[i][j] + eq[i][j].out;
+   │                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:77:23
+   │
+77 │             dotAcc[i][j + 1] <== dotAcc[i][j] + eq[i][j].out * node[i][j];
+   │                       ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:77:34
+   │
+77 │             dotAcc[i][j + 1] <== dotAcc[i][j] + eq[i][j].out * node[i][j];
+   │                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:72:32
+   │
+72 │         for (var j = 0; j < W; j++) {
+   │                                ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:82:32
+   │
+82 │         for (var j = 0; j < W; j++) h[i].inputs[j] <== node[i][j];
+   │                                ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:83:13
+   │
+83 │         cur[i + 1] <== h[i].out;
+   │             ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:69:32
+   │
+69 │     for (var i = 0; i < depth; i++) {
+   │                                ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:69:21
+   │
+69 │     for (var i = 0; i < depth; i++) {
+   │                     ^^^^^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:72:25
+   │
+72 │         for (var j = 0; j < W; j++) {
+   │                         ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:82:25
+   │
+82 │         for (var j = 0; j < W; j++) h[i].inputs[j] <== node[i][j];
+   │                         ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'ResidualSplit'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:196:13
+    │
+196 │     a1x <== N * signalHash;
+    │             ^^^^^^^^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:197:11
+    │
+197 │     y <== s + a1x;                 // RLN degree-1 Shamir share; line is Y = s + N*X
+    │           ^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+circomspect: analyzing template 'WedgeMembershipBin'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:131:32
+    │
+131 │     for (var i = 0; i < depth; i++) {
+    │                                ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_membership.circom:131:21
+    │
+131 │     for (var i = 0; i < depth; i++) {
+    │                     ^^^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: 37 issues found.
+## exit: 1
+
+## circomspect [-l INFO]: wedge_revocation.circom
+circomspect: analyzing template 'WedgeMembershipWideRevoke'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:64:32
+   │
+64 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+   │                                ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:62:32
+   │
+62 │     for (var i = 0; i < depth; i++) {
+   │                                ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:70:28
+   │
+70 │     for (var i = 0; i < R; i++) nm.revoked[i] <== revoked[i];
+   │                            ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:62:21
+   │
+62 │     for (var i = 0; i < depth; i++) {
+   │                     ^^^^^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:64:25
+   │
+64 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+   │                         ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:70:21
+   │
+70 │     for (var i = 0; i < R; i++) nm.revoked[i] <== revoked[i];
+   │                     ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'WedgeMembershipWideSplitRevoke'
+warning: The signal `epochTree` is not used by the template.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:87:5
+   │
+87 │     signal input epochTree;
+   │     ^^^^^^^^^^^^^^^^^^^^^^ This signal is unused and could be removed.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-variable-or-parameter.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:103:32
+    │
+103 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+    │                                ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:101:32
+    │
+101 │     for (var i = 0; i < depth; i++) {
+    │                                ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:108:28
+    │
+108 │     for (var i = 0; i < R; i++) nm.revoked[i] <== revoked[i];
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:101:21
+    │
+101 │     for (var i = 0; i < depth; i++) {
+    │                     ^^^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:103:25
+    │
+103 │         for (var j = 0; j < W; j++) mk.node[i][j] <== node[i][j];
+    │                         ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:108:21
+    │
+108 │     for (var i = 0; i < R; i++) nm.revoked[i] <== revoked[i];
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'NonMembershipList'
+warning: Using the signal assignment operator `<--` does not constrain the assigned signal.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:35:9
+   │
+35 │         inv[i] <-- diff[i] != 0 ? 1 / diff[i] : 0;
+   │         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `inv[i]` is not constrained here.
+36 │         diff[i] * inv[i] === 1;          // 1 constraint; unsatisfiable iff val == revoked[i]
+   │         ----------------------- The signal `inv[i]` is constrained here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:34:21
+   │
+34 │         diff[i] <== val - revoked[i];
+   │                     ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:35:35
+   │
+35 │         inv[i] <-- diff[i] != 0 ? 1 / diff[i] : 0;
+   │                                   ^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:36:9
+   │
+36 │         diff[i] * inv[i] === 1;          // 1 constraint; unsatisfiable iff val == revoked[i]
+   │         ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:33:28
+   │
+33 │     for (var i = 0; i < R; i++) {
+   │                            ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_revocation.circom:33:21
+   │
+33 │     for (var i = 0; i < R; i++) {
+   │                     ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: 19 issues found.
+## exit: 1
+
+## circomspect [-l INFO]: wedge_core.circom
+circomspect: analyzing template 'CommitOnly'
+circomspect: analyzing template 'Wedge3'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_core.circom:100:28
+    │
+100 │     for (var i = 0; i < 3; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_core.circom:100:21
+    │
+100 │     for (var i = 0; i < 3; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'Wedge1'
+circomspect: 2 issues found.
+## exit: 1
+
+## circomspect [-l INFO]: wedge_residual.circom
+circomspect: analyzing template 'WedgeResidual'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:53:13
+   │
+53 │     a1x <== N * signalHash;
+   │             ^^^^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:54:11
+   │
+54 │     y <== s + a1x;
+   │           ^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:57:13
+   │
+57 │     var P = k * (k - 1) \ 2;
+   │             ^^^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:61:22
+   │
+61 │         for (var j = i + 1; j < k; j++) {
+   │                      ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:66:13
+   │
+66 │             p++;
+   │             ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:61:36
+   │
+61 │         for (var j = i + 1; j < k; j++) {
+   │                                    ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:60:28
+   │
+60 │     for (var i = 0; i < k; i++) {
+   │                            ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:60:21
+   │
+60 │     for (var i = 0; i < k; i++) {
+   │                     ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_residual.circom:61:29
+   │
+61 │         for (var j = i + 1; j < k; j++) {
+   │                             ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: 9 issues found.
+## exit: 1
+
+## circomspect [-l INFO]: wedge_haggr.circom
+circomspect: analyzing function 'SUBORDER_MINUS_1'
+circomspect: analyzing template 'Mul8'
+circomspect: analyzing template 'WedgeAggHalf'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:193:13
+    │
+193 │     a1x <== N * signalHash;
+    │             ^^^^^^^^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:194:11
+    │
+194 │     y <== s + a1x;
+    │           ^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:196:13
+    │
+196 │     var P = k * (k - 1) \ 2;
+    │             ^^^^^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:199:46
+    │
+199 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                                              ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:202:27
+    │
+202 │         ceq[p].out === 0; p++;
+    │                           ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:199:60
+    │
+199 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                                                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:199:28
+    │
+199 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:206:28
+    │
+206 │     for (var i = 0; i < k; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:199:21
+    │
+199 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:199:53
+    │
+199 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                                                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:206:21
+    │
+206 │     for (var i = 0; i < k; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'EdDSAHalfAggVerify'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:73:28
+   │
+73 │     for (var i = 0; i < k; i++) {
+   │                            ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:83:28
+   │
+83 │     component T = Poseidon(4 * k + 1);
+   │                            ^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:86:18
+   │
+86 │         T.inputs[k + i]       <== R8y[i];
+   │                  ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:87:18
+   │
+87 │         T.inputs[2 * k + i]   <== Ax[i];
+   │                  ^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:88:18
+   │
+88 │         T.inputs[3 * k + i]   <== Ay[i];
+   │                  ^^^^^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:84:28
+   │
+84 │     for (var i = 0; i < k; i++) {
+   │                            ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:90:14
+   │
+90 │     T.inputs[4 * k] <== M;
+   │              ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:96:30
+   │
+96 │     for (var i = 0; i < 253; i++) rhoBits[0][i] <== (i == 0) ? 1 : 0;
+   │                              ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:99:31
+   │
+99 │         rhoH[i].inputs[0] <== i + 1;      // domain-separated index
+   │                               ^^^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:103:34
+    │
+103 │         for (var b = 0; b < 253; b++) rhoBits[i][b] <== rhoTrunc[i].out[b];
+    │                                  ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:97:28
+   │
+97 │     for (var i = 1; i < k; i++) {
+   │                            ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:110:28
+    │
+110 │     for (var i = 0; i < k; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:122:34
+    │
+122 │         for (var b = 0; b < 253; b++) mulA[i].e[b] <== sigBits[i].out[b];
+    │                                  ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:117:28
+    │
+117 │     for (var i = 0; i < k; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:130:34
+    │
+130 │         for (var b = 0; b < 253; b++) mulR[i].e[b] <== rhoBits[i][b];
+    │                                  ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:128:28
+    │
+128 │     for (var i = 1; i < k; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:136:17
+    │
+136 │     signal accx[2 * k];
+    │                 ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:137:17
+    │
+137 │     signal accy[2 * k];
+    │                 ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:140:19
+    │
+140 │     component add[2 * k - 1];
+    │                   ^^^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:146:14
+    │
+146 │         accx[t + 1] <== add[t].xout; accy[t + 1] <== add[t].yout;
+    │              ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:146:43
+    │
+146 │         accx[t + 1] <== add[t].xout; accy[t + 1] <== add[t].yout;
+    │                                           ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:147:9
+    │
+147 │         t++;
+    │         ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:142:28
+    │
+142 │     for (var i = 1; i < k; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:153:14
+    │
+153 │         accx[t + 1] <== add[t].xout; accy[t + 1] <== add[t].yout;
+    │              ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:153:43
+    │
+153 │         accx[t + 1] <== add[t].xout; accy[t + 1] <== add[t].yout;
+    │                                           ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:154:9
+    │
+154 │         t++;
+    │         ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:149:28
+    │
+149 │     for (var i = 0; i < k; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:159:30
+    │
+159 │     for (var b = 0; b < 253; b++) lhs.e[b] <== saggBits.bits[b];
+    │                              ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:73:21
+   │
+73 │     for (var i = 0; i < k; i++) {
+   │                     ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:84:21
+   │
+84 │     for (var i = 0; i < k; i++) {
+   │                     ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:96:21
+   │
+96 │     for (var i = 0; i < 253; i++) rhoBits[0][i] <== (i == 0) ? 1 : 0;
+   │                     ^^^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:97:21
+   │
+97 │     for (var i = 1; i < k; i++) {
+   │                     ^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:103:25
+    │
+103 │         for (var b = 0; b < 253; b++) rhoBits[i][b] <== rhoTrunc[i].out[b];
+    │                         ^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:110:21
+    │
+110 │     for (var i = 0; i < k; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:117:21
+    │
+117 │     for (var i = 0; i < k; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:122:25
+    │
+122 │         for (var b = 0; b < 253; b++) mulA[i].e[b] <== sigBits[i].out[b];
+    │                         ^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:128:21
+    │
+128 │     for (var i = 1; i < k; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:130:25
+    │
+130 │         for (var b = 0; b < 253; b++) mulR[i].e[b] <== rhoBits[i][b];
+    │                         ^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:142:21
+    │
+142 │     for (var i = 1; i < k; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:149:21
+    │
+149 │     for (var i = 0; i < k; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:159:21
+    │
+159 │     for (var b = 0; b < 253; b++) lhs.e[b] <== saggBits.bits[b];
+    │                     ^^^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+warning: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:101:23
+    │
+101 │         rhoTrunc[i] = Num2Bits(254);
+    │                       ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+    │
+    = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+
+warning: The output signal `out` defined by the template `Poseidon` is not constrained in `EdDSAHalfAggVerify`.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:74:19
+   │
+74 │         hram[i] = Poseidon(5);
+   │                   ^^^^^^^^^^^ The template `Poseidon` is instantiated here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-output-signal.
+
+circomspect: analyzing template 'WedgeDirect'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:241:13
+    │
+241 │     a1x <== N * signalHash;
+    │             ^^^^^^^^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:242:11
+    │
+242 │     y <== s + a1x;
+    │           ^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:244:13
+    │
+244 │     var P = k * (k - 1) \ 2;
+    │             ^^^^^^^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:247:46
+    │
+247 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                                              ^^^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:250:27
+    │
+250 │         ceq[p].out === 0; p++;
+    │                           ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:247:60
+    │
+247 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                                                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:247:28
+    │
+247 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:254:28
+    │
+254 │     for (var i = 0; i < k; i++) {
+    │                            ^^^ Field element arithmetic here.
+    │
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:247:21
+    │
+247 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:247:53
+    │
+247 │     for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) {
+    │                                                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:254:21
+    │
+254 │     for (var i = 0; i < k; i++) {
+    │                     ^^^^^ Field element comparison here.
+    │
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+circomspect: analyzing template 'ScalarLT_L'
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:41:30
+   │
+41 │     for (var i = 0; i < 253; i++) cc.in[i] <== (i < nbits) ? b.out[i] : 0;
+   │                              ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Field element arithmetic could overflow, which may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:45:32
+   │
+45 │     for (var i = 0; i < nbits; i++) bits[i] <== b.out[i];
+   │                                ^^^ Field element arithmetic here.
+   │
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:41:21
+   │
+41 │     for (var i = 0; i < 253; i++) cc.in[i] <== (i < nbits) ? b.out[i] : 0;
+   │                     ^^^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:41:49
+   │
+41 │     for (var i = 0; i < 253; i++) cc.in[i] <== (i < nbits) ? b.out[i] : 0;
+   │                                                 ^^^^^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+note: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:45:21
+   │
+45 │     for (var i = 0; i < nbits; i++) bits[i] <== b.out[i];
+   │                     ^^^^^^^^^ Field element comparison here.
+   │
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+
+warning: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+   ┌─ /mnt/d/BREAKTHROUGH/sybil-wedge-bench/circuits/wedge_haggr.circom:38:19
+   │
+38 │     component b = Num2Bits(nbits);
+   │                   ^^^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   │
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+
+circomspect: 71 issues found.
+## exit: 1
+
+=== SARIF result objects (deployed circuits) ===
+main_mem_w8_d9_split: results=0  (298 bytes)
+main_mem_w8_d9_split_rev64: results=0  (298 bytes)
+main_mem_w8_d9_split_rev256: results=0  (298 bytes)
+main_mem_w8_d9_split_rev1024: results=0  (298 bytes)
+main_mem_w8_d9_rev64: results=0  (298 bytes)
+main_mem_w8_d9_rev256: results=0  (298 bytes)
+main_mem_w8_d9_rev1024: results=0  (298 bytes)
+main_mem_w8_d9: results=0  (298 bytes)
+main_wedge_direct_k3: results=0  (298 bytes)

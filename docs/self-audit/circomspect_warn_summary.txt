@@ -1,0 +1,23 @@
+### WARNING+ only, INSTANTIATED deployed entrypoints
+main_mem_w8_d9_split               (no warnings/errors)
+main_mem_w8_d9_split_rev64         (no warnings/errors)
+main_mem_w8_d9_split_rev1024       (no warnings/errors)
+main_mem_w8_d9_rev1024             (no warnings/errors)
+main_wedge_direct_k3               (no warnings/errors)
+
+### WARNING+ only, SYMBOLIC template files
+--- wedge_membership.circom ---
+warning: The signal `epochTree` is not used by the template.
+--- wedge_revocation.circom ---
+warning: The signal `epochTree` is not used by the template.
+warning: Using the signal assignment operator `<--` does not constrain the assigned signal.
+circomspect: 2 issues found.
+--- wedge_core.circom ---
+circomspect: No issues found.
+--- wedge_haggr.circom ---
+warning: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+warning: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+warning: The output signal `out` defined by the template `Poseidon` is not constrained in `EdDSAHalfAggVerify`.
+circomspect: 3 issues found.
+--- wedge_residual.circom ---
+circomspect: No issues found.
