@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sybil-wedge — Phase-2 device benchmark</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; margin: 0; padding: 1rem; max-width: 1040px; }
+  h1 { font-size: 1.05rem; margin: 0 0 .25rem; }
+  p.sub { margin: 0 0 .8rem; opacity: .78; }
+  .banner { font-size: 1.02rem; font-weight: 700; padding: .55rem .8rem; border-radius: .4rem; margin: .5rem 0; border: 2px solid currentColor; }
+  .wait { color: #886600; } .pass { color: #0a7a2f; } .fail { color: #b3261e; }
+  .warn { color: #a25a00; font-size: .95rem; } .hidden { display: none; }
+  fieldset { border: 1px solid rgba(127,127,127,.4); border-radius: .4rem; margin: .6rem 0; padding: .5rem .8rem; }
+  legend { opacity:.75; }
+  label { user-select: none; margin-right: 1rem; white-space: nowrap; }
+  table { border-collapse: collapse; margin: .8rem 0; width: 100%; font-size: 12px; }
+  th, td { border: 1px solid rgba(127,127,127,.35); padding: .25rem .5rem; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  tr.nogo td { color: #b3261e; } tr.go td { color: #0a7a2f; }
+  pre { white-space: pre-wrap; word-break: break-word; background: rgba(127,127,127,.12); padding: .8rem; border-radius: .4rem; font-size: 11.5px; }
+  .priv { border-left: 3px solid #0a7a2f; padding-left: .7rem; margin: 1rem 0; font-size:12px; }
+  button { font: inherit; padding: .4rem .9rem; margin: .3rem .5rem .3rem 0; cursor: pointer; }
+  .kv { display:grid; grid-template-columns: max-content 1fr; gap: 0 .8rem; font-size:12px; }
+  .kv div:nth-child(odd){ opacity:.65; }
+  #jsonwrap textarea { width:100%; min-height: 8rem; font: 11px/1.4 ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<h1>Sybil-wedge — Phase-2 login, real-device benchmark</h1>
+<p class="sub">Fully-private Phase-2 proof (knowledge of <code>s</code>, in-circuit membership of <code>C=Poseidon(s)</code>, nullifier, RLN share). <b>N = <span id="nlabel">20</span></b> back-to-back, no cooldown. Captures p95 (not median), first-5→last-5 throttle drift, and <b>peak memory</b> — peak RAM is the more likely low-end-phone killer than CPU. GO = full-flow p95 &lt; 2.0 s. <b>Run this ON the target phone</b>, then press <i>Copy results as JSON</i>.</p>
+
+<div id="verdict" class="banner wait">pick a rung, press Run</div>
+<div id="throttle" class="banner warn hidden"></div>
+
+<fieldset id="devbox"><legend>device</legend><div class="kv" id="devkv">reading…</div></fieldset>
+
+<fieldset id="picker"><legend>rung — the deployed prover circuit (opening verified in-circuit, C never revealed)</legend></fieldset>
+<p>
+  <button id="run">Run selected</button>
+  <button id="copyjson" disabled>Copy results as JSON</button>
+  <button id="copytxt" disabled>Copy log</button>
+  <label><input type="checkbox" id="all"> select all</label>
+</p>
+
+<div id="tablewrap"></div>
+<fieldset id="jsonwrap" class="hidden"><legend>results JSON — paste into <code>scripts/collate_results.mjs</code></legend>
+  <textarea id="jsonout" readonly spellcheck="false"></textarea>
+</fieldset>
+<div class="priv" id="privbox"></div>
+<pre id="out"></pre>
+
+<script src="snarkjs.min.js"></script>
+<script>
+const N = 20, THRESHOLD_MS = 2000, THROTTLE_PCT = 15, SCHEMA = "sybil-wedge-device-bench/1";
+
+// ---- report channel for scripts/measure_phone_rss.mjs -----------------------
+// Chrome for Android does NOT forward console.log() to `adb logcat`, so progress
+// is POSTed to the local server instead (?report=<url>, default /__bench on this
+// origin, reachable via `adb reverse`). console.* lines are kept too for anyone
+// driving this via chrome://inspect.
+const REPORT_URL = new URLSearchParams(location.search).get("report") || "/__bench";
+function report(kind, extra) {
+  try {
+    const body = JSON.stringify({ kind, t: Date.now(), ...extra });
+    if (navigator.sendBeacon) navigator.sendBeacon(REPORT_URL, body);
+    else fetch(REPORT_URL, { method: "POST", body, keepalive: true, headers: { "content-type": "application/json" } }).catch(() => {});
+  } catch {}
+}
+
+// ---- WASM linear-memory probe -------------------------------------------------
+// performance.memory misses WebAssembly linear memory entirely -- and that is
+// where the prover's RAM goes. Shim WebAssembly.Memory to record, per instance:
+//   * the INITIAL request (pages asked for at construction)   <- the allocation
+//     the OS must satisfy; on a low-RAM phone THIS is what fails, CPU aside
+//   * the peak byteLength after any .grow()                    <- working size
+//   * shared vs non-shared (multi-thread uses SharedArrayBuffer-backed memory)
+// snarkjs 0.7.6 / ffjavascript requests a single ~2 GB `initial` memory for BN254
+// field scratch; whether the OS commits that eagerly or lazily is engine-
+// dependent and is exactly what a real low-RAM device run reveals.
+let WASM_REQUESTED_BYTES = 0, WASM_PEAK_BYTES = 0, WASM_SHARED_BYTES = 0, WASM_MEM_COUNT = 0;
+(function shimWasmMemory() {
+  const Real = WebAssembly.Memory;
+  const PAGE = 65536;
+  function Tracked(desc) {
+    const m = new Real(desc);
+    WASM_MEM_COUNT++;
+    const shared = (typeof SharedArrayBuffer !== "undefined") && (m.buffer instanceof SharedArrayBuffer);
+    const req = (desc && desc.initial ? desc.initial : 0) * PAGE;
+    if (req > WASM_REQUESTED_BYTES) WASM_REQUESTED_BYTES = req;
+    if (shared) { const b = m.buffer.byteLength; if (b > WASM_SHARED_BYTES) WASM_SHARED_BYTES = b; }
+    const note = () => { const b = m.buffer.byteLength; if (b > WASM_PEAK_BYTES) WASM_PEAK_BYTES = b; };
+    note();
+    const grow = m.grow.bind(m);
+    m.grow = (n) => { const r = grow(n); note(); return r; };
+    return m;
+  }
+  Tracked.prototype = Real.prototype;
+  try { WebAssembly.Memory = Tracked; } catch (e) { /* frozen -> fall back to heap only */ }
+})();
+
+const RUNGS = [
+  { key: "mem w8 d9", cap: "134,217,728", capText:"134M users", shape: "arity-8 Poseidon(8), depth 9 — the headline deployed circuit", constr: 4309, wasm: "wedge_mem_w8_d9.wasm", input: "input_mem_w8_d9.json", def: true },
+  { key: "mem w4 d8", cap: "65,536",      capText:"65,536 users", shape: "arity-4 Poseidon(4), depth 8", constr: 2947, wasm: "wedge_mem_w4_d8.wasm", input: "input_mem_w4_d8.json", def: false },
+  { key: "mem bin d16", cap: "65,536",    capText:"65,536 users", shape: "binary Poseidon(2), depth 16 — guaranteed-sound backstop", constr: 4363, wasm: "wedge_mem_bin_d16.wasm", input: "input_mem_bin_d16.json", def: false },
+];
+RUNGS.forEach(r => { const b = r.wasm.replace(".wasm",""); r.zkey = b + "_final.zkey"; r.vkey = b + "_vkey.json"; });
+
+const $ = (id) => document.getElementById(id);
+const out = $("out"), verdict = $("verdict"), throttleEl = $("throttle"), picker = $("picker");
+$("nlabel").textContent = N;
+const log = (s = "") => { out.textContent += s + "\n"; };
+const p5 = (n) => n.toFixed(0).padStart(5);
+const mb = (b) => (b / 1048576);
+const mbs = (b) => mb(b).toFixed(1);
+
+let DEVICE = null, LAST_RESULTS = null;
+
+// ---------- device info ----------
+async function captureDevice() {
+  const d = {
+    ua: navigator.userAgent,
+    cores: navigator.hardwareConcurrency ?? null,
+    deviceMemoryGB: navigator.deviceMemory ?? null,
+    screen: `${screen.width}x${screen.height}@${(window.devicePixelRatio||1).toFixed(2)}`,
+    lang: navigator.language,
+    connection: navigator.connection?.effectiveType ?? null,
+    crossOriginIsolated: !!self.crossOriginIsolated,
+    threading: self.crossOriginIsolated ? "multi-thread" : "single-thread (conservative low-end number)",
+    measureMemorySupported: typeof performance.measureUserAgentSpecificMemory === "function",
+    perfMemorySupported: !!performance.memory,
+  };
+  try {
+    if (navigator.userAgentData) {
+      d.platform = navigator.userAgentData.platform;
+      d.mobile = navigator.userAgentData.mobile;
+      const h = await navigator.userAgentData.getHighEntropyValues(
+        ["model", "platformVersion", "architecture", "bitness", "fullVersionList"]);
+      d.model = h.model || null;
+      d.platformVersion = h.platformVersion || null;
+      d.arch = h.architecture ? `${h.architecture}${h.bitness ? "/" + h.bitness : ""}` : null;
+      const chrome = (h.fullVersionList || []).find(e => /Chrome/i.test(e.brand));
+      d.browser = chrome ? `Chrome ${chrome.version}` : null;
+    }
+  } catch (e) { d.uaDataError = String(e); }
+  return d;
+}
+
+function renderDevice(d) {
+  const rows = [
+    ["model", d.model || "(UA-CH not available — see UA string)"],
+    ["platform", [d.platform, d.platformVersion].filter(Boolean).join(" ") || "—"],
+    ["arch", d.arch || "—"],
+    ["browser", d.browser || "—"],
+    ["CPU cores", d.cores ?? "—"],
+    ["device RAM (GB, capped 8)", d.deviceMemoryGB ?? "unavailable"],
+    ["screen", d.screen],
+    ["network", d.connection || "—"],
+    ["threading", d.threading],
+    ["measureUserAgentSpecificMemory()", d.measureMemorySupported ? "yes (accurate tab total incl. WASM)" : "NO — falls back to JS-heap only"],
+    ["UA", d.ua],
+  ];
+  $("devkv").innerHTML = rows.map(([k, v]) => `<div>${k}</div><div>${String(v).replace(/</g,"&lt;")}</div>`).join("");
+}
+
+// ---------- stats ----------
+function stats(a) {
+  const s = [...a].sort((x, y) => x - y);
+  const q = (p) => s[Math.min(s.length - 1, Math.floor(p * s.length))];
+  const mean = (xs) => xs.reduce((x, y) => x + y, 0) / xs.length;
+  return { min: s[0], max: s[s.length - 1], median: s[(s.length - 1) >> 1], p95: q(0.95),
+           first5: mean(a.slice(0, 5)), last5: mean(a.slice(-5)) };
+}
+
+async function uaMemory() {
+  if (typeof performance.measureUserAgentSpecificMemory !== "function") return null;
+  try {
+    const m = await performance.measureUserAgentSpecificMemory();
+    let wasm = 0, js = 0;
+    for (const b of m.breakdown || []) {
+      const t = (b.types || []).join(",");
+      if (/Wasm|WebAssembly/i.test(t)) wasm += b.bytes;
+      if (/JavaScript/i.test(t)) js += b.bytes;
+    }
+    return { totalBytes: m.bytes, wasmBytes: wasm, jsBytes: js };
+  } catch (e) { return { error: String(e) }; }
+}
+const jsHeapNow = () => performance.memory ? performance.memory.usedJSHeapSize : null;
+
+// ---------- one rung ----------
+async function benchOne(r) {
+  const input = await (await fetch(r.input)).json();
+  const vkey = await (await fetch(r.vkey)).json();
+  // GET (cached) rather than HEAD -- some static servers don't return content-length on HEAD
+  const wasmBytes = (await (await fetch(r.wasm)).arrayBuffer()).byteLength || null;
+  const zkeyBytes = (await (await fetch(r.zkey)).arrayBuffer()).byteLength || null;
+
+  WASM_REQUESTED_BYTES = 0; WASM_PEAK_BYTES = 0; WASM_SHARED_BYTES = 0; WASM_MEM_COUNT = 0;   // reset the probe
+
+  // warm-up + privacy assertion
+  const w = await snarkjs.groth16.fullProve(input, r.wasm, r.zkey);
+  if (!await snarkjs.groth16.verify(vkey, w.publicSignals, w.proof)) throw new Error(`${r.key}: groth16 verify failed`);
+  if (w.publicSignals.length !== 6) throw new Error(`${r.key}: expected 6 public signals, got ${w.publicSignals.length}`);
+
+  const baseHeap = jsHeapNow();
+  const baseUA = await uaMemory();
+
+  const proveT = [], flowT = [];
+  let peakHeap = baseHeap || 0;
+  for (let i = 0; i < N; i++) {
+    const t0 = performance.now();
+    const pr = await snarkjs.groth16.fullProve(input, r.wasm, r.zkey);
+    const t1 = performance.now();
+    await snarkjs.groth16.verify(vkey, pr.publicSignals, pr.proof);
+    const t2 = performance.now();
+    proveT.push(t1 - t0); flowT.push(t2 - t0);
+    const h = jsHeapNow(); if (h && h > peakHeap) peakHeap = h;
+    verdict.textContent = `running… ${r.key}  ${i + 1}/${N}`;
+    console.log(`PHONE_BENCH_ITER ${r.key} ${i + 1}/${N} flowMs=${(t2 - t0).toFixed(0)}`);
+    report("iter", { rung: r.key, i: i + 1, n: N, flowMs: +(t2 - t0).toFixed(0) });
+    await new Promise((res) => setTimeout(res, 0));   // yield (not rAF: paused in hidden tabs)
+  }
+  const peakUA = await uaMemory();               // measured right after the last prove, memory still resident
+  const P = stats(proveT), Fl = stats(flowT);
+  const drift = ((P.last5 - P.first5) / P.first5) * 100;
+
+  const wasmRequestedMB = WASM_REQUESTED_BYTES ? +mb(WASM_REQUESTED_BYTES).toFixed(0) : null;
+  const wasmPeakMB = WASM_PEAK_BYTES ? +mb(WASM_PEAK_BYTES).toFixed(1) : null;
+  const wasmSharedMB = WASM_SHARED_BYTES ? +mb(WASM_SHARED_BYTES).toFixed(0) : null;
+  const uaOk = peakUA && !peakUA.error && peakUA.totalBytes;
+  const multiThread = !!self.crossOriginIsolated;
+  // The prover asks the OS for `wasmRequestedMB` of contiguous linear memory at
+  // instantiation. On a low-RAM device that single allocation is the failure
+  // point independent of CPU speed. The "peak RAM estimate" is:
+  //   1. measureUserAgentSpecificMemory total (whole tab) -- authoritative when present
+  //   2. else max(wasm requested, wasm peak) + js heap    -- the allocation the device must satisfy
+  let peakRamEstimateMB = null, peakRamSource = "";
+  if (uaOk) {
+    peakRamEstimateMB = +mb(peakUA.totalBytes).toFixed(1);
+    peakRamSource = "measureUserAgentSpecificMemory (authoritative tab total)";
+  } else if (wasmRequestedMB != null || wasmPeakMB != null) {
+    peakRamEstimateMB = +(Math.max(wasmRequestedMB || 0, wasmPeakMB || 0) + (peakHeap ? mb(peakHeap) : 0)).toFixed(1);
+    peakRamSource = "wasm allocation request + js heap (measureUserAgentSpecificMemory absent) — confirm against OS RSS on the device";
+  } else if (peakHeap) {
+    peakRamEstimateMB = +mb(peakHeap).toFixed(1);
+    peakRamSource = "js-heap only (no WASM visibility — undercount)";
+  }
+
+  const memory = {
+    peakRamEstimateMB, peakRamSource,
+    wasmRequestedMB, wasmPeakMB, wasmSharedMB,
+    wasmAllocationsOverRun: WASM_MEM_COUNT || null,   // one per fullProve, freed between; not concurrent
+    peakJSHeapMB: peakHeap ? +mb(peakHeap).toFixed(1) : null,
+    baselineJSHeapMB: baseHeap ? +mb(baseHeap).toFixed(1) : null,
+    jsHeapLimitMB: performance.memory ? +mb(performance.memory.jsHeapSizeLimit).toFixed(0) : null,
+    uaTotalMB: uaOk ? +mb(peakUA.totalBytes).toFixed(1) : null,
+    uaWasmMB: uaOk && peakUA.wasmBytes ? +mb(peakUA.wasmBytes).toFixed(1) : null,
+    uaBaselineTotalMB: baseUA?.totalBytes ? +mb(baseUA.totalBytes).toFixed(1) : null,
+    artifactResidentMB: +(mb((wasmBytes || 0) + (zkeyBytes || 0))).toFixed(1),
+    threading: multiThread ? "multi-thread" : "single-thread",
+    note: (peakUA && peakUA.error) ? "measureUserAgentSpecificMemory unavailable — WASM figures are the allocation request, verify with OS RSS on the target device"
+        : undefined,
+  };
+
+  log(`=== ${r.key}  (${r.constr} constraints, ${r.capText}) — ${r.shape} ===`);
+  log(`  artifacts: wasm ${wasmBytes ? mbs(wasmBytes) : "?"} MB, zkey ${zkeyBytes ? mbs(zkeyBytes) : "?"} MB  (downloaded + resident during proving)`);
+  log(`  public signals: [N, y, root, ctx, epoch, signalHash] — 6 values, C is not among them`);
+  log(`  prover     min ${p5(P.min)}  median ${p5(P.median)}  p95 ${p5(P.p95)}  max ${p5(P.max)} ms`);
+  log(`  FULL FLOW  median ${p5(Fl.median)}  p95 ${p5(Fl.p95)} ms   drift ${drift >= 0 ? "+" : ""}${drift.toFixed(1)}%${drift > THROTTLE_PCT ? "  THROTTLING" : ""}`);
+  log(`  memory     PEAK RAM ~${memory.peakRamEstimateMB ?? "n/a"} MB  [${memory.peakRamSource}]`);
+  log(`             wasm request ${memory.wasmRequestedMB ?? "n/a"} MB/proof (one at a time, freed between) · wasm peak ${memory.wasmPeakMB ?? "n/a"} MB · JS heap ${memory.peakJSHeapMB ?? "n/a"}/${memory.jsHeapLimitMB ?? "?"} MB · artifacts ${memory.artifactResidentMB} MB`);
+  const devRamMB = DEVICE.deviceMemoryGB ? DEVICE.deviceMemoryGB * 1024 : null;
+  if (memory.wasmRequestedMB && devRamMB && memory.wasmRequestedMB > devRamMB * 0.5)
+    log(`             ⚠ the prover asks for ${memory.wasmRequestedMB} MB of contiguous WASM memory — ${(memory.wasmRequestedMB / devRamMB * 100).toFixed(0)}% of this device's ${DEVICE.deviceMemoryGB} GB. On a 2–3 GB phone this single allocation, not the CPU, is the likely failure. Confirm with OS RSS / does-the-tab-crash on the real unit.`);
+  if (memory.note) log(`             note: ${memory.note}`);
+  log(`  raw flow ms: ${flowT.map(x => x.toFixed(0)).join(" ")}`);
+  log("");
+
+  return {
+    rung: r.key, constraints: r.constr, capacity: r.cap,
+    artifactBytes: { wasm: wasmBytes, zkey: zkeyBytes },
+    publicSignals: w.publicSignals.length,
+    proveMs: { min: +P.min.toFixed(1), median: +P.median.toFixed(1), p95: +P.p95.toFixed(1), max: +P.max.toFixed(1) },
+    flowMs: { min: +Fl.min.toFixed(1), median: +Fl.median.toFixed(1), p95: +Fl.p95.toFixed(1), max: +Fl.max.toFixed(1) },
+    throttleDriftPct: +drift.toFixed(1),
+    memory,
+    rawFlowMs: flowT.map(x => +x.toFixed(1)),
+    verdict: Fl.p95 < THRESHOLD_MS ? "GO" : "NO-GO",
+    _Fl: Fl, _P: P, _drift: drift, _capText: r.capText,
+  };
+}
+
+function renderTable(rows) {
+  const body = rows.map(r => {
+    const go = r._Fl.p95 < THRESHOLD_MS;
+    return `<tr class="${go ? "go" : "nogo"}"><td>${r.rung}</td><td>${r._capText}</td><td>${r.constraints}</td>
+      <td>${p5(r._P.median).trim()}</td><td>${p5(r._P.p95).trim()}</td>
+      <td>${p5(r._Fl.p95).trim()}</td>
+      <td>${(r._drift >= 0 ? "+" : "") + r._drift.toFixed(1)}%</td>
+      <td>${r.memory.peakRamEstimateMB ?? "n/m"}</td>
+      <td>${r.memory.wasmRequestedMB ?? "—"}</td>
+      <td>${go ? "GO" : "NO-GO +" + ((r._Fl.p95 - THRESHOLD_MS) / 1000).toFixed(2) + "s"}</td></tr>`;
+  }).join("");
+  $("tablewrap").innerHTML = `<table>
+    <caption>N=${N} back-to-back/rung. ms. FLOW = WASM prover + Groth16 verify. mem in MB (peak RAM = best available estimate; see log for source). GO = flow p95 &lt; 2000.</caption>
+    <tr><th>rung</th><th>capacity</th><th>constr</th><th>prove med</th><th>prove p95</th><th>flow p95</th><th>drift</th><th>peak RAM ~MB</th><th>wasm req MB</th><th>verdict</th></tr>
+    ${body}</table>`;
+}
+
+async function runAll() {
+  const chosen = [...picker.querySelectorAll("input")].filter(cb => cb.checked).map(cb => RUNGS[+cb.dataset.i]);
+  if (!chosen.length) { verdict.textContent = "nothing selected"; return; }
+  $("run").disabled = true; out.textContent = ""; throttleEl.classList.add("hidden");
+  $("copyjson").disabled = $("copytxt").disabled = true; $("jsonwrap").classList.add("hidden");
+  verdict.className = "banner wait"; verdict.textContent = "running…";
+
+  DEVICE = await captureDevice(); renderDevice(DEVICE);
+  log("device: " + (DEVICE.model || "unknown model") + "  cores=" + DEVICE.cores + "  RAM=" + (DEVICE.deviceMemoryGB ?? "?") + "GB  " + DEVICE.threading);
+  log("measureUserAgentSpecificMemory: " + (DEVICE.measureMemorySupported ? "available" : "NOT available (peak-RAM number will be JS-heap only, an undercount)"));
+  log("");
+
+  console.log("PHONE_BENCH_START rungs=" + chosen.map(r => r.key).join(",") + " runs=" + N);
+  report("start", { rungs: chosen.map(r => r.key), runs: N, ua: navigator.userAgent });
+  const rows = [];
+  try { for (const r of chosen) rows.push(await benchOne(r)); }
+  catch (e) {
+    console.log("PHONE_BENCH_ERROR " + e.message);
+    report("error", { message: String(e && e.message || e), stack: String(e && e.stack || "") });
+    verdict.className = "banner fail"; verdict.textContent = "ERROR: " + e.message; $("run").disabled = false; return;
+  }
+  renderTable(rows);
+
+  const throttled = rows.filter(r => r._drift > THROTTLE_PCT);
+  if (throttled.length) {
+    throttleEl.classList.remove("hidden");
+    throttleEl.textContent = "THERMAL THROTTLING — " + throttled.map(r => `${r.rung} +${r._drift.toFixed(1)}%`).join(", ") + ". p95 is a warm-device number; a sustained load would be worse.";
+  }
+
+  const worst = rows.slice().sort((a, b) => b._Fl.p95 - a._Fl.p95)[0];
+  const allGo = rows.every(r => r._Fl.p95 < THRESHOLD_MS);
+  const real = rows.find(r => r.rung === "mem w8 d9");
+  const devRamMB = DEVICE.deviceMemoryGB ? DEVICE.deviceMemoryGB * 1024 : null;
+  const memFlag = rows.find(r => r.memory.wasmRequestedMB && devRamMB && r.memory.wasmRequestedMB > devRamMB * 0.5);
+  if (allGo) {
+    verdict.className = "banner pass";
+    verdict.textContent = `CPU GO — every selected rung clears 2.0 s (worst ${worst.rung} p95 ${worst._Fl.p95.toFixed(0)} ms)` +
+      (real ? `. 134M-scale rung p95 ${real._Fl.p95.toFixed(0)} ms, prover WASM request ${real.memory.wasmRequestedMB ?? "?"} MB` : "") + "." +
+      (memFlag ? `  ⚠ MEMORY RISK: prover requests ${memFlag.memory.wasmRequestedMB} MB (${(memFlag.memory.wasmRequestedMB / devRamMB * 100).toFixed(0)}% of device RAM) — on a 2–3 GB phone this allocation is the likely blocker, not CPU. Verify on the real unit.` : "");
+  } else {
+    verdict.className = "banner fail";
+    verdict.textContent = `NO-GO — ${worst.rung} p95 ${worst._Fl.p95.toFixed(0)} ms, over by ${((worst._Fl.p95 - THRESHOLD_MS) / 1000).toFixed(2)} s.`;
+  }
+
+  // ---- results JSON ----
+  const payload = {
+    schema: SCHEMA,
+    capturedAt: new Date().toISOString(),
+    device: DEVICE,
+    harness: { runs: N, thresholdMs: THRESHOLD_MS, throttlePct: THROTTLE_PCT, snarkjs: (snarkjs.version || "bundled") },
+    results: rows.map(({ _Fl, _P, _drift, _capText, ...clean }) => clean),
+    verdict: allGo ? "GO" : "NO-GO",
+  };
+  LAST_RESULTS = payload;
+  $("jsonout").value = JSON.stringify(payload, null, 2);
+  $("jsonwrap").classList.remove("hidden");
+  $("copyjson").disabled = $("copytxt").disabled = false;
+  $("run").disabled = false;
+
+  // Machine-readable channels for scripts/measure_phone_rss.mjs
+  try { localStorage.setItem("sybilWedgeLastResult", JSON.stringify(payload)); } catch {}
+  const b64 = (() => { try { return btoa(unescape(encodeURIComponent(JSON.stringify(payload)))); } catch { return ""; } })();
+  console.log("PHONE_BENCH_RESULT_JSON_B64 " + b64);
+  console.log("PHONE_BENCH_DONE verdict=" + payload.verdict + " flowP95=" + (payload.results[0]?.flowMs?.p95 ?? "?") +
+    " wasmPeakMB=" + (payload.results[0]?.memory?.wasmPeakMB ?? "?") + " wasmReqMB=" + (payload.results[0]?.memory?.wasmRequestedMB ?? "?"));
+  report("done", { payload });          // <-- the reliable channel: full result over HTTP
+}
+
+$("privbox").innerHTML = `<b>Privacy — confirmed structurally:</b> the circuit's public interface is exactly
+<code>[N, y, root, ctx, epoch, signalHash]</code> — 6 values. <code>C</code>, the secret <code>s</code>, and the whole
+Merkle witness are private inputs with no output wire. The harness asserts <code>publicSignals.length === 6</code>
+before timing. The verifier learns only <code>N</code>.`;
+
+$("run").addEventListener("click", runAll);
+$("copyjson").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("jsonout").value); flash("copyjson", "JSON copied"); }
+  catch { $("jsonout").select(); flash("copyjson", "select+copy manually"); }
+});
+$("copytxt").addEventListener("click", async () => {
+  const t = verdict.textContent + "\n\n" + $("devkv").innerText + "\n\n" + out.textContent;
+  try { await navigator.clipboard.writeText(t); flash("copytxt", "log copied"); } catch {}
+});
+$("all").addEventListener("change", (e) => picker.querySelectorAll("input").forEach(cb => cb.checked = e.target.checked));
+function flash(id, msg) { const b = $(id), o = b.textContent; b.textContent = msg; setTimeout(() => b.textContent = o, 1400); }
+
+RUNGS.forEach((r, i) => {
+  const l = document.createElement("label");
+  l.innerHTML = `<input type="checkbox" data-i="${i}" ${r.def ? "checked" : ""}> ${r.key} <span style="opacity:.6">(${r.capText})</span>`;
+  picker.appendChild(l);
+});
+captureDevice().then(d => { DEVICE = d; renderDevice(d); });
+
+// ---- autorun for scripts/measure_phone_rss.mjs -------------------------------
+// ?autorun=1[&rung=w8d9|w4d8|bin16][&delay=ms]  -> select the rung and press Run,
+// so the adb wrapper only has to launch the URL. console.log sentinels (above)
+// mark START / each ITER / DONE|ERROR and carry the result JSON as base64.
+(function autorun() {
+  const q = new URLSearchParams(location.search);
+  if (q.get("autorun") !== "1") return;
+  const map = { w8d9: "mem w8 d9", w4d8: "mem w4 d8", bin16: "mem bin d16" };
+  const want = map[q.get("rung") || "w8d9"] || "mem w8 d9";
+  const delay = Math.max(0, +q.get("delay") || 800);
+  console.log("PHONE_BENCH_AUTORUN rung=" + want + " ua=" + navigator.userAgent);
+  report("autorun", { rung: want, ua: navigator.userAgent, coi: !!self.crossOriginIsolated });
+  setTimeout(() => {
+    picker.querySelectorAll("input").forEach((cb, i) => { cb.checked = (RUNGS[i].key === want); });
+    $("run").click();
+  }, delay);
+})();
+</script>
+</body>
+</html>

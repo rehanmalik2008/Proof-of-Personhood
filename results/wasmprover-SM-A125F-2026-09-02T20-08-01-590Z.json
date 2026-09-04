@@ -1,0 +1,61 @@
+{
+  "schema": "wasm-bridge-stepA/1",
+  "capturedAt": "2026-09-02T20:08:01.590Z",
+  "device": {
+    "model": "SM-A125F",
+    "abi": "arm64-v8a"
+  },
+  "prover": "rapidsnark C++ -> Emscripten WASM (pthreads + SIMD, mini-gmp 64-bit limbs)",
+  "circuit": "wedge_mem_w8_d9 (4,309 constr) — identical zkey + witness",
+  "runs": 20,
+  "moduleInitMs": 542,
+  "pthreadWorkers": {
+    "unused": 8,
+    "hardwareConcurrency": 8
+  },
+  "proveOnlyMs": {
+    "cold": 3071.3,
+    "warmMin": 2409.7,
+    "warmMedian": 2466.6,
+    "warmP95": 2670.6,
+    "warmMax": 2670.6,
+    "all": [
+      2409.7,
+      2430.2,
+      2444,
+      2445.3,
+      2446.3,
+      2446.9,
+      2448.3,
+      2459.6,
+      2463.8,
+      2466.6,
+      2471.1,
+      2472.1,
+      2472.9,
+      2475.2,
+      2496.9,
+      2523.7,
+      2557.6,
+      2558.6,
+      2595.9,
+      2670.6
+    ]
+  },
+  "proofVerifiesWithSnarkjsVkey": "parse-error: Unexpected end of JSON input",
+  "publicSignalsIdentical": "no-ref",
+  "vs": {
+    "native_477": {
+      "speedup_warm": 0.19,
+      "x_of_native": 5.17
+    },
+    "snarkjs_prove_3374": {
+      "speedup_warm": 1.37
+    },
+    "snarkjs_cold_6766": {
+      "speedup_cold": 2.2
+    }
+  },
+  "gate_note_projection": "1.25–2× native (~600–950 ms); FAIL if worse than ~2.5× native (>1200 ms)",
+  "gate_result": "FAIL (WASM overhead beyond the standard band)"
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>C++→WASM rapidsnark — thread sweep (attribution)</title>
+<style>body{font:12px ui-monospace,monospace;margin:0;padding:1rem;white-space:pre-wrap}</style></head>
+<body><div id="o">loading…</div>
+<script src="prover.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const NT = +(q.get("nt")) || 0;               // 0 = auto (hardware_concurrency)
+const RUNS = +(q.get("runs")) || 15;
+const REPORT_URL = q.get("report") || "/__bench";
+const report = (o)=>{ try{ const b=JSON.stringify(o);
+  navigator.sendBeacon ? navigator.sendBeacon(REPORT_URL,b) : fetch(REPORT_URL,{method:"POST",body:b,keepalive:true}); }catch{} };
+const el=document.getElementById("o");
+const log=(s)=>{ el.textContent += "\n"+s; };
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+
+log("nt="+NT+"  runs="+RUNS+"  crossOriginIsolated="+self.crossOriginIsolated+"  hc="+navigator.hardwareConcurrency+"  SAB="+(typeof SharedArrayBuffer!=="undefined"));
+report({kind:"autorun", nt:NT, coi:self.crossOriginIsolated, hc:navigator.hardwareConcurrency, ua:navigator.userAgent});
+
+async function run(){
+  const [zkey, wtns] = await Promise.all([
+    fetch("c.zkey").then(r=>r.arrayBuffer()),
+    fetch("w.wtns").then(r=>r.arrayBuffer()),
+  ]);
+  const initT0 = performance.now();
+  const M = await RSProverST({ printErr:(s)=>{ if(!/madvise|keepRuntimeAlive|program exited/.test(s)){ log("[e] "+s); report({kind:"log",s:String(s)}); } }, print:()=>{}, noInitialRun:true });
+  const initMs = +(performance.now()-initT0).toFixed(0);
+
+  // force ffiasm ThreadPool size BEFORE the first prove (defaultPool() is a one-shot static).
+  let setOK=false, gotNT=-1;
+  try { M.ccall("rs_set_nt","void",["number"],[NT]); gotNT = M.ccall("rs_get_nt","number",[],[]); setOK=(gotNT===NT); } catch(e){ log("rs_set_nt failed: "+e); }
+  log("module init "+initMs+" ms   rs_set_nt("+NT+") -> "+gotNT+(setOK?" OK":" MISMATCH"));
+
+  M.FS.writeFile("/c.zkey", new Uint8Array(zkey));
+  M.FS.writeFile("/w.wtns", new Uint8Array(wtns));
+  const threadsUnused = M.PThread?.unusedWorkers?.length ?? null;
+
+  const has=(p)=>{ try{ return M.FS.analyzePath(p).exists; }catch{ return false; } };
+  const proveOnce = async ()=>{
+    try{ M.FS.unlink("/proof.json"); }catch{} try{ M.FS.unlink("/public.json"); }catch{}
+    const t0=performance.now();
+    const r = M.callMain(["/c.zkey","/w.wtns","/proof.json","/public.json"]);
+    if (r && typeof r.then==="function"){ try{ await r; }catch(e){} }
+    for(let k=0;k<40000;k++){ if(has("/proof.json")&&has("/public.json")) break; await sleep(10); }
+    const dt=performance.now()-t0;
+    if(!has("/proof.json")) throw new Error("no /proof.json after "+dt.toFixed(0)+"ms");
+    return dt;
+  };
+
+  const times=[]; let cold=null, proofB64=null, publicJson=null;
+  for(let i=0;i<RUNS+1;i++){
+    const dt=await proveOnce();
+    if(i===0){ cold=dt; publicJson=M.FS.readFile("/public.json",{encoding:"utf8"});
+      try{ const bytes=M.FS.readFile("/proof.json"); let s=""; for(let j=0;j<bytes.length;j++) s+=String.fromCharCode(bytes[j]); proofB64=btoa(s); }catch(e){ log("proofB64 fail: "+e); } }
+    else times.push(+dt.toFixed(1));
+    el.textContent = el.textContent.replace(/\n\[run .*$/,"");
+    log(`[run ${i}/${RUNS}: ${dt.toFixed(0)} ms]`);
+  }
+  times.sort((a,b)=>a-b);
+  const pick=(p)=>times[Math.min(times.length-1,Math.floor(p*times.length))];
+  const res={ kind:"done", nt:NT, gotNT, setOK, initMs, threadsUnused, hardwareConcurrency:navigator.hardwareConcurrency,
+    coldMs:+cold.toFixed(1), warmMs:times, warmMin:times[0], warmMedian:times[(times.length-1)>>1], warmP95:pick(0.95), warmMax:times[times.length-1],
+    proofB64, publicJson };
+  log("\n──── nt="+NT+" ────  cold "+res.coldMs+"  warm median "+res.warmMedian+"  p95 "+res.warmP95+"  min "+res.warmMin+"  (n="+times.length+")");
+  report(res);
+  log("reported.");
+}
+run().catch(e=>{ log("FATAL "+(e&&e.stack||e)); report({kind:"error", where:"page", nt:NT, msg:String(e&&e.message||e)}); });
+</script></body></html>

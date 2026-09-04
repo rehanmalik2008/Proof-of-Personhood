@@ -1,0 +1,124 @@
+{
+  "schema": "after-the-bridge-exp1-native/1",
+  "capturedAt": "2026-09-03T07:26:54.531Z",
+  "device": {
+    "model": "SM-A125F",
+    "abi": "arm64-v8a"
+  },
+  "note": "taskset 1core == slightly-pessimistic proxy for true native-1-thread (8 ffiasm pool threads, condvar-parked, contend on 1 core).",
+  "native_taskset_sweep": [
+    {
+      "label": "1core",
+      "mask": "1",
+      "min": 2728,
+      "median": 2743,
+      "p95": 2821,
+      "max": 2821,
+      "mean": 2746.6,
+      "n": 15,
+      "all": [
+        2731,
+        2733,
+        2731,
+        2732,
+        2728,
+        2742,
+        2743,
+        2744,
+        2760,
+        2748,
+        2744,
+        2751,
+        2748,
+        2821,
+        2743
+      ]
+    },
+    {
+      "label": "2core",
+      "mask": "3",
+      "min": 1426,
+      "median": 1442,
+      "p95": 1465,
+      "max": 1465,
+      "mean": 1443.7,
+      "n": 15,
+      "all": [
+        1453,
+        1465,
+        1431,
+        1446,
+        1439,
+        1444,
+        1446,
+        1461,
+        1455,
+        1437,
+        1426,
+        1442,
+        1442,
+        1428,
+        1441
+      ]
+    },
+    {
+      "label": "4core",
+      "mask": "f",
+      "min": 784,
+      "median": 799,
+      "p95": 813,
+      "max": 813,
+      "mean": 799.9,
+      "n": 15,
+      "all": [
+        784,
+        807,
+        798,
+        799,
+        796,
+        804,
+        813,
+        800,
+        791,
+        800,
+        799,
+        801,
+        811,
+        797,
+        798
+      ]
+    },
+    {
+      "label": "8core",
+      "mask": "ff",
+      "min": 502,
+      "median": 518,
+      "p95": 534,
+      "max": 534,
+      "mean": 519.8,
+      "n": 15,
+      "all": [
+        519,
+        512,
+        529,
+        520,
+        514,
+        534,
+        528,
+        516,
+        502,
+        518,
+        517,
+        525,
+        517,
+        517,
+        529
+      ]
+    }
+  ],
+  "verify": {
+    "ok": true,
+    "ident": true
+  },
+  "native_1T_proxy_ms": 2743
+}

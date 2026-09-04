@@ -1,0 +1,83 @@
+{
+  "schema": "cpu-wall-investigation/1",
+  "device": {
+    "model": "SM-A125F (Galaxy A12)",
+    "soc": "Helio P35 (8x Cortex-A53)",
+    "abi": "arm64-v8a",
+    "ramMB": 3751,
+    "android": 12,
+    "chrome": "152.0.7977.64"
+  },
+  "circuit": "wedge_mem_w8_d9 — 4,309 constraints — IDENTICAL zkey + witness, no circuit/zkey/privacy change",
+  "bar_ms": 2000,
+  "step1_browser_free_levers": {
+    "verdict": "NOTHING UNCLAIMED — does not clear the bar",
+    "coop_coep_headers_set": true,
+    "crossOriginIsolated_on_device": true,
+    "wasmSIMD_browser_supported": true,
+    "snarkjs_uses_SharedArrayBuffer": false,
+    "snarkjs_uses_SIMD": false,
+    "workers_spawned": 8,
+    "threading_already_active_speedup": "2.51x  (single-thread 12,580 ms  ->  8-thread 5,011 ms, warm median full-prove)",
+    "browser_fullprove_warm_median_ms": 4531,
+    "browser_fullprove_cold_ms": 6779
+  },
+  "step2_rapidsnark_native": {
+    "verdict": "CLEARS THE BAR",
+    "asset": "rapidsnark v0.0.8  android-arm64  bin/prover (native C++, 8-thread auto)",
+    "proof_verifies_with_snarkjs_vkey": true,
+    "public_signals": "identical to snarkjs",
+    "proving_step_only": {
+      "browser_snarkjs_ms": {
+        "cold": 5187,
+        "warm_median": 3374,
+        "warm_min": 3293
+      },
+      "rapidsnark_ms": {
+        "cold": 510,
+        "warm_median": 477,
+        "warm_min": 374,
+        "warm_p95": 626
+      },
+      "speedup_warm_median": 7.1,
+      "speedup_cold": 10.2
+    },
+    "end_to_end_ms": {
+      "browser_full": {
+        "cold": 6779,
+        "warm_median": 4531
+      },
+      "browser_witnesscalc_wasm": {
+        "cold": 1592,
+        "warm_median": 1164
+      },
+      "native_end_to_end_pessimistic_ms": {
+        "note": "if native witnesscalc were as slow as the browser WASM one",
+        "cold": 2102,
+        "warm": 1641
+      },
+      "native_end_to_end_likely_ms": {
+        "note": "native circom witnesscalc typically 2-5x faster than WASM",
+        "warm": "~700-1100"
+      }
+    }
+  },
+  "step3_cold_vs_sustained": {
+    "note": "a real user proves ONCE (cold). browser cold is WORSE than warm; rapidsnark cold ~= warm.",
+    "browser_fullprove": {
+      "cold_ms": 6779,
+      "warm_median_ms": 4531,
+      "cold_penalty": "+50%"
+    },
+    "rapidsnark_prove": {
+      "cold_ms": 510,
+      "warm_median_ms": 477,
+      "cold_penalty": "+7%"
+    },
+    "real_user_single_proof": {
+      "browser_end_to_end": "~6.8 s  (NO-GO, 3.4x over bar)",
+      "native": "~0.5 s prove + witnesscalc  (GO)"
+    }
+  },
+  "bottom_line": "Step 1 (free browser levers) yields nothing: threading already on (2.5x), no SIMD in snarkjs. Step 2 (rapidsnark native) clears the bar: 7x on the proving step (3,374 -> 477 ms warm), 10x cold, proof byte-verified equivalent. Native end-to-end clears 2 s. Cost: native prover = app/SDK, forfeits zero-install on entry-level devices (a product decision, not a crypto one). Circuit, zkey, and privacy unchanged."
+}

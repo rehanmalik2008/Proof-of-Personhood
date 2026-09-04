@@ -1,0 +1,93 @@
+{
+  "device": {
+    "model": "SM-A125F",
+    "manufacturer": "samsung",
+    "marketName": null,
+    "abi": "arm64-v8a",
+    "androidRelease": "12",
+    "sdk": 31,
+    "totalRamMB": 3751,
+    "chromePkg": "com.android.chrome",
+    "chromeVersion": "152.0.7977.64"
+  },
+  "kind": "diag",
+  "mode": "forced-single-thread",
+  "caps": {
+    "ua": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36",
+    "crossOriginIsolated": true,
+    "SharedArrayBuffer": true,
+    "hardwareConcurrency": 8,
+    "deviceMemoryGB": 4,
+    "wasmSIMD": true,
+    "wasmThreads_sharedMemory": true,
+    "snarkjsBundled": true
+  },
+  "workersSpawned": 0,
+  "workerErrors": 0,
+  "wasmMems": [
+    {
+      "initialPages": 1,
+      "maxPages": 1,
+      "shared": true
+    },
+    {
+      "initialPages": 32767,
+      "maxPages": 0,
+      "shared": false
+    },
+    {
+      "initialPages": 25,
+      "maxPages": 0,
+      "shared": false
+    },
+    {
+      "initialPages": 25,
+      "maxPages": 32767,
+      "shared": false
+    },
+    {
+      "initialPages": 32767,
+      "maxPages": 0,
+      "shared": false
+    },
+    {
+      "initialPages": 32767,
+      "maxPages": 0,
+      "shared": false
+    },
+    {
+      "initialPages": 32767,
+      "maxPages": 0,
+      "shared": false
+    },
+    {
+      "initialPages": 32767,
+      "maxPages": 0,
+      "shared": false
+    },
+    {
+      "initialPages": 32767,
+      "maxPages": 0,
+      "shared": false
+    }
+  ],
+  "anySharedWasmMemory": true,
+  "coldMs": 13171.7,
+  "warmMs": [
+    12336.3,
+    12620.2,
+    12544.8,
+    12583.9,
+    12580
+  ],
+  "warmMedianMs": 12580,
+  "warmMinMs": 12336.3,
+  "allMs": [
+    13171.7,
+    12336.3,
+    12620.2,
+    12544.8,
+    12583.9,
+    12580
+  ]
+}

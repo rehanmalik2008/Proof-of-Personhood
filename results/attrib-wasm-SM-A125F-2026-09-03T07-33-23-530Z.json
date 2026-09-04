@@ -1,0 +1,114 @@
+{
+  "schema": "after-the-bridge-exp1-wasm/1",
+  "capturedAt": "2026-09-03T07:33:23.530Z",
+  "device": {
+    "model": "SM-A125F",
+    "abi": "arm64-v8a"
+  },
+  "runs": 12,
+  "prover": "rapidsnark C++ -> Emscripten WASM (pthreads+PROXY, generic-C++ field, mini-gmp 64-bit limbs); ffiasm ThreadPool forced via rs_set_nt",
+  "wasm_nt_sweep": [
+    {
+      "nt": 1,
+      "fail": true
+    },
+    {
+      "nt": 2,
+      "gotNT": 2,
+      "setOK": true,
+      "initMs": 1263,
+      "cold": 7704.2,
+      "warmMin": 7504.2,
+      "warmMedian": 7684.5,
+      "warmP95": 7834.3,
+      "warmMax": 7834.3,
+      "n": 12,
+      "all": [
+        7504.2,
+        7506.8,
+        7513,
+        7677.6,
+        7679.7,
+        7684.5,
+        7705.2,
+        7718,
+        7718.8,
+        7723.6,
+        7794.4,
+        7834.3
+      ],
+      "threadsUnused": 8,
+      "verify": {
+        "ok": "no-proof",
+        "ident": "no-proof"
+      }
+    },
+    {
+      "nt": 4,
+      "gotNT": 4,
+      "setOK": true,
+      "initMs": 1120,
+      "cold": 4245.2,
+      "warmMin": 4036.1,
+      "warmMedian": 4229.2,
+      "warmP95": 4654.1,
+      "warmMax": 4654.1,
+      "n": 12,
+      "all": [
+        4036.1,
+        4061.6,
+        4084,
+        4131.8,
+        4210.8,
+        4229.2,
+        4248.1,
+        4255.3,
+        4270.8,
+        4325.7,
+        4345.4,
+        4654.1
+      ],
+      "threadsUnused": 8,
+      "verify": {
+        "ok": "no-proof",
+        "ident": "no-proof"
+      }
+    },
+    {
+      "nt": 8,
+      "gotNT": 8,
+      "setOK": true,
+      "initMs": 1112,
+      "cold": 2533.2,
+      "warmMin": 2525.5,
+      "warmMedian": 2558.8,
+      "warmP95": 2728.4,
+      "warmMax": 2728.4,
+      "n": 12,
+      "all": [
+        2525.5,
+        2526.5,
+        2538.7,
+        2543.8,
+        2546.4,
+        2558.8,
+        2567.5,
+        2568.5,
+        2579.8,
+        2591.5,
+        2690.7,
+        2728.4
+      ],
+      "threadsUnused": 8,
+      "verify": {
+        "ok": "no-proof",
+        "ident": "no-proof"
+      }
+    }
+  ],
+  "wasm_1T_ms": null,
+  "wasm_best": {
+    "nt": 8,
+    "ms": 2558.8
+  }
+}

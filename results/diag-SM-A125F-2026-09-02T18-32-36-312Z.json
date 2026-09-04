@@ -1,0 +1,71 @@
+{
+  "device": {
+    "model": "SM-A125F",
+    "manufacturer": "samsung",
+    "marketName": null,
+    "abi": "arm64-v8a",
+    "androidRelease": "12",
+    "sdk": 31,
+    "totalRamMB": 3751,
+    "chromePkg": "com.android.chrome",
+    "chromeVersion": "152.0.7977.64"
+  },
+  "kind": "diag",
+  "mode": "default(threads if Worker present)",
+  "caps": {
+    "ua": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36",
+    "crossOriginIsolated": true,
+    "SharedArrayBuffer": true,
+    "hardwareConcurrency": 8,
+    "deviceMemoryGB": 4,
+    "wasmSIMD": true,
+    "wasmThreads_sharedMemory": true,
+    "snarkjsBundled": true
+  },
+  "workersSpawned": 8,
+  "workerErrors": 0,
+  "anySharedWasmMemory": true,
+  "coldMs": 6779.2,
+  "warmMs": [
+    4690.7,
+    5051.9,
+    4471.9,
+    4530.8,
+    4446.6
+  ],
+  "warmMedianMs": 4530.8,
+  "warmMinMs": 4446.6,
+  "witnessCalc": {
+    "coldMs": 1591.8,
+    "warmMedianMs": 1163.7,
+    "all": [
+      1591.8,
+      1247.6,
+      1506.5,
+      1163.7,
+      1156.7,
+      1154.2
+    ]
+  },
+  "proveOnly": {
+    "coldMs": 5187.4,
+    "warmMedianMs": 3374.1,
+    "warmMinMs": 3292.5,
+    "all": [
+      5187.4,
+      3443.1,
+      3545.4,
+      3308.2,
+      3374.1,
+      3292.5
+    ]
+  },
+  "allFullMs": [
+    6779.2,
+    4690.7,
+    5051.9,
+    4471.9,
+    4530.8,
+    4446.6
+  ]
+}

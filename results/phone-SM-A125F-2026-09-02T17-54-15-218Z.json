@@ -1,0 +1,159 @@
+{
+  "schema": "sybil-wedge-phone-rss/1",
+  "capturedAt": "2026-09-02T17:54:15.218Z",
+  "device": {
+    "model": "SM-A125F",
+    "manufacturer": "samsung",
+    "marketName": null,
+    "abi": "arm64-v8a",
+    "androidRelease": "12",
+    "sdk": 31,
+    "totalRamMB": 3751,
+    "chromePkg": "com.android.chrome",
+    "chromeVersion": "152.0.7977.64"
+  },
+  "lowRamDevice": false,
+  "run": {
+    "rung": "mem w8 d9",
+    "constraints": 4309,
+    "capacity": "134,217,728",
+    "url": "http://localhost:8080/index.html?autorun=1&rung=w8d9&delay=1500",
+    "sampleIntervalMs": 250,
+    "samples": 249,
+    "durationS": 150.1,
+    "rssMethod": "ps -A -o RSS per sample + /proc/<pid>/status VmHWM final pass (unprivileged, RSS); dumpsys meminfo PSS cross-check on prover pid"
+  },
+  "load": {
+    "mode": "ballast",
+    "backgroundTabs": 3,
+    "ballastMbEach": 300,
+    "apps": [],
+    "ballastReady": 3,
+    "appsStarted": []
+  },
+  "rss": {
+    "peakTabProcessRssMB": 378.8,
+    "peakTabProcessPssMB": 324.8,
+    "peakAllChromeRssMB": 1248.1,
+    "proverProcessName": "com.android.chrome:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:1",
+    "proverProcessClimbMB": 327.6,
+    "proverPeakFromKernelHWM": true,
+    "perProcessPeakRssMB": {
+      "com.android.chrome:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:1": 378.8,
+      "com.android.chrome:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:6": 378.8,
+      "com.android.chrome:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:10": 367,
+      "com.android.chrome:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:8": 378.5,
+      "com.sec.android.app.chromecustomizations": 34.9,
+      "com.android.chrome": 254.6,
+      "com.android.chrome:privileged_process0": 73.3,
+      "com.android.chrome_zygote": 30.2,
+      "com.android.chrome:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:4": 71.4
+    }
+  },
+  "workingSetMB": 2047.9,
+  "ratioPeakRssToWorkingSet": 0.18,
+  "budgetFractionOfDeviceRam": 0.101,
+  "proveP95Ms": 5565.7,
+  "flowP95Ms": 5675.1,
+  "throttleDriftPct": -0.1,
+  "tabSurvived": true,
+  "killReason": null,
+  "iters": 20,
+  "notes": [
+    "NOT a low-RAM device (3751 MB > 3200): reference only; does not close the gate.",
+    "under pressure: ballast (3/3 ballast @ 300MB)."
+  ],
+  "inPageResult": {
+    "schema": "sybil-wedge-device-bench/1",
+    "capturedAt": "2026-09-02T17:54:13.657Z",
+    "device": {
+      "ua": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36",
+      "cores": 8,
+      "deviceMemoryGB": 4,
+      "screen": "385x854@1.88",
+      "lang": "en-GB",
+      "connection": "4g",
+      "crossOriginIsolated": true,
+      "threading": "multi-thread",
+      "measureMemorySupported": true,
+      "perfMemorySupported": true,
+      "platform": "Android",
+      "mobile": true,
+      "model": "SM-A125F",
+      "platformVersion": "12.0.0",
+      "arch": null,
+      "browser": "Chrome 152.0.7977.64"
+    },
+    "harness": {
+      "runs": 20,
+      "thresholdMs": 2000,
+      "throttlePct": 15,
+      "snarkjs": "bundled"
+    },
+    "results": [
+      {
+        "rung": "mem w8 d9",
+        "constraints": 4309,
+        "capacity": "134,217,728",
+        "artifactBytes": {
+          "wasm": 3212022,
+          "zkey": 5764623
+        },
+        "publicSignals": 6,
+        "proveMs": {
+          "min": 5067.3,
+          "median": 5325.8,
+          "p95": 5565.7,
+          "max": 5565.7
+        },
+        "flowMs": {
+          "min": 5191.8,
+          "median": 5459,
+          "p95": 5675.1,
+          "max": 5675.1
+        },
+        "throttleDriftPct": -0.1,
+        "memory": {
+          "peakRamEstimateMB": 21,
+          "peakRamSource": "measureUserAgentSpecificMemory (authoritative tab total)",
+          "wasmRequestedMB": 2048,
+          "wasmPeakMB": 2047.9,
+          "wasmSharedMB": null,
+          "wasmAllocationsOverRun": 22,
+          "peakJSHeapMB": 9.5,
+          "baselineJSHeapMB": 9.5,
+          "jsHeapLimitMB": 1020,
+          "uaTotalMB": 21,
+          "uaWasmMB": null,
+          "uaBaselineTotalMB": 20.7,
+          "artifactResidentMB": 8.6,
+          "threading": "multi-thread"
+        },
+        "rawFlowMs": [
+          5518.3,
+          5611,
+          5289.7,
+          5555.4,
+          5490.6,
+          5675.1,
+          5429.4,
+          5459,
+          5480.4,
+          5304.1,
+          5645.7,
+          5515.2,
+          5312.6,
+          5191.8,
+          5231.1,
+          5452.7,
+          5438.8,
+          5566.7,
+          5403.9,
+          5554.1
+        ],
+        "verdict": "NO-GO"
+      }
+    ],
+    "verdict": "NO-GO"
+  }
+}

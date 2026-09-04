@@ -1,0 +1,8 @@
+{
+  "schema": "sybil-wedge-device-bench/1",
+  "capturedAt": "2026-09-02T04:23:03.832Z",
+  "device": { "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/148", "cores": 12, "deviceMemoryGB": 16, "screen": "1280x720@1.50", "connection": "3g", "crossOriginIsolated": true, "threading": "multi-thread", "measureMemorySupported": false, "platform": "Windows", "mobile": false, "model": "desktop i7-9850H (reference, NOT a phone)", "platformVersion": "19.0.0", "arch": "x86/64" },
+  "harness": { "runs": 20, "thresholdMs": 2000, "throttlePct": 15, "snarkjs": "0.7.6" },
+  "results": [ { "rung": "mem w8 d9", "constraints": 4309, "capacity": "134,217,728", "artifactBytes": { "wasm": 3212022, "zkey": 5764623 }, "publicSignals": 6, "proveMs": { "min": 583.1, "median": 620.7, "p95": 721.8, "max": 721.8 }, "flowMs": { "min": 602, "median": 640.5, "p95": 737.6, "max": 737.6 }, "throttleDriftPct": 4.9, "memory": { "peakRamEstimateMB": 2097.4, "peakRamSource": "wasm allocation request + js heap (measureUserAgentSpecificMemory absent)", "wasmRequestedMB": 2048, "wasmPeakMB": 2047.9, "peakJSHeapMB": 49.4, "jsHeapLimitMB": 4096, "artifactResidentMB": 8.6, "threading": "multi-thread" }, "rawFlowMs": [614.3,654.7,664,623,602,628.5,634.6,640.5,678.6,673.4,642.3,668.8,629.8,644.4,644.1,629,606.7,637,695.3,737.6], "verdict": "GO" } ],
+  "verdict": "GO"
+}

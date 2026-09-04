@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ballast</title>
+<style>body{font:13px ui-monospace,monospace;margin:0;padding:1rem}</style>
+</head>
+<body>
+<div id="s">allocating…</div>
+<script>
+// Memory-pressure ballast for scripts/measure_phone_rss.mjs --load mode.
+//   ballast.html?mb=150   -> allocate ~150 MB, TOUCH every page so it is resident
+//                            (not lazily reserved), and hold it forever.
+// Open several of these in background tabs to shrink the per-tab budget the
+// prover tab then has to fit inside -- a loaded-phone simulation, not fresh boot.
+const q = new URLSearchParams(location.search);
+const MB = Math.max(1, Math.min(2048, +q.get("mb") || 150));
+const REPORT_URL = q.get("report") || "/__bench";
+const report = (kind, extra) => { try { const b = JSON.stringify({ kind, t: Date.now(), ...extra });
+  navigator.sendBeacon ? navigator.sendBeacon(REPORT_URL, b) : fetch(REPORT_URL, { method: "POST", body: b, keepalive: true }); } catch {} };
+const held = [];
+try {
+  const CHUNK = 8 * 1024 * 1024;            // 8 MB chunks
+  let done = 0;
+  for (let i = 0; i < Math.ceil(MB * 1024 * 1024 / CHUNK); i++) {
+    const b = new Uint8Array(CHUNK);
+    // touch every 4 KB page so the OS actually commits it
+    for (let p = 0; p < b.length; p += 4096) b[p] = (p + i) & 0xff;
+    held.push(b);
+    done += CHUNK;
+  }
+  window.__ballast = held;                   // keep a live reference
+  document.getElementById("s").textContent = `BALLAST_READY mb=${MB}`;
+  console.log(`PHONE_BALLAST_READY mb=${MB} chunks=${held.length}`);
+  report("ballast_ready", { mb: MB, chunks: held.length });
+} catch (e) {
+  document.getElementById("s").textContent = "BALLAST_FAILED " + e.message;
+  console.log("PHONE_BALLAST_FAILED " + e.message);
+  report("ballast_failed", { mb: MB, message: String(e && e.message || e) });
+}
+// periodically re-touch so the pages stay hot and are not swapped/reclaimed
+setInterval(() => { for (const b of held) b[0] = (b[0] + 1) & 0xff; }, 3000);
+</script>
+</body>
+</html>

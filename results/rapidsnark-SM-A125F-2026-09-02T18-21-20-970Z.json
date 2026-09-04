@@ -1,0 +1,35 @@
+{
+  "schema": "rapidsnark-phone-bench/1",
+  "capturedAt": "2026-09-02T18:21:20.970Z",
+  "device": {
+    "model": "SM-A125F",
+    "abi": "arm64-v8a",
+    "cores": 8
+  },
+  "rapidsnark": {
+    "version": "v0.0.8",
+    "asset": "rapidsnark-android-arm64",
+    "threads": "auto"
+  },
+  "circuit": "wedge_mem_w8_d9 (4,309 constr) — IDENTICAL .zkey + witness, no change",
+  "runs": 20,
+  "coldMs": 510.2,
+  "warm": {
+    "min": 373.8,
+    "median": 476.9,
+    "p95": 626.1,
+    "max": 626.1
+  },
+  "proofValidatesWithSnarkjsVkey": true,
+  "publicSignals": "identical to snarkjs",
+  "vsBrowser": {
+    "browser_flowP95_ms": 6394,
+    "browser_warmMedian_ms": 5011,
+    "browser_cold_ms": 6766,
+    "speedup_warmMedian": 10.51,
+    "speedup_vs_flowP95": 10.21,
+    "speedup_cold": 13.26,
+    "clears_2s_bar_warm_p95": true,
+    "clears_2s_bar_cold": true
+  }
+}

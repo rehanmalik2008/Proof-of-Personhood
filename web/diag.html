@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>prover capability diagnostic</title>
+<style>body{font:12px ui-monospace,monospace;margin:0;padding:1rem;white-space:pre-wrap}</style>
+</head>
+<body>
+<div id="o">running…</div>
+
+<!-- monkey-patches must run BEFORE snarkjs.min.js loads -->
+<script>
+(function () {
+  const q = new URLSearchParams(location.search);
+  window.__DIAG = { forceST: q.get("st") === "1", workers: 0, wasmMems: [], workerErrors: 0 };
+  // force single-thread by hiding Worker from snarkjs's `globalThis?.Worker` check
+  if (window.__DIAG.forceST) { try { window.Worker = undefined; } catch {} }
+  const RealWorker = window.Worker;
+  if (RealWorker) {
+    window.Worker = function (...a) {
+      window.__DIAG.workers++;
+      const w = new RealWorker(...a);
+      w.addEventListener("error", () => window.__DIAG.workerErrors++);
+      return w;
+    };
+    window.Worker.prototype = RealWorker.prototype;
+  }
+  const RealMem = WebAssembly.Memory;
+  function TMem(desc) {
+    const m = new RealMem(desc);
+    const shared = (typeof SharedArrayBuffer !== "undefined") && (m.buffer instanceof SharedArrayBuffer);
+    window.__DIAG.wasmMems.push({ initialPages: desc && desc.initial || 0, maxPages: desc && desc.maximum || 0, shared });
+    return m;
+  }
+  TMem.prototype = RealMem.prototype;
+  try { WebAssembly.Memory = TMem; } catch {}
+})();
+</script>
+<script src="snarkjs.min.js"></script>
+<script>
+const REPORT_URL = new URLSearchParams(location.search).get("report") || "/__bench";
+const report = (o) => { try { const b = JSON.stringify(o);
+  navigator.sendBeacon ? navigator.sendBeacon(REPORT_URL, b) : fetch(REPORT_URL,{method:"POST",body:b,keepalive:true}); } catch {} };
+const el = document.getElementById("o");
+const log = (s) => { el.textContent += "\n" + s; };
+
+// --- static capability probes ---
+function wasmSimdSupported() {
+  // minimal module with a v128.const / i32x4 op; validates only where SIMD is on
+  const bytes = new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,17,253,98,11]);
+  try { return WebAssembly.validate(bytes); } catch { return false; }
+}
+function wasmThreadsSupported() {
+  try { new WebAssembly.Memory({ initial: 1, maximum: 1, shared: true }); return true; } catch { return false; }
+}
+
+const caps = {
+  ua: navigator.userAgent,
+  crossOriginIsolated: !!self.crossOriginIsolated,
+  SharedArrayBuffer: typeof SharedArrayBuffer !== "undefined",
+  hardwareConcurrency: navigator.hardwareConcurrency ?? null,
+  deviceMemoryGB: navigator.deviceMemory ?? null,
+  wasmSIMD: wasmSimdSupported(),
+  wasmThreads_sharedMemory: wasmThreadsSupported(),
+  snarkjsBundled: (typeof snarkjs !== "undefined"),
+};
+log("caps: " + JSON.stringify(caps, null, 1));
+
+async function run() {
+  const RUNS = 6;                        // 1 cold + 5 warm
+  const input = await (await fetch("input_mem_w8_d9.json")).json();
+  const wasm = "wedge_mem_w8_d9.wasm", zkey = "wedge_mem_w8_d9_final.zkey";
+  const vkey = await (await fetch("wedge_mem_w8_d9_vkey.json")).json();
+  const zkeyBuf = new Uint8Array(await (await fetch(zkey)).arrayBuffer());
+  const full = [], wtnsT = [], proveT = [];
+  const med = (a) => { const s = [...a].sort((x, y) => x - y); return s[(s.length - 1) >> 1]; };
+  for (let i = 0; i < RUNS; i++) {
+    const t0 = performance.now();
+    // witness calc alone
+    const w = { type: "mem" };
+    await snarkjs.wtns.calculate(input, wasm, w);
+    const t1 = performance.now();
+    // prove alone (from the in-memory witness)
+    const { proof, publicSignals } = await snarkjs.groth16.prove(zkeyBuf, w);
+    const t2 = performance.now();
+    if (i === 0) {
+      const ok = await snarkjs.groth16.verify(vkey, publicSignals, proof);
+      log(`verify (cold proof): ${ok}   publicSignals: ${publicSignals.length}`);
+    }
+    full.push(+(t2 - t0).toFixed(1)); wtnsT.push(+(t1 - t0).toFixed(1)); proveT.push(+(t2 - t1).toFixed(1));
+    log(`run ${i} (${i === 0 ? "COLD" : "warm"}): wtns ${(t1 - t0).toFixed(0)} + prove ${(t2 - t1).toFixed(0)} = ${(t2 - t0).toFixed(0)} ms   workers: ${window.__DIAG.workers}`);
+    await new Promise((r) => setTimeout(r, 50));
+  }
+  const out = {
+    kind: "diag",
+    mode: window.__DIAG.forceST ? "forced-single-thread" : "default(threads if Worker present)",
+    caps,
+    workersSpawned: window.__DIAG.workers,
+    workerErrors: window.__DIAG.workerErrors,
+    anySharedWasmMemory: window.__DIAG.wasmMems.some((m) => m.shared),
+    coldMs: full[0], warmMs: full.slice(1), warmMedianMs: med(full.slice(1)), warmMinMs: Math.min(...full.slice(1)),
+    witnessCalc: { coldMs: wtnsT[0], warmMedianMs: med(wtnsT.slice(1)), all: wtnsT },
+    proveOnly: { coldMs: proveT[0], warmMedianMs: med(proveT.slice(1)), warmMinMs: Math.min(...proveT.slice(1)), all: proveT },
+    allFullMs: full,
+  };
+  log("\nRESULT " + JSON.stringify(out, null, 1));
+  report(out);
+}
+run().catch((e) => { log("ERROR " + (e && e.stack || e)); report({ kind: "diag", error: String(e && e.message || e) }); });
+</script>
+</body>
+</html>

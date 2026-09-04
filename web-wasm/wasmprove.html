@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>C++→WASM rapidsnark — on-device prove</title>
+<style>body{font:12px ui-monospace,monospace;margin:0;padding:1rem;white-space:pre-wrap}</style></head>
+<body><div id="o">loading…</div>
+<script src="prover.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const REPORT_URL = q.get("report") || "/__bench";
+const report = (o)=>{ try{ const b=JSON.stringify(o);
+  navigator.sendBeacon ? navigator.sendBeacon(REPORT_URL,b) : fetch(REPORT_URL,{method:"POST",body:b,keepalive:true}); }catch{} };
+const el=document.getElementById("o");
+const log=(s)=>{ el.textContent += "\n"+s; };
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+
+log("crossOriginIsolated="+self.crossOriginIsolated+"  hardwareConcurrency="+navigator.hardwareConcurrency+"  SAB="+(typeof SharedArrayBuffer!=="undefined"));
+report({kind:"autorun", coi:self.crossOriginIsolated, hc:navigator.hardwareConcurrency, ua:navigator.userAgent});
+
+async function run(){
+  const RUNS = +(q.get("runs")) || 20;
+  log("fetching zkey + witness…");
+  const [zkey, wtns] = await Promise.all([
+    fetch("c.zkey").then(r=>r.arrayBuffer()),
+    fetch("w.wtns").then(r=>r.arrayBuffer()),
+  ]);
+  log(`zkey ${(zkey.byteLength/1048576).toFixed(2)} MB, witness ${(wtns.byteLength/1024).toFixed(0)} KB`);
+
+  const initT0 = performance.now();
+  const M = await RSProver({ printErr:(s)=>{ if(!/madvise|keepRuntimeAlive|program exited/.test(s)) { log("[e] "+s); report({kind:"log",s:String(s)}); } }, print:()=>{}, noInitialRun:true });
+  const initMs = +(performance.now()-initT0).toFixed(0);
+  log("module init: "+initMs+" ms");
+  M.FS.writeFile("/c.zkey", new Uint8Array(zkey));
+  M.FS.writeFile("/w.wtns", new Uint8Array(wtns));
+  const threadsUnused = M.PThread?.unusedWorkers?.length ?? null;
+
+  const has = (p)=>{ try{ return M.FS.analyzePath(p).exists; }catch{ return false; } };
+  const proveOnce = async ()=>{
+    try{ M.FS.unlink("/proof.json"); }catch{}
+    try{ M.FS.unlink("/public.json"); }catch{}
+    const t0 = performance.now();
+    const r = M.callMain(["/c.zkey","/w.wtns","/proof.json","/public.json"]);
+    if (r && typeof r.then==="function") { try{ await r; }catch(e){ /* proxy exit-code path */ } }
+    // poll FS (writes are proxied back from the proxy pthread) — up to 60s per prove
+    for(let k=0;k<6000;k++){ if(has("/proof.json") && has("/public.json")) break; await sleep(10); }
+    const dt = performance.now()-t0;
+    if(!has("/proof.json")) throw new Error("no /proof.json after "+dt.toFixed(0)+"ms poll");
+    return dt;
+  };
+
+  const times=[]; let cold=null, proofB64=null, publicJson=null;
+  for(let i=0;i<RUNS+1;i++){
+    const dt = await proveOnce();
+    if(i===0){ cold=dt; publicJson=M.FS.readFile("/public.json",{encoding:"utf8"}); proofB64=btoa(M.FS.readFile("/proof.json",{encoding:"utf8"})); }
+    else times.push(+dt.toFixed(1));
+    el.textContent = el.textContent.replace(/\n\[run .*$/,"");
+    log(`[run ${i}/${RUNS}: ${dt.toFixed(0)} ms]`);
+  }
+  times.sort((a,b)=>a-b);
+  const pick=(p)=>times[Math.min(times.length-1,Math.floor(p*times.length))];
+  const res={ kind:"done", initMs, threadsUnused, hardwareConcurrency:navigator.hardwareConcurrency,
+    coldMs:+cold.toFixed(1), warmMs:times, warmMin:times[0], warmMedian:times[(times.length-1)>>1], warmP95:pick(0.95), warmMax:times[times.length-1],
+    proofB64, publicJson };
+  log("\n──── C++→WASM prover, on-device ────");
+  log("COLD (1st):  "+res.coldMs+" ms   module init "+initMs+" ms   pthreads(unused pool)="+threadsUnused);
+  log("warm median: "+res.warmMedian+" ms   p95 "+res.warmP95+"   min "+res.warmMin+"   max "+res.warmMax+"  (n="+times.length+")");
+  log("warm all: "+times.join(" "));
+  report(res);
+  log("\nreported.");
+}
+run().catch(e=>{ log("FATAL "+(e&&e.stack||e)); report({kind:"error", where:"page", msg:String(e&&e.message||e)}); });
+</script></body></html>

@@ -1,0 +1,40 @@
+{
+  "schema": "after-the-bridge-exp1-wasm/1",
+  "capturedAt": "2026-09-03T08:08:32.761Z",
+  "device": {
+    "model": "SM-A125F",
+    "abi": "arm64-v8a"
+  },
+  "runs": 4,
+  "prover": "rapidsnark C++ -> Emscripten WASM (pthreads+PROXY, generic-C++ field, mini-gmp 64-bit limbs); ffiasm ThreadPool forced via rs_set_nt",
+  "wasm_nt_sweep": [
+    {
+      "nt": 1,
+      "gotNT": 1,
+      "setOK": true,
+      "initMs": 333,
+      "cold": 13607,
+      "warmMin": 13309.5,
+      "warmMedian": 13318.9,
+      "warmP95": 13367.9,
+      "warmMax": 13367.9,
+      "n": 4,
+      "all": [
+        13309.5,
+        13318.9,
+        13330,
+        13367.9
+      ],
+      "threadsUnused": null,
+      "verify": {
+        "ok": true,
+        "ident": true
+      }
+    }
+  ],
+  "wasm_1T_ms": 13318.9,
+  "wasm_best": {
+    "nt": 1,
+    "ms": 13318.9
+  }
+}
