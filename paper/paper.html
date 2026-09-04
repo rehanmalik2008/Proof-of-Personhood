@@ -1,0 +1,1618 @@
+<meta charset="utf-8">
+<title>Proof of Personhood Without a Registry</title>
+<style>
+  @page { size: A4; margin: 24mm 22mm 22mm 22mm; }
+  html { font-size: 11pt; }
+  body {
+    font-family: "Times New Roman", Times, Georgia, serif;
+    line-height: 1.5; color: #000; background: #fff;
+    margin: 0; text-align: justify; hyphens: auto;
+  }
+  h1 { font-size: 17pt; text-align: center; margin: 0 0 2mm 0; line-height: 1.25; }
+  .sub { text-align: center; font-size: 10.5pt; margin: 0 0 1mm 0; }
+  .meta { text-align: center; font-size: 9pt; color: #333; margin: 0 0 7mm 0; }
+  h2 { font-size: 12pt; margin: 7mm 0 2mm 0; page-break-after: avoid; }
+  h3 { font-size: 10.5pt; margin: 4.5mm 0 1.5mm 0; page-break-after: avoid; font-style: italic; font-weight: bold; }
+  p { margin: 0 0 2.2mm 0; }
+  ul, ol { margin: 0 0 2.6mm 0; padding-left: 6mm; }
+  li { margin: 0 0 1.1mm 0; }
+  code, .m { font-family: "Consolas", "DejaVu Sans Mono", monospace; font-size: 9.3pt; }
+  .abstract { margin: 0 6mm 5mm 6mm; font-size: 10pt; }
+  .abstract h2 { text-align: center; font-size: 10.5pt; margin: 0 0 2mm 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 9pt; margin: 2.5mm 0 3mm 0;
+          page-break-inside: avoid; }
+  th, td { border: 0.4pt solid #999; padding: 1.1mm 1.6mm; text-align: left; vertical-align: top; }
+  th { background: #eee; font-weight: bold; }
+  td.n, th.n { text-align: right; white-space: nowrap; }
+  .cap { font-size: 8.6pt; margin: 0 0 4mm 0; }
+  figure { margin: 3mm 0 4mm 0; page-break-inside: avoid; text-align: center; }
+  figure svg { max-width: 100%; height: auto; }
+  .refs { font-size: 9.2pt; }
+  .refs li { margin-bottom: 1.6mm; }
+  .note { font-size: 9.2pt; background: #f4f4f4; border-left: 2pt solid #666;
+          padding: 2mm 3mm; margin: 3mm 0; page-break-inside: avoid; }
+  .bk { word-break: break-all; }
+  hr { border: 0; border-top: 0.5pt solid #bbb; margin: 6mm 0; }
+</style>
+
+<h1>Proof of Personhood Without a Registry</h1>
+<p class="sub">A measured zero-knowledge construction for one-human-one-action,<br>
+and the four optimisation paths that failed</p>
+<p class="meta" style="margin-top:2mm">Rehan Malik &nbsp;&middot;&nbsp; Independent Cryptography Researcher &nbsp;&middot;&nbsp; github.com/rehanmalik2008</p>
+<p class="meta">Version 1.1 &nbsp;&middot;&nbsp; Apache-2.0 &nbsp;&middot;&nbsp;
+Reference implementation, circuits and raw measurements accompany this document</p>
+<p class="meta" style="margin-top:-4mm">v1.1: the single epoch counter is split into <span class="m">epoch_action</span>
+(rate-limit window) and <span class="m">epoch_tree</span> (tree cadence), closing
+one open problem from &sect;7.2. Zero added constraints; one added public signal
+(6&nbsp;&rarr;&nbsp;7).</p>
+
+<div class="abstract">
+<h2>Abstract</h2>
+<p>
+The internet has no way to check that a request comes from a distinct human.
+Current fixes reintroduce a central authority: a biometric registry, a government
+identity provider, or a hardware vendor's attestation root. This paper describes a
+construction that removes the registry.
+</p>
+<p>
+A device holds a secret <span class="m">s</span> and publishes
+<span class="m">C = Poseidon(s)</span>. Independent attesters sign
+<span class="m">C</span> once, and a backend appends <span class="m">C</span> to an
+append-only Merkle tree. Every later proof of personhood proves <em>set
+membership</em> rather than re-verifying signatures, so signatures are checked
+once per credential lifetime, off the hot path. The login circuit is 4,309 R1CS
+constraints over BN254 and emits 7 public signals. Attester identity does not
+appear in it, so it cannot leak from it. Witness upkeep is a public broadcast,
+identical for every client, so no per-user query ever occurs.
+</p>
+<p>
+On a Samsung Galaxy A12 (Helio P35, 8&times;Cortex-A53, 3,751 MB RAM) the proving
+step takes 477 ms with a native prover and 3,374 ms in the browser, warm medians
+over 20 runs. Peak prover resident memory is 361 MB, 9.6% of device RAM. Four
+attempts to close that gap failed, and each is reported with the measurement that
+ended it. The result is a deployment split: native for entry-level hardware,
+browser above it.
+</p>
+<p>
+Security rests on a priced assumption,
+<span class="m">&gamma; &ge; &beta;&middot;m&middot;E</span>, rather than a boolean.
+The construction has not been audited. Section 6 states what it does not protect;
+Section 8 states what would refute it.
+</p>
+</div>
+
+<hr>
+
+<h2>1. The problem</h2>
+
+<p>
+A server receiving a request cannot tell whether a human or a program sent it.
+Every application that allocates something per person depends on being able to
+tell: one signup per person, one vote per person, one airdrop per person, one
+review per person. When the check fails, the cheapest attack is to be many people
+at once. Douceur named this the Sybil attack and proved the general result: without
+a trusted certifying authority or a resource cost per identity, a single entity can
+present arbitrarily many identities [3].
+</p>
+
+<p>
+CAPTCHAs were the practical answer for about twenty years, and they have stopped
+working. Vision and language models now solve the standard challenge families
+faster and more accurately than people do, and solving services buy human labour
+for a fraction of a cent per challenge when a model is not enough. Once a machine
+passes the test more reliably than a person, the test no longer measures what it
+was built to measure.
+</p>
+
+<p>
+Three replacements are deployed or under serious proposal. All three work, and all
+three put back a central authority.
+</p>
+
+<p>
+The biometric approach has a central operator enrol an iris or a face, store the
+template, and answer whether a given person has been seen before. A biometric
+template cannot be revoked and reissued the way a key can, and a person has only
+one iris, so a breach of the operator, a coercion order against it, or a decision
+to shut it down leaves the enrolled population with no recovery path. The operator
+also becomes the single party that decides who is counted as a person.
+</p>
+
+<p>
+Government electronic identity, such as eIDAS 2.0 and the schemes modelled on it,
+gives strong assurance to anyone who holds documents. It makes participation depend
+on a state issuing those documents and continuing to issue them, which leaves out
+the undocumented and the stateless and gives a government a lever over who is
+allowed to act. It also inserts the state into transactions it previously could not
+see.
+</p>
+
+<p>
+Hardware attestation through a secure element is cheap and works well, but it moves
+the root of trust to Apple, Google, or a chip vendor. Personhood then reduces to
+holding a device those firms have signed, and those firms gain a veto over who can
+act online.
+</p>
+
+<p>
+The shared structure is that one party holds a record of who is real and verifiers
+query that party. The registry is the problem. The rest of this paper describes a
+construction with no registry of humans: there is a public set of cryptographic
+commitments, and no entry in it can be linked to a person, to an action, or to
+another entry.
+</p>
+
+<h3>1.1 What is claimed</h3>
+
+<p>
+A party proves to any verifier that it is a distinct human who has not made this
+claim before in this context, with:
+</p>
+<ul>
+  <li>no central registry of people;</li>
+  <li>no biometrics and no hardware root of trust;</li>
+  <li>no revelation of which human;</li>
+  <li>no linkability across contexts, by verifiers, by colluding verifiers, or by
+      the issuer.</li>
+</ul>
+
+<p>
+This is a personhood primitive. It answers "one human, once, here" and gives no
+answer to "which human". Not being able to identify anyone is the design goal, and
+it is also the boundary of what the primitive is good for.
+</p>
+
+<h2>2. Construction</h2>
+
+<p>
+The design separates a heavy operation that runs rarely from a light one that runs
+on every use. Verifying an attestation inside a circuit is expensive, so it is done
+once at enrolment and then carried forward by set membership.
+</p>
+
+<p>
+Time is measured in two counters. <span class="m">epoch_action</span> is the
+rate-limit window and the period over which one action per context is allowed; it
+is fast, for example ten minutes. <span class="m">epoch_tree</span> is the cadence
+on which the membership tree publishes a new root; it is slow, for example daily.
+They are independent public inputs. Version 1.0 used one counter for both;
+splitting them lets a deployment rate-limit tightly without rebuilding the tree
+tightly, and costs zero circuit constraints.
+</p>
+
+<h3>2.1 Phase 1: enrolment, once per credential lifetime</h3>
+
+<ol>
+  <li>The device generates a root secret <span class="m">s</span> and computes the
+      commitment <span class="m">C = Poseidon(s)</span>. The secret never leaves
+      the device.</li>
+  <li><span class="m">k</span> independent attesters sign <span class="m">C</span>
+      blind. Attester categories are social, institutional, temporal (a
+      verifiable-delay-function anchor on presence), hardware (WebAuthn), and
+      governmental eID. Hardware and eID are permitted as one input each. Neither
+      is permitted as a root and neither is required.</li>
+  <li>The device proves the <span class="m">k</span> signatures in a circuit of
+      13,099 constraints. The backend verifies that proof and appends
+      <span class="m">C</span> to a public append-only Poseidon Merkle tree of
+      arity 8 and depth 9, capacity 8<sup>9</sup> = 134,217,728 leaves.</li>
+  <li>The device caches its membership witness, which is 9 sibling groups.</li>
+</ol>
+
+<h3>2.2 Phase 2: proof of personhood, every use</h3>
+
+<p>The login circuit proves four statements, with every input private except the outputs:</p>
+<ul>
+  <li><span class="m">C = Poseidon(s)</span>, knowledge of the secret behind a leaf;</li>
+  <li><span class="m">C</span> is in the tree whose <span class="m">root</span> was
+      published for <span class="m">epoch_tree</span>, opened in-circuit, so
+      <span class="m">C</span> itself is never revealed;</li>
+  <li><span class="m">N = Poseidon(s, ctx, epoch_action)</span>, a per-context
+      nullifier that rotates with the rate-limit window;</li>
+  <li>a rate-limiting-nullifier Shamir share <span class="m">y = s + N&middot;signalHash</span>.
+      Because <span class="m">N</span> depends on <span class="m">epoch_action</span>
+      and not on <span class="m">epoch_tree</span>, the RLN slot is
+      <span class="m">(ctx, epoch_action)</span> [6, 8].</li>
+</ul>
+
+<p>
+The public output is exactly seven field elements:
+<span class="m">[N, y, root, ctx, epoch_action, epoch_tree, signalHash]</span>. Five
+are inputs the verifier already chose or knows. Two are outputs. The verification
+key reports <span class="m">nPublic = 7</span>. The verifier learns that one
+attested distinct human acted once in this context in this rate-limit window, and
+nothing else.
+</p>
+
+<figure>
+<svg viewBox="0 0 640 408" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs><marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3.2" orient="auto"><path d="M0,0 L8,3.2 L0,6.4 z" fill="#000"/></marker></defs>
+
+  <rect x="3" y="4" width="634" height="176" fill="none" stroke="#999" stroke-dasharray="4,3"/>
+  <text x="12" y="22" font-weight="bold" font-size="13.5">PHASE 1 &#8212; enrolment, once per credential lifetime</text>
+  <text x="12" y="38" font-size="12" fill="#333">off the hot path</text>
+
+  <rect x="14" y="50" width="132" height="66" fill="#f2f2f2" stroke="#000"/>
+  <text x="24" y="70" font-weight="bold">Device</text>
+  <text x="24" y="88" font-size="12.5">s  (never leaves)</text>
+  <text x="24" y="105" font-size="12.5">C = Poseidon(s)</text>
+
+  <rect x="182" y="50" width="132" height="66" fill="#fff" stroke="#000"/>
+  <text x="192" y="70" font-weight="bold">k attesters</text>
+  <text x="192" y="88" font-size="12.5">blind-sign C</text>
+  <text x="192" y="105" font-size="12.5">independent orgs</text>
+
+  <rect x="350" y="50" width="148" height="66" fill="#fff" stroke="#000"/>
+  <text x="360" y="70" font-weight="bold">Enrolment circuit</text>
+  <text x="360" y="88" font-size="12.5">13,099 constraints</text>
+  <text x="360" y="105" font-size="12.5">proves k signatures</text>
+
+  <rect x="534" y="50" width="92" height="66" fill="#f2f2f2" stroke="#000"/>
+  <text x="544" y="70" font-weight="bold">Backend</text>
+  <text x="544" y="88" font-size="12.5">verifies,</text>
+  <text x="544" y="105" font-size="12.5">appends C</text>
+
+  <line x1="146" y1="83" x2="176" y2="83" stroke="#000" marker-end="url(#a)"/>
+  <line x1="314" y1="83" x2="344" y2="83" stroke="#000" marker-end="url(#a)"/>
+  <line x1="498" y1="83" x2="528" y2="83" stroke="#000" marker-end="url(#a)"/>
+
+  <rect x="226" y="132" width="400" height="40" fill="#eaeaea" stroke="#000"/>
+  <text x="236" y="150" font-weight="bold">Public append-only Merkle tree</text>
+  <text x="236" y="166" font-size="12.5">Poseidon, arity 8, depth 9, capacity 134,217,728 leaves</text>
+  <path d="M580,116 L580,152" fill="none" stroke="#000" marker-end="url(#a)"/>
+
+  <line x1="426" y1="172" x2="426" y2="222" stroke="#000" stroke-dasharray="4,3" marker-end="url(#a)"/>
+  <text x="632" y="192" font-size="12" text-anchor="end">root, published once per epoch_tree as one</text>
+  <text x="632" y="207" font-size="12" text-anchor="end">broadcast object, identical for every client</text>
+
+  <rect x="3" y="230" width="634" height="174" fill="none" stroke="#000" stroke-width="1.2"/>
+  <text x="12" y="249" font-weight="bold" font-size="13.5">PHASE 2 &#8212; proof of personhood, every use</text>
+  <text x="12" y="265" font-size="12" fill="#333">the hot path &#183; verifies no signatures</text>
+
+  <rect x="14" y="278" width="152" height="104" fill="#f2f2f2" stroke="#000"/>
+  <text x="24" y="298" font-weight="bold">Device (private)</text>
+  <text x="24" y="315" font-size="12">s, C, Merkle path, ctx,</text>
+  <text x="24" y="330" font-size="12">epoch_action, epoch_tree,</text>
+  <text x="24" y="345" font-size="12">signalHash</text>
+  <text x="24" y="364" font-size="12" font-style="italic">no attester data</text>
+  <text x="24" y="378" font-size="12" font-style="italic">is present here</text>
+
+  <rect x="204" y="278" width="168" height="104" fill="#fff" stroke="#000" stroke-width="1.6"/>
+  <text x="214" y="298" font-weight="bold">Login circuit</text>
+  <text x="214" y="316" font-size="12.5">4,309 constraints</text>
+  <text x="214" y="333" font-size="12.5">C = Poseidon(s)</text>
+  <text x="214" y="350" font-size="12.5">C &#8712; tree, in-circuit</text>
+  <text x="214" y="367" font-size="12.5">N, RLN share y</text>
+
+  <rect x="410" y="278" width="140" height="104" fill="#fff" stroke="#000"/>
+  <text x="420" y="296" font-weight="bold">7 public signals</text>
+  <text x="420" y="313" font-size="12">N, y, root, ctx,</text>
+  <text x="420" y="328" font-size="12">epoch_action,</text>
+  <text x="420" y="343" font-size="12">epoch_tree, signalHash</text>
+  <text x="420" y="362" font-size="11.5" font-style="italic">C is not among them</text>
+
+  <rect x="574" y="304" width="54" height="52" fill="#f2f2f2" stroke="#000"/>
+  <text x="583" y="326" font-weight="bold" font-size="12">Verifier</text>
+  <text x="583" y="344" font-size="12">accepts</text>
+
+  <line x1="166" y1="330" x2="198" y2="330" stroke="#000" marker-end="url(#a)"/>
+  <line x1="372" y1="330" x2="404" y2="330" stroke="#000" marker-end="url(#a)"/>
+  <line x1="550" y1="330" x2="568" y2="330" stroke="#000" marker-end="url(#a)"/>
+
+  <path d="M90,278 L90,222 L416,222" fill="none" stroke="#666" stroke-dasharray="4,3"/>
+  <text x="98" y="216" font-size="12" fill="#333">device recomputes its own path locally &#183; 0 per-user queries</text>
+</svg>
+<p class="cap"><strong>Figure 1.</strong> The two phases. Signature verification
+happens once, in Phase 1. Phase 2 verifies no signatures at all: it proves
+membership. No attester data enters the Phase-2 circuit, so none can leak from it.
+The nullifier binds to <span class="m">epoch_action</span>; the tree root is the one
+published for <span class="m">epoch_tree</span>.</p>
+</figure>
+
+<h3>2.3 Why membership instead of re-verifying signatures</h3>
+
+<p>
+This is the central design decision, and it was reached by measurement rather than
+by intent. The direct construction re-verifies <span class="m">k</span> attester
+signatures inside the login circuit. Elliptic-curve signature verification is
+expensive in R1CS. One EdDSA-Poseidon verification over Baby JubJub costs about
+4,207 constraints, and roughly 97% of that is two scalar multiplications, which
+R1CS cannot compress.
+</p>
+
+<p>
+Several attempts to reduce that cost were built and measured. Halving the Merkle
+depth removed 7,290 constraints, and the circuit came to rest on the same signature
+floor. An RSA accumulator that took in-circuit membership out altogether did the
+same. In-circuit half-aggregation of the <span class="m">k</span> signatures came
+out worse than verifying them directly, at 10,525 constraints against 8,890 for
+<span class="m">k = 2</span>. Aggregation replaces <span class="m">k</span> cheap
+fixed-base multiplications with one fixed-base and
+<span class="m">k&minus;1</span> additional variable-base multiplications, and the
+variable-base multiplication is the costly gadget. Aggregation pays off outside a
+circuit because those multiplications can be batched into one; an R1CS has nothing
+to batch them into, so here the technique adds cost rather than removing it.
+</p>
+
+<p>
+Moving signature verification out of the circuit worked, at 478 constraints, but the
+backend then learned which attesters had vouched. That destroys attester
+unlinkability, so it was rejected.
+</p>
+
+<p>
+The resolution was to stop re-verifying signatures on the hot path. Attestation is a
+statement about a credential's origin. It only needs to be checked when the
+credential is created. After that, "this commitment was properly attested" is
+equivalent to "this commitment is in the set of properly attested commitments",
+which is a membership proof. Two consequences follow:
+</p>
+
+<ul>
+  <li><strong>Cost.</strong> Phase 2 fell from 13,099 to 4,309 constraints, a factor
+      of 3.0. A wide, shallow Poseidon tree is what makes membership cheap: a
+      Poseidon(W) hash costs roughly linearly in state size, but the tree needs only
+      log<sub>W</sub>(n) levels, so wider and shallower wins. Arity 8 at 134 million
+      leaves costs 3,831 constraints for the opening; a binary tree at the same
+      capacity costs 6,558, which is 71% more.</li>
+  <li><strong>Privacy.</strong> Attester unlinkability became structural rather than
+      argued. The Phase-2 circuit contains no attester public key, no signature, and
+      no category label. A property enforced by absence cannot be undone by a bug in
+      a constraint.</li>
+</ul>
+
+<h3>2.4 Witness maintenance without queries</h3>
+
+<p>
+A membership proof needs a current Merkle path. The naive way to keep one current is
+for the client to ask the backend for its path. That request carries the client's
+leaf index, which is a stable identifier for that user, and it is issued on a
+schedule correlated with the user's activity. It would undo cross-context
+unlinkability outside the circuit, where the circuit cannot defend it.
+</p>
+
+<p>
+The tree is append-only, so it does not need to be queried. Once per
+<span class="m">epoch_tree</span> the backend publishes one broadcast object
+containing the appended frontier nodes. It is byte-identical for every client and
+contains no leaf index, position, or path. Each device recomputes its own affected
+path levels locally, 9 Poseidon(8) hashes, and asserts that the recomputed root
+equals the broadcast root, which also detects a divergent broadcast. No per-user
+request exists at any point. Because <span class="m">epoch_tree</span> is decoupled
+from <span class="m">epoch_action</span>, this republish cadence is set by tree
+economics, not by how tight the rate limit needs to be.
+</p>
+
+<p>
+This is enforced structurally, not by policy. The server object exposes an
+epoch-keyed API with no method that takes a leaf index. The client refresh functions
+cannot reach the network and reject any broadcast carrying a position-like field.
+Five such guards are in place, and the test suite asserts zero upstream per-user
+calls across every scenario.
+</p>
+
+<figure>
+<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs><marker id="w" markerWidth="9" markerHeight="9" refX="8" refY="3.2" orient="auto"><path d="M0,0 L8,3.2 L0,6.4 z" fill="#000"/></marker></defs>
+
+  <text x="8" y="18" font-weight="bold" font-size="13.5">WITNESS REFRESH &#8212; one broadcast, every device, no queries</text>
+
+  <rect x="14" y="40" width="128" height="52" fill="#f2f2f2" stroke="#000"/>
+  <text x="26" y="61" font-weight="bold">Backend</text>
+  <text x="26" y="79" font-size="12">appends epoch e</text>
+
+  <rect x="214" y="34" width="252" height="64" fill="#eaeaea" stroke="#000"/>
+  <text x="226" y="54" font-weight="bold">Per-epoch_tree broadcast</text>
+  <text x="226" y="71" font-size="12">appended frontier nodes only</text>
+  <text x="226" y="88" font-size="12">identical bytes for every client</text>
+  <line x1="142" y1="66" x2="208" y2="66" stroke="#000" marker-end="url(#w)"/>
+
+  <path d="M340,98 L340,120" stroke="#000"/>
+  <path d="M96,120 L484,120" stroke="#000"/>
+  <g stroke="#000" fill="none">
+    <path d="M96,120 L96,150" marker-end="url(#w)"/>
+    <path d="M208,120 L208,150" marker-end="url(#w)"/>
+    <path d="M320,120 L320,150" marker-end="url(#w)"/>
+    <path d="M432,120 L432,150" marker-end="url(#w)"/>
+  </g>
+
+  <g>
+    <rect x="52" y="152" width="88" height="70" fill="#fff" stroke="#000"/>
+    <rect x="164" y="152" width="88" height="70" fill="#fff" stroke="#000"/>
+    <rect x="276" y="152" width="88" height="70" fill="#fff" stroke="#000"/>
+    <rect x="388" y="152" width="88" height="70" fill="#fff" stroke="#000"/>
+    <text x="500" y="193" font-size="22">&#8230;</text>
+    <text x="524" y="193" font-size="10.5" fill="#333">every</text>
+    <text x="524" y="206" font-size="10.5" fill="#333">enrolled</text>
+    <text x="524" y="219" font-size="10.5" fill="#333">device</text>
+  </g>
+  <text x="96"  y="171" text-anchor="middle" font-weight="bold" font-size="12">Device 1</text>
+  <text x="208" y="171" text-anchor="middle" font-weight="bold" font-size="12">Device 2</text>
+  <text x="320" y="171" text-anchor="middle" font-weight="bold" font-size="12">Device 3</text>
+  <text x="432" y="171" text-anchor="middle" font-weight="bold" font-size="12">Device 4</text>
+  <text x="96"  y="190" text-anchor="middle" font-size="10.5">recomputes</text>
+  <text x="96"  y="204" text-anchor="middle" font-size="10.5">its own path</text>
+  <text x="96"  y="217" text-anchor="middle" font-size="10.5">9 hashes, local</text>
+  <text x="208" y="190" text-anchor="middle" font-size="10.5">recomputes</text>
+  <text x="208" y="204" text-anchor="middle" font-size="10.5">its own path</text>
+  <text x="208" y="217" text-anchor="middle" font-size="10.5">9 hashes, local</text>
+  <text x="320" y="190" text-anchor="middle" font-size="10.5">recomputes</text>
+  <text x="320" y="204" text-anchor="middle" font-size="10.5">its own path</text>
+  <text x="320" y="217" text-anchor="middle" font-size="10.5">9 hashes, local</text>
+  <text x="432" y="190" text-anchor="middle" font-size="10.5">recomputes</text>
+  <text x="432" y="204" text-anchor="middle" font-size="10.5">its own path</text>
+  <text x="432" y="217" text-anchor="middle" font-size="10.5">9 hashes, local</text>
+
+  <rect x="180" y="244" width="280" height="40" fill="#fff" stroke="#000" stroke-width="1.4"/>
+  <text x="320" y="262" text-anchor="middle" font-weight="bold" font-size="13">0 per-user queries</text>
+  <text x="320" y="278" text-anchor="middle" font-size="11">no device sends anything back to the backend</text>
+</svg>
+<p class="cap"><strong>Figure 2.</strong> The per-epoch_tree broadcast is one object,
+byte-identical for every client, carrying no leaf index or path. Each device folds
+it into its own cached witness locally. Nothing flows from a device to the backend,
+so there is no request that could carry a stable per-user identifier.</p>
+</figure>
+
+<h3>2.5 Choosing k, and the diversity predicate</h3>
+
+<p>
+<span class="m">k</span> is the number of independent attestations required at
+enrolment. It is a security parameter, not a constant. Setting it high raises the cost
+of forging a credential and also raises the friction for honest users, so it should be
+derived rather than assumed. With context-scoped attestation
+(<span class="m">m = 1</span>) and attestation cost
+<span class="m">A</span> per attester, the requirement of Section 4 gives
+<span class="m">k = &lceil;&beta;&middot;E / A&rceil;</span>, floored by whatever
+collusion tolerance the deployment wants. For low-value bot defence,
+<span class="m">k = 2</span> is often sufficient.
+</p>
+
+<p>
+The diversity predicate <span class="m">D</span> requires that the
+<span class="m">k</span> attestations come from distinct categories, and in a
+production deployment from distinct organisations and jurisdictions. It costs 2
+constraints per pair in the enrolment circuit, so it is close to free, and it is
+enforced in Phase 1 where the attester public keys are available. Phase 2 carries no
+category labels, which is why <span class="m">D</span> cannot be checked there and
+does not need to be.
+</p>
+
+<p>
+<span class="m">D</span> has a structural consequence worth stating. A single
+organisation cannot satisfy a predicate that requires independent attesters, because
+its own attesters are not independent of each other. Any single-vendor deployment must
+either include external attesters, which means participating in a network it does not
+control, or drop <span class="m">D</span>, which makes its variant measurably weaker.
+The security rule penalises centralisation directly rather than relying on governance
+to prevent it.
+</p>
+
+<h3>2.6 Relation to prior constructions</h3>
+
+<p>
+The components are not new. Anonymous credentials date to Chaum [1] and were made
+practical by Camenisch and Lysyanskaya [2]. Proving set membership in zero knowledge
+over a Merkle tree, with a nullifier to prevent double signalling, is the Semaphore
+construction [6]. The rate-limiting nullifier that burns a reused secret is Shamir
+secret sharing [7] applied as in [8]. Groth16 [4] and BN254 [10] are standard.
+</p>
+
+<p>
+Two things here are specific. The first is moving signature verification entirely off
+the proving path, which is what makes the login circuit 4,309 constraints and makes
+attester unlinkability structural instead of argued. The second is that witness upkeep
+is a public broadcast with no per-user query, which closes a linkability channel that
+sits outside the circuit and that a circuit therefore cannot defend. Neither is a new
+primitive. Both are consequences of taking the end-to-end argument [5] seriously about
+where a property has to be enforced.
+</p>
+
+<h2>3. Security properties</h2>
+
+<p>
+Each property below is a consequence of the construction, not of an operational
+promise. The right-hand column states the strongest adversary the property survives.
+</p>
+
+<table>
+<tr><th>Property</th><th>Mechanism</th><th>Strongest adversary survived</th></tr>
+<tr><td>Sybil resistance</td>
+    <td><span class="m">&gamma; &ge; &beta;&middot;m&middot;E</span> (Section 4) plus the diversity predicate <span class="m">D</span></td>
+    <td>Economically rational attacker</td></tr>
+<tr><td>Unforgeability</td>
+    <td>A fabricated <span class="m">C</span> has no membership witness</td>
+    <td>Anyone not breaking the accumulator</td></tr>
+<tr><td>Cross-context unlinkability</td>
+    <td><span class="m">N = Poseidon(s, ctx, epoch_action)</span>; <span class="m">C</span> never revealed</td>
+    <td>Colluding relying parties <em>and</em> the issuer</td></tr>
+<tr><td>Attester unlinkability</td>
+    <td>No attester data exists in the Phase-2 circuit</td>
+    <td>The verifier itself</td></tr>
+<tr><td>One action per context per <span class="m">epoch_action</span></td>
+    <td>Nullifier uniqueness; <span class="m">N</span> binds to <span class="m">epoch_action</span>, not <span class="m">epoch_tree</span></td>
+    <td>&mdash;</td></tr>
+<tr><td>Double-use burn</td>
+    <td>RLN: two proofs in one <span class="m">(ctx, epoch_action)</span> reveal <span class="m">s</span>, for any <span class="m">epoch_tree</span></td>
+    <td>Self-enforcing; no adjudicator needed</td></tr>
+<tr><td>No shared key</td>
+    <td>Membership replaces any MAC or token bridge</td>
+    <td>Removes the symmetric-key dilemma</td></tr>
+</table>
+<p class="cap"><strong>Table 1.</strong> Security properties and the adversary each
+survives. Cross-context unlinkability holds against the issuer because the issuer
+sees only <span class="m">C</span> at enrolment and only <span class="m">N</span> at
+use, and <span class="m">C</span> never appears in a Phase-2 proof.</p>
+
+<p>
+The double-use property deserves a note because it is unusual. A rate-limiting
+nullifier is a degree-1 Shamir share: <span class="m">y = s + N&middot;signalHash</span>.
+One proof reveals one point on a line and nothing about <span class="m">s</span>. Two
+proofs in the same <span class="m">(ctx, epoch_action)</span> with different signals
+reveal two points, and two points determine the line, which yields <span class="m">s</span>.
+Losing the credential is the penalty for proving twice in one window, and it
+follows from the arithmetic rather than from a moderator's ruling.
+</p>
+
+<p>
+The burn binds to <span class="m">epoch_action</span> alone. <span class="m">N</span>
+is <span class="m">Poseidon(s, ctx, epoch_action)</span> with no dependence on
+<span class="m">epoch_tree</span>, so two proofs in one rate-limit window carry the
+same <span class="m">N</span> and lie on the same line even if they cite different
+tree roots. Varying <span class="m">epoch_tree</span> is not a way out. If the
+nullifier had been bound to both counters, an attacker acting twice in one window
+against two different published roots would produce two distinct nullifiers and
+escape the burn; a test asserts the correct binding by recovering
+<span class="m">s</span> from exactly that pair of proofs
+(<span class="m">scripts/test_rln_burn.mjs</span>).
+</p>
+
+<figure>
+<svg viewBox="0 0 640 344" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="u" markerWidth="9" markerHeight="9" refX="8" refY="3.2" orient="auto"><path d="M0,0 L8,3.2 L0,6.4 z" fill="#000"/></marker>
+  </defs>
+
+  <text x="8" y="18" font-weight="bold" font-size="13.5">CROSS-CONTEXT UNLINKABILITY</text>
+
+  <rect x="248" y="32" width="144" height="52" fill="#f2f2f2" stroke="#000"/>
+  <text x="320" y="52" text-anchor="middle" font-weight="bold">One human</text>
+  <text x="320" y="70" text-anchor="middle" font-size="12">secret s, on the device</text>
+
+  <path d="M300,84 L196,118" stroke="#000" marker-end="url(#u)"/>
+  <path d="M340,84 L444,118" stroke="#000" marker-end="url(#u)"/>
+  <text x="214" y="104" font-size="11" fill="#333">acts in context A</text>
+  <text x="426" y="104" font-size="11" text-anchor="end" fill="#333">acts in context B</text>
+
+  <rect x="40" y="122" width="240" height="46" fill="#fff" stroke="#000"/>
+  <text x="160" y="141" text-anchor="middle" font-size="12">N&#8320; = Poseidon(s, ctx&#8320;, epoch_action)</text>
+  <text x="160" y="158" text-anchor="middle" font-size="11" fill="#333">the only value context A learns</text>
+
+  <rect x="360" y="122" width="240" height="46" fill="#fff" stroke="#000"/>
+  <text x="480" y="141" text-anchor="middle" font-size="12">N&#8321; = Poseidon(s, ctx&#8321;, epoch_action)</text>
+  <text x="480" y="158" text-anchor="middle" font-size="11" fill="#333">the only value context B learns</text>
+
+  <path d="M160,168 L160,196" stroke="#000" marker-end="url(#u)"/>
+  <path d="M480,168 L480,196" stroke="#000" marker-end="url(#u)"/>
+  <rect x="96" y="198" width="128" height="40" fill="#f2f2f2" stroke="#000"/>
+  <text x="160" y="223" text-anchor="middle" font-weight="bold" font-size="12">Verifier A</text>
+  <rect x="416" y="198" width="128" height="40" fill="#f2f2f2" stroke="#000"/>
+  <text x="480" y="223" text-anchor="middle" font-weight="bold" font-size="12">Verifier B</text>
+
+  <line x1="280" y1="150" x2="360" y2="150" stroke="#999" stroke-dasharray="5,4"/>
+  <text x="320" y="156" text-anchor="middle" font-size="17" fill="#000">&#10007;</text>
+  <text x="320" y="185" text-anchor="middle" font-size="10.5" fill="#333">not linkable without s</text>
+
+  <rect x="150" y="266" width="340" height="62" fill="#fff" stroke="#000" stroke-width="1.4"/>
+  <text x="320" y="286" text-anchor="middle" font-weight="bold" font-size="12.5">Issuer</text>
+  <text x="320" y="303" text-anchor="middle" font-size="11">sees C at enrolment and N at each use, never s</text>
+  <text x="320" y="319" text-anchor="middle" font-size="11">given N&#8320; and N&#8321;, cannot decide they came from one s</text>
+</svg>
+<p class="cap"><strong>Figure 3.</strong> The privacy claim made concrete. The same
+<span class="m">s</span> produces a different nullifier in every context. Each
+verifier sees only its own nullifier. Without <span class="m">s</span>, no party,
+including the issuer that has seen both <span class="m">C</span> and every
+<span class="m">N</span>, can tell that two nullifiers belong to the same person.</p>
+</figure>
+
+<h2>4. Economics</h2>
+
+<p>
+Sybil resistance in this construction is an economic property rather than a
+cryptographic one. The cryptography guarantees that identities are countable and
+cannot be forged outright. What keeps an attacker from creating many of them is
+that each one costs money to mint. Getting that cost wrong is the most likely way
+for a deployment to fail, so the requirement is stated below as arithmetic.
+</p>
+
+<h3>4.1 The requirement</h3>
+
+<p>
+Let <span class="m">&beta;</span> be the value to an attacker of one fake identity in
+the application being attacked. Let <span class="m">&gamma;</span> be the cost of
+minting one credential. The naive condition is <span class="m">&gamma; &ge; &beta;</span>.
+</p>
+
+<p>
+That condition is wrong, and the error is expensive. A credential is not consumed by
+one use. If it can act in <span class="m">m</span> monetisable contexts, and it
+survives <span class="m">E</span> epochs before expiry or burn, then one credential
+returns <span class="m">&beta;&middot;m&middot;E</span> to the attacker. Deterrence
+therefore requires:
+</p>
+
+<p style="text-align:center;" class="m"><strong>&gamma; &ge; &beta; &middot; m &middot; E</strong></p>
+
+<p>
+A concrete case shows the size of the mistake. Suppose <span class="m">&beta;</span>
+is $0.50, a credential reaches 20 monetisable contexts, and it lives 50 epochs.
+Then <span class="m">&beta;&middot;m&middot;E</span> is $500 while
+<span class="m">&beta;</span> is $0.50. Pricing the mint at
+<span class="m">&gamma; = &beta;</span> under-prices the defence by three orders of
+magnitude. The system would look secure and would not be.
+</p>
+
+<h3>4.2 Two ways to satisfy it, and why one is much better</h3>
+
+<p>
+The inequality can be met from either side. Raising <span class="m">&gamma;</span> to
+cover the widest reachable context set is simple. At
+<span class="m">&beta;&middot;m&middot;E = $500</span> it pushes the cost of being a
+person into the hundreds of dollars, which excludes the humans the system exists to
+serve. Result 1's own failure mode applies: if the price of being human is too high,
+you exclude humanity.
+</p>
+
+<p>
+Shrinking <span class="m">m</span> is better. Bind the attestation to a context
+class, so one credential cannot spray across unbounded contexts. Then
+<span class="m">m = 1</span> and the requirement becomes
+<span class="m">&gamma; &ge; &beta;&middot;E</span>. For bot defence, where
+<span class="m">&beta;</span> is measured in cents, the required
+<span class="m">&gamma;</span> lands in the range of about $0.05 to $2.00. That is
+cheap enough to be tolerable for honest users and expensive enough to make bulk
+forgery unprofitable. The cost is portability: a context-scoped credential is less
+convenient than one that works everywhere. That is a real trade and it should be
+stated to users rather than hidden.
+</p>
+
+<h3>4.3 Personhood is a dial, not a boolean</h3>
+
+<p>
+The consequence is that no single global answer to "is this a human?" exists. Each
+verifier faces a different <span class="m">&beta;</span>. A comment box and a
+financial account are not defending against the same attacker and should not buy the
+same amount of deterrence. Each verifier sets its own <span class="m">k</span>, its
+own stake requirement, and therefore its own <span class="m">&gamma;</span>, to clear
+its own <span class="m">&beta;</span>.
+</p>
+
+<p>
+Any system that returns <span class="m">human: true</span> with no price attached is
+reporting a boolean where the underlying quantity is continuous. It is claiming more
+than it can support. The construction here exposes the dial rather than hiding it.
+</p>
+
+<p>
+One caveat on the economics is that <span class="m">&beta;</span> has never been
+measured for a real application in this work. The ranges above are estimates. Section
+8 lists this as a falsification criterion.
+</p>
+
+<h2>5. Measured results</h2>
+
+<p>
+Every number in this section was measured on the hardware named with it. Numbers
+derived by extrapolation are labelled "projected".
+</p>
+
+<p>
+The reference device is a Samsung Galaxy A12 (model SM-A125F): MediaTek Helio P35,
+eight in-order Cortex-A53 cores, 3,751 MB RAM, Android 12, Chrome 152, retail price
+around $110. It was picked as a deliberate low-end target. The people who most need
+Sybil resistance are disproportionately on hardware like this, so a result that
+only held on a flagship would not reach them.
+</p>
+
+<h3>5.1 Circuit size</h3>
+
+<table>
+<tr><th>Circuit</th><th class="n">Constraints</th><th class="n">Public signals</th><th>Role</th></tr>
+<tr><td><span class="m">wedge_direct_k3</span></td><td class="n">13,099</td><td class="n">3 in</td><td>Phase 1, enrolment, once per credential lifetime</td></tr>
+<tr><td><span class="m">wedge_mem_w8_d9_split</span></td><td class="n">4,309</td><td class="n">7</td><td>Phase 2, login, every use (split epoch)</td></tr>
+<tr><td>&nbsp;&nbsp;<span class="m">wedge_mem_w8_d9</span> (pre-split, v1.0)</td><td class="n">4,309</td><td class="n">6</td><td>constraint-identical; the benchmark measurements in &sect;5.3 were taken on this</td></tr>
+<tr><td>&nbsp;&nbsp;+ revocation, R = 64</td><td class="n">4,373</td><td class="n">6/7</td><td>attester-level non-membership, +1.5%</td></tr>
+<tr><td>&nbsp;&nbsp;+ revocation, R = 256</td><td class="n">4,565</td><td class="n">6/7</td><td>+5.9%</td></tr>
+<tr><td>&nbsp;&nbsp;+ revocation, R = 1024</td><td class="n">5,333</td><td class="n">6/7</td><td>+23.8%</td></tr>
+</table>
+<p class="cap"><strong>Table 2.</strong> Constraint counts from
+<span class="m">snarkjs r1cs info</span> on the compiled R1CS. Groth16 over BN254.
+Tree capacity 134,217,728 leaves. The split-epoch circuit adds <strong>zero
+constraints</strong> and one public signal (<span class="m">epoch</span> becomes
+<span class="m">epoch_action</span> plus <span class="m">epoch_tree</span>); the
+revocation costs are unchanged and apply on top of either. Revocation adds exactly
+<span class="m">+R</span> constraints, all cheap linear checks.</p>
+
+<p>
+A grep of the Phase-2 compile graph for signature gadgets returns zero matches. The
+verification key reports <span class="m">nPublic = 7</span>. Both are mechanical
+checks a reviewer can repeat.
+</p>
+
+<h3>5.2 Memory</h3>
+
+<p>
+An early concern was that the browser prover requests a 2,048 MB WebAssembly linear
+memory at instantiation, which a 2 to 3 GB phone might refuse. Measuring resident
+memory rather than the request settled it.
+</p>
+
+<table>
+<tr><th>Condition</th><th class="n">Peak prover RSS</th><th class="n">Share of 3,751 MB</th><th>Tab survived</th></tr>
+<tr><td>Baseline, no background load</td><td class="n">361.5 MB</td><td class="n">9.6%</td><td>Yes, 20/20 runs</td></tr>
+<tr><td>Under 900 MB ballast (3 tabs &times; 300 MB)</td><td class="n">378.8 MB</td><td class="n">10.1%</td><td>Yes, 20/20 runs</td></tr>
+</table>
+<p class="cap"><strong>Table 3.</strong> Kernel <span class="m">VmHWM</span> for the
+renderer process running the proof, captured over adb. No out-of-memory event and no
+lowmemorykiller activity in either condition.</p>
+
+<figure><!--CHART_C-->
+<p class="cap"><strong>Figure 4.</strong> Memory, to scale. The reserved address
+space is what an early in-page measurement reported and it is 5.4&times; the actual
+resident peak. The proof fits in about one tenth of the device.</p>
+</figure>
+
+<p>
+The 2,048 MB figure is reserved address space, of which about 18% is committed.
+Reserved memory is not resident memory. An in-page measurement using
+<span class="m">measureUserAgentSpecificMemory</span> reports roughly 21 MB, which is
+also wrong: it misses worker-thread WebAssembly entirely. Neither figure should be
+used. The kernel high-water mark is the number that decides whether a tab survives.
+</p>
+
+<p>
+This does not close the memory question. The specified gate requires a device with
+3 GB or less. The A12 has 3,751 MB. The result is strong evidence and is not closure.
+It is listed as an open gate in Section 7.
+</p>
+
+<h3>5.3 Proving time</h3>
+
+<p>
+All three engines proved the same circuit from the same proving key and the same
+witness. Every proof was verified against the same snarkjs verification key, and the
+public signals were compared byte for byte and found identical. The engines are
+interchangeable at the protocol level.
+</p>
+
+<p>
+These on-device measurements were taken on the pre-split circuit
+(<span class="m">wedge_mem_w8_d9</span>, v1.0). The split circuit is
+constraint-identical (4,309, Table 2) and differs only by one extra public input,
+so the prover times carry over unchanged; on desktop, Node, the two circuits
+prove within run-to-run noise of each other. The snarkjs and C++-to-WASM engines
+were re-run on the split circuit and verify identically with the new 7-signal
+public output (Appendix A); rapidsnark native was not re-run because it needs the
+A12, and cross-engine equivalence is engine-independent.
+</p>
+
+<table>
+<tr><th>Engine</th><th class="n">Cold</th><th class="n">Warm median</th><th class="n">Warm p95</th><th>Install</th></tr>
+<tr><td>snarkjs, browser, deployed today</td><td class="n">5,187 ms</td><td class="n">3,374 ms</td><td class="n">&mdash;</td><td>none</td></tr>
+<tr><td>C++ compiled to WASM (rapidsnark via Emscripten)</td><td class="n">3,071 ms</td><td class="n">2,467 ms</td><td class="n">2,671 ms</td><td>none</td></tr>
+<tr><td><strong>rapidsnark, native</strong></td><td class="n"><strong>510 ms</strong></td><td class="n"><strong>477 ms</strong></td><td class="n">626 ms</td><td>app or SDK</td></tr>
+</table>
+<p class="cap"><strong>Table 4.</strong> Proving step only, Galaxy A12, 20 runs per
+engine. Witness calculation in the browser adds 1,164 ms warm and 1,592 ms cold on
+top of the browser figures.</p>
+
+<figure><!--CHART_A-->
+<p class="cap"><strong>Figure 5.</strong> The same data. All three engines prove the
+same statement from the same proving key, and all three proofs verify against the
+same verification key with identical public signals (Appendix A).</p>
+</figure>
+
+<p>
+The native prover runs 7.1 times faster than the browser prover on the warm median
+and 10.2 times faster from cold. For the native prover the first proof after
+startup costs about 7% more than a warm one; for the browser it costs 54% more. A
+real user proves once, from cold, so the browser number that matters in practice is
+the larger one.
+</p>
+
+<h3>5.4 Four optimisation paths that failed</h3>
+
+<p>
+The gap between 477 ms native and 3,374 ms in the browser is the difference between a
+zero-install product and one requiring an app on entry-level hardware. Four ways to
+close it were attempted. All four failed. Each is reported with the measurement that
+ended it, because the reasons are more useful than the outcome.
+</p>
+
+<p>
+<strong>Path 1: free browser levers.</strong> Threading was already active.
+Cross-origin isolation was enabled and <span class="m">crossOriginIsolated</span> was
+true on the device. Measured threading speedup was 2.51&times; (12,580 ms
+single-thread to 5,011 ms with 8 threads, full prove, warm median). The browser
+supports WebAssembly SIMD, but snarkjs 0.7.6 ships no SIMD build and does not use
+SharedArrayBuffer for the prover. There was nothing unclaimed to switch on.
+</p>
+
+<p>
+<strong>Path 2: compile the C++ prover to WebAssembly.</strong> rapidsnark was
+compiled with Emscripten, using pthreads, SIMD, and mini-gmp with 64-bit limbs in
+place of GMP. The build works and its proofs verify against the same verification key
+with identical public signals. It measured 2,467 ms warm, which is 5.17&times; the
+native 477 ms. The projection for this path was 1.25&times; to 2&times; of native. The
+gate was set in advance at 2.5&times;, so the result failed by a factor of two. The
+build is 1.37&times; faster than snarkjs on the proving step and 2.2&times; faster
+cold, which is a real gain and is not enough.
+</p>
+
+<p>
+<strong>Path 3: hand-written SIMD field arithmetic.</strong> Before writing any, the
+5&times; was attributed. The prover's thread-pool size was made settable at runtime,
+and both engines were measured at matched thread counts. Native was constrained with
+<span class="m">taskset</span>.
+</p>
+
+<table>
+<tr><th class="n">Threads</th><th class="n">Native (ARM64 assembly)</th><th class="n">WASM (portable C++)</th><th class="n">Ratio</th></tr>
+<tr><td class="n">1</td><td class="n">2,743 ms</td><td class="n">13,319 ms</td><td class="n">4.86&times;</td></tr>
+<tr><td class="n">2</td><td class="n">1,442 ms</td><td class="n">7,684 ms</td><td class="n">5.33&times;</td></tr>
+<tr><td class="n">4</td><td class="n">799 ms</td><td class="n">4,229 ms</td><td class="n">5.29&times;</td></tr>
+<tr><td class="n">8</td><td class="n">518 ms</td><td class="n">2,559 ms</td><td class="n">4.94&times;</td></tr>
+</table>
+<p class="cap"><strong>Table 5.</strong> Matched-thread comparison, Galaxy A12,
+same proving key and witness. Scaling from 1 to 8 threads is 5.30&times; for native and
+5.20&times; for WASM. The single-thread WASM figure comes from a build with no
+pthreads and no memory growth, so it carries no threading overhead at all.</p>
+
+<figure><!--CHART_B-->
+<p class="cap"><strong>Figure 6.</strong> The measurement that ruled out writing
+field-arithmetic assembly. Both axes are the same circuit and the same proving key on
+the same handset. Log scale, so the two lines being parallel is exactly the claim: a
+constant factor, independent of thread count.</p>
+</figure>
+
+<p>
+The ratio is flat. If the penalty were thread synchronisation, it would grow with
+thread count, because there would be more synchronisation to pay for. It does not
+grow. WebAssembly also parallelises as well as native here, 5.20&times; against
+5.30&times; across the same range. A single-threaded build with every threading
+artefact removed is still 4.86&times; slower than native.
+</p>
+
+<p>
+That result rules out field-arithmetic assembly. The gap is in code generation and
+runtime, and assembly for the field layer would target a layer that is not the
+bottleneck. The measurement cost one afternoon and avoided a multi-month effort
+aimed at the wrong place.
+</p>
+
+<p>
+A second finding supports this. The best available WebAssembly field arithmetic is
+not SIMD. Reduced-radix scalar arithmetic with 29-bit limbs outperforms every
+simd128 approach in browsers, because WebAssembly lacks a 64&times;64&rarr;128
+widening multiply and its SIMD is fixed at 128 bits. The achievable improvement over
+generic 64-bit CIOS is roughly 1.3&times; to 1.7&times;. The field layer therefore
+cannot close the gap on its own: its best available improvement is about 1.7&times;
+against a shortfall of five.
+</p>
+
+<p>
+<strong>Path 4: a Rust prover with different code generation.</strong> arkworks
+compiled to WebAssembly was the remaining candidate. Inspection of
+<span class="m">ark-ff</span>'s Montgomery backend shows its only assembly path is
+gated on <span class="m">x86_64</span> with BMI2 and ADX. For
+<span class="m">wasm32</span> it uses portable scalar Rust with unrolled CIOS, which
+is the same technique as the generic C++ path already measured, lowered through the
+same LLVM WebAssembly backend. Published browser figures for that stack on a Galaxy
+S23 Ultra, a flagship, give 793 ms for a comparable circuit. Scaled to the A12 that
+projects to roughly 1,900 to 2,100 ms, which is the same class as the 2,467 ms
+already measured. Changing the language the prover is written in does not change the
+LLVM WebAssembly back end that both languages compile through, and the constant
+factor lives in that back end.
+</p>
+
+<p>
+The conclusion is that the ~5&times; belongs to the WebAssembly toolchain and browser
+runtime for this workload, not to this code. It should narrow as LLVM code generation
+improves and as relaxed SIMD and Memory64 mature. The engine is one C++ codebase, so
+that improvement arrives on recompilation.
+</p>
+
+<h3>5.5 Deployment matrix</h3>
+
+<figure>
+<table>
+<tr><th>Device class</th><th>Zero-install browser</th><th>Native SDK</th><th>Source</th></tr>
+<tr><td>Entry-level (Galaxy A12 class, ~$110)</td>
+    <td>~4.7 s cold end-to-end via C++/WASM;<br>~6.8 s via snarkjs</td>
+    <td><strong>~0.5 s proving step &mdash; GO</strong></td>
+    <td>measured</td></tr>
+<tr><td>Mid-range</td><td>~2&ndash;4 s <span style="font-style:italic">(brackets the &le;2 s target; unmeasured)</span></td><td>GO</td><td><strong>projected</strong></td></tr>
+<tr><td>Desktop / flagship</td><td>~0.7 s full flow</td><td>GO</td><td>measured on desktop</td></tr>
+</table>
+<p class="cap"><strong>Table 6.</strong> Deployment matrix. The circuit,
+proving key, nullifier construction, public signals, and privacy properties are
+identical in every cell. The split is a deployment choice, not a protocol fork.
+Desktop figure is an i7-9850H with Chrome, multi-threaded, full-flow p95 738 ms over
+20 runs. The mid-range browser figure has not been measured on a mid-range device:
+the projected 2 to 4 s straddles the 2 s target, so on that projection some
+mid-range phones would clear it and some would not. Native end-to-end below ~1.1 s
+is projected; only the 477 ms proving step is measured.</p>
+</figure>
+
+<p>
+The original target was 2 s for the full flow. That target assumed proving on every
+login. It has been revised, on the record, to 2 s on mid-range hardware and 5 s cold
+on entry-level hardware, proven once per <span class="m">epoch_action</span> rather
+than once per login. Because the nullifier is scoped to
+<span class="m">epoch_action</span>, a relying party can cache the result of a proof
+for that window: within one <span class="m">epoch_action</span> the same human at
+the same relying party presents the same nullifier, so one proof covers it. The
+split does not force a fast <span class="m">epoch_action</span>. A deployment that
+wants infrequent proving sets a long <span class="m">epoch_action</span> and pays
+the several-second cost that rarely; a deployment that wants tight rate-limiting
+sets a short one and either re-proves that often or uses the native prover, where
+proving is 477 ms and the cadence does not matter. Before the split these two
+choices were the same knob. Deployments that must prove per login on entry-level
+hardware should use the native prover.
+</p>
+
+<h3>5.6 Witness maintenance at load</h3>
+
+<p>
+The tree publishes one broadcast per <span class="m">epoch_tree</span>, a cadence
+set by tree economics alone. It is no longer tied to the rate-limit window: a
+deployment can rate-limit every ten minutes on <span class="m">epoch_action</span>
+and still republish the tree once a day. The figures below are per
+<span class="m">epoch_tree</span>, at various enrolment rates.
+</p>
+
+<table>
+<tr><th>New enrolments per <span class="m">epoch_tree</span></th><th class="n">Raw append log</th><th class="n">Broadcast</th><th class="n">Compression</th></tr>
+<tr><td class="n">1,000</td><td class="n">31.3 KB</td><td class="n">4.7 KB</td><td class="n">6.6&times;</td></tr>
+<tr><td class="n">10,000</td><td class="n">312.5 KB</td><td class="n">44.9 KB</td><td class="n">7.0&times;</td></tr>
+<tr><td class="n">100,000</td><td class="n">3.1 MB</td><td class="n">446.7 KB</td><td class="n">7.0&times;</td></tr>
+</table>
+<p class="cap"><strong>Table 7.</strong> Public broadcast size per
+<span class="m">epoch_tree</span>, frontier-compressed. Identical bytes for every client.</p>
+
+<p>
+Steady-state client refresh is 3 to 4 ms on desktop, projected at about 15 ms on a
+low-end phone, and is O(depth) regardless of enrolment rate. A client that goes dark
+for a month during a 100,000-per-<span class="m">epoch_tree</span> surge downloads
+13 MB and recomputes its witness in 122 ms on desktop. Upstream per-user calls
+during every test, including the month-offline catch-up: zero.
+</p>
+
+<h3>5.7 Verifier cost and integration surface</h3>
+
+<p>
+Verification is cheap and constant. Groth16 verification of the 7-signal proof
+measures about 20 ms in a browser on an i7-9850H, taken as the difference between
+full-flow and prove-only medians over 20 runs. Proof size is fixed at 3 group
+elements regardless of circuit size. The verifier does no elliptic-curve work
+proportional to the tree or to the number of users. On top of the zero-knowledge
+check it runs two constant-time freshness checks: the <span class="m">epoch_tree</span>
+root within the last <span class="m">w</span> published roots, and
+<span class="m">epoch_action</span> within a separate, tighter recency bound. Both
+are deployment config; a root older than <span class="m">w</span> is rejected
+regardless of <span class="m">epoch_action</span>.
+</p>
+
+<p>
+Whether a relying party can adopt this without rearchitecting was tested rather than
+asserted. A proof of concept runs a real OpenID Connect provider and two relying
+parties over real HTTP, issuing real Groth16 proofs from the
+<span class="m">wedge_mem_w8_d9_split</span> artefacts. The nullifier is carried
+inside a W3C Verifiable Presentation in the ID token's <span class="m">vp</span>
+claim, and is surfaced to the relying party as the OIDC <span class="m">sub</span>.
+Ten assertions pass:
+</p>
+
+<ul>
+  <li>first login at relying party A is allowed;</li>
+  <li>a replay in the same <span class="m">epoch_action</span> is rejected with HTTP 403;</li>
+  <li>login at relying party B by the same human is allowed;</li>
+  <li><span class="m">sub</span> differs between A and B, which is the pairwise,
+      sector-scoped property;</li>
+  <li>neither subject is a prefix, suffix, or rotation of the other;</li>
+  <li><span class="m">sub</span> rotates when <span class="m">epoch_action</span> changes;</li>
+  <li>A allows the same human again in the new <span class="m">epoch_action</span>;</li>
+  <li>advancing <span class="m">epoch_tree</span> alone (a tree republish) does not
+      grant a new action: the same human is still rejected with 403;</li>
+  <li>advancing <span class="m">epoch_tree</span> alone does not rotate
+      <span class="m">sub</span>;</li>
+  <li>advancing <span class="m">epoch_action</span> again rotates
+      <span class="m">sub</span> and re-allows the action.</li>
+</ul>
+
+<p>
+The provider generated every proof and still cannot link them, because the linkage
+exists only inside <span class="m">Poseidon(s, &middot;)</span> and it does not hold
+<span class="m">s</span>. Integration is one verification call of about 80 lines, a
+poll of a <span class="m">/roots</span> endpoint, and a
+<span class="m">(sub, epoch_action)</span> deduplication check. No new credential
+format and no custom protocol. The one semantic change a relying party must absorb
+is that <span class="m">sub</span> is scoped to <span class="m">epoch_action</span>,
+so it is an action token and not an account key. The last three assertions show the
+decoupling directly: republishing the tree neither resets the rate limit nor
+rotates the subject.
+</p>
+
+<h3>5.8 Revocation, both paths</h3>
+
+<p>
+RLN stops one human from acting twice in a window. It does nothing about a
+credential that should no longer be valid at all: a lost device, or a compromised
+attester whose whole issuance batch must be undone. Two mechanisms cover the two
+cases, and both were built and measured against the 4,309-constraint split baseline
+rather than estimated.
+</p>
+
+<p>
+<strong>Individual revocation, in circuit.</strong> The split circuit gains an
+in-circuit non-membership check of the credential commitment
+<span class="m">C</span> against a published revocation list of <span class="m">R</span>
+field elements. For each entry it enforces
+<span class="m">(C &minus; r<sub>i</sub>) &middot; inv<sub>i</sub> = 1</span>, which has no
+witness when <span class="m">C = r<sub>i</sub></span>, so a revoked holder cannot
+generate a proof at all. The constraint cost is exactly <span class="m">+R</span>,
+measured: 4,373, 4,565, and 5,333 constraints for <span class="m">R</span> of 64,
+256, and 1,024, against a 4,309 baseline. Prove time on an i7-9850H rises by 21 ms,
+20 ms, and 123 ms over a 538 ms base, median of 12 rounds. The public-input count
+becomes <span class="m">7 + R</span>, so the list is carried explicitly by the
+verifier. A production deployment would instead commit the list as one accumulator
+root and prove non-membership against that, moving verifier input back to O(1) at a
+few hundred constraints per tree level; the public-list form here is the tested one.
+</p>
+
+<p>
+<strong>Bulk revocation, tree rebuild.</strong> At an <span class="m">epoch_tree</span>
+boundary the operator rebuilds with revoked leaves set to zero. Indices are not
+compacted, so every surviving leaf keeps its position and only the internal nodes on
+the revoked paths change. That makes the rebuild broadcast incremental. Measured on
+the arity-8 depth-9 tree, across occupancies of 10k, 50k, and 200k leaves and
+revocation fractions of 1, 5, and 10 percent, the tombstone broadcast ranges from
+9.3 KB to 1.18 MB, and grows with the number of revoked leaves times the depth, not
+with tree size. Full republication of the same trees is 0.35, 1.74, and 6.98 MB, so
+the incremental form is 6 to 39 times smaller. An unaffected client folds the
+broadcast into its cached witness in 2.4 to 5.1 ms median, well under the 122 ms
+month-offline catch-up baseline from &sect;5.6, and never queries the tree. A revoked
+client's cached witness stops hashing to the published root, its refresh throws, and
+a fresh proof against the new root fails because its path no longer verifies.
+</p>
+
+<p>
+Nine assertions cover both paths in <span class="m">scripts/test_revocation.mjs</span>:
+an honest credential proves; the same credential placed on the revocation list
+cannot produce a witness; after a tombstone rebuild that revokes one leaf, the
+revoked client's refresh throws and it cannot prove against the new root, while an
+unaffected client refreshes query-free and proves. The liveness cost of the bulk
+path is disclosed in &sect;6: a rebuild interrupts every client for one refresh
+window.
+</p>
+
+<h2>6. What is not protected</h2>
+
+<p>
+This section is complete. A reader who stops here has an accurate picture of the
+system's limits.
+</p>
+
+<p>
+<strong>The nullifier is personal data.</strong> <span class="m">N</span> is a
+pseudonymous identifier under GDPR. The verifier learns no name, no
+<span class="m">C</span>, and no device identifier, but <span class="m">N</span> is
+not anonymous. Within one <span class="m">(ctx, epoch_action)</span> a relying party
+has a stable handle for that user and can build a per-context profile of that
+user's actions. That is the intended function, because Sybil resistance requires a
+stable per-context identifier. Cross-context linkage remains prevented.
+</p>
+
+<p>
+<strong>The nullifier is scoped to <span class="m">epoch_action</span> and is not an
+account key.</strong> It is a per-window action token. In a new
+<span class="m">epoch_action</span> the same user at the same relying party presents
+a different <span class="m">N</span>. A relying party using
+<span class="m">sub</span> as an account primary key must change that assumption.
+Persistent pseudonymous accounts would need a second, epoch-independent pairwise
+identifier, costing about 255 constraints and no new cryptography. It is not built.
+</p>
+
+<p>
+<strong>Trust is not zero.</strong> The honest claim is "no single trusted party,
+given a 1-of-N-honest publication medium". Root equivocation is always detectable
+after the fact by any auditor holding the root history. It is <em>prevented</em> only
+under 1-of-N honesty across the client's root sources. An earlier version of this
+work claimed "zero trusted parties". That claim is retracted.
+</p>
+
+<p>
+The 1-of-N-honest clause is now an <em>enforced client-side check</em>, not a stated
+assumption. Before proving, and again before accepting, the client fetches the
+hash-chained transparency head
+(<span class="m">head_e = Poseidon(head_{e-1}, root_e, e)</span>) from
+<span class="m">N</span> independent root sources and cross-checks. It classifies
+each reachable source as agreeing, lagging-but-on-the-chain (tolerated within the
+staleness window <span class="m">w</span>), or disagreeing, and fails closed on any
+disagreement or below a quorum of reachable sources (default 2 of 3). This raises
+the adversary's requirement from "control the client's one root source" to "control
+every source the client queries, simultaneously and consistently." It does not
+defeat a full eclipse; see &sect;7.2.
+</p>
+
+<p>
+<strong>Independence of the root sources is normative.</strong> The check is
+worthless if the sources share a failure domain. They must differ in operator, in
+network path, and where possible in trust root: for example a public chain, a
+CDN-backed static endpoint, and a third-party bulletin board. Three endpoints on
+one operator's infrastructure are one source with three URLs, and would make the
+trust claim look stronger while changing nothing.
+</p>
+
+<p>
+<strong>Timing correlation.</strong> Unlinkability holds per proof. It does not hold
+against traffic analysis. Witness refresh must run on a schedule independent of
+proving, and download sizes must be padded. These are normative requirements, not
+suggestions. A deployment that refreshes witnesses when a user logs in has
+reintroduced the correlation the broadcast design removed.
+</p>
+
+<p>
+<strong>Attester collusion.</strong> <span class="m">k</span> colluding independent
+attesters can mint fake credentials. The diversity predicate
+<span class="m">D</span> requires attestations from organisations in different
+jurisdictions, which raises the coordination cost. It does not eliminate the attack.
+This is a sociological problem and it is not fully solvable by cryptography.
+</p>
+
+<p>
+<strong>Bulk-revocation liveness.</strong> Revoking a compromised attester means
+rebuilding the tree without its leaves (&sect;5.8). The rebuild is published as one
+broadcast and clients recompute locally, as for a normal epoch. But between the
+rebuild being published and a given client's next refresh, that client cannot
+prove: its cached witness no longer hashes to the current root. An attester
+compromise therefore causes a refresh-window interruption for the whole
+population. This is a liveness cost, not a security one, and it is the price of
+bulk revocation without a per-user query.
+</p>
+
+<p>
+<strong>Credential rental and coercion.</strong> Anonymous credentials resist rental
+economically: oversubscription is unobservable to the buyer, contracts are
+unenforceable, and the seller can rotate freely. They are not impossible to rent. For
+bot defence this is acceptable, because a rented credential still consumes one real
+human's action budget, so renting redistributes a scarce human action rather than
+manufacturing bots. For defence against coordinated inauthentic behaviour it is
+weaker: an attacker renting from <span class="m">P</span> humans obtains
+<span class="m">P</span> coordinated genuine actions and bypasses
+<span class="m">&gamma;</span> entirely. Security in that setting additionally
+requires the rental market to be illiquid. Human-presence gating is the sound
+application. Coordinated-behaviour defence carries this caveat.
+</p>
+
+<p>
+<strong>State-scale adversaries.</strong> Every economic bound in Section 4 assumes an
+attacker constrained by solvency. An adversary who does not care about cost is not
+covered.
+</p>
+
+<p>
+<strong>Not post-quantum.</strong> The construction uses BN254 and Groth16. A
+crypto-agility path exists, and migration follows the ecosystem rather than leading
+it.
+</p>
+
+<p>
+<strong>Trusted setup.</strong> Groth16 requires a per-circuit trusted setup. A
+compromised setup breaks soundness, meaning forged proofs become possible. It does
+not break privacy. The proving keys distributed with this work come from a throwaway
+single-contribution setup and are for evaluation only. Production requires a public
+multi-party ceremony or migration to a transparent-setup proof system.
+</p>
+
+<h2>7. Open problems</h2>
+
+<h3>7.1 Gates that block production</h3>
+
+<p>
+Five of the six remain open; all are fundable external work rather than open
+research, and none is a cryptographic unknown. Gate 6 is now closed (below).
+</p>
+
+<table>
+<tr><th class="n">#</th><th>Gate</th><th>Why it blocks</th><th>Status</th></tr>
+<tr><td class="n">1</td><td>Two or more independent circuit audits</td>
+    <td>An under-constrained signal silently breaks soundness. Reproducible builds prove the binary matches the source; they say nothing about whether the constraint system is correct.</td>
+    <td>Open. A self-audit has been run (&sect;7.3): Picus (SMT) reports every deployed circuit properly constrained, circomspect is clean on the entrypoints, a manual footgun pass and a 24-check adversarial witness harness find no soundness bug. Self-audit strengthens the evidence; it is not independent review and does not close this gate.</td></tr>
+<tr><td class="n">2</td><td>GDPR right-to-erasure legal memo</td>
+    <td>An append-only tree versus a deletion right. Blocks EU deployment until analysed.</td><td>Open</td></tr>
+<tr><td class="n">3</td><td>Peak RSS and p95 on a device with 3 GB or less</td>
+    <td>The formal memory gate. The A12 at 3,751 MB is evidence, not closure.</td><td>Open</td></tr>
+<tr><td class="n">4</td><td>IP indemnification and liability structure</td>
+    <td>Enterprise contracts require it.</td><td>Open</td></tr>
+<tr><td class="n">5</td><td>Trusted-setup ceremony, or migration to a transparent-setup system</td>
+    <td>Soundness assumption. Current keys are evaluation-only.</td><td>Open, disclosed</td></tr>
+<tr><td class="n">6</td><td>Attester-level revocation mechanism</td>
+    <td>RLN covers double-use only, not a compromised attester.</td>
+    <td><strong>Closed.</strong> Both paths implemented, measured, tested (&sect;5.8): an in-circuit non-membership check for individual revocation (+R constraints, measured +64 / +256 / +1,024), and an incremental tree rebuild for bulk revocation. Liveness cost disclosed in &sect;6.</td></tr>
+</table>
+<p class="cap"><strong>Table 8.</strong> Production gates. Gate 6 moved to Closed in
+v1.1.</p>
+
+<h3>7.2 Research questions that remain</h3>
+
+<p>
+Resolved since v1.0, and so removed from the list below. First, <em>separating the
+rate-limit window from the tree publication cadence</em>. One counter used to serve
+as the nullifier epoch, the rate-limit window, and the tree cadence at once. It is
+now two independent public inputs, <span class="m">epoch_action</span> and
+<span class="m">epoch_tree</span>, at a cost of zero constraints. The RLN burn binds
+to <span class="m">epoch_action</span> alone; a test recovers
+<span class="m">s</span> from two proofs in one action window that cite different
+tree roots, confirming the binding
+(<span class="m">scripts/test_rln_burn.mjs</span>). Second, <em>the bulk attester
+revocation trade</em>. It has now been measured rather than estimated
+(&sect;5.8): the tombstone rebuild broadcast is incremental, 9&nbsp;KB to 1.2&nbsp;MB
+at realistic occupancy against 0.35 to 7&nbsp;MB for full republication, and an
+unaffected client recomputes its witness in 2 to 5&nbsp;ms. The periodic rebuild is
+the practical path; carrying every revoked commitment in <span class="m">R</span> is
+not. See &sect;7.1 Gate 6.
+</p>
+
+<ul>
+  <li><strong>A measured <span class="m">&beta;</span>.</strong> The economic
+      parameter has never been measured against a live application. Every figure in
+      Section 4 is an estimate. This is the single most valuable missing number.</li>
+  <li><strong>Full eclipse.</strong> A targeted eclipse is detectable given one
+      honest root source, and the client now enforces that condition: before proving
+      and before accepting, it cross-checks the hash-chained transparency head across
+      N independent root sources and fails closed on any disagreement or below a
+      quorum of reachable sources (&sect;6). This raises the bar from controlling the
+      client's one root source to controlling every source it queries, at once and
+      consistently. It does not defeat a full eclipse. An adversary who holds all N
+      sources simultaneously still passes the check, and that case is only auditable
+      after the fact.</li>
+  <li><strong>Diversity in practice.</strong> Whether 3 to 5 genuinely independent
+      attesters exist in any given jurisdiction is an empirical question about
+      institutions. It has not been surveyed.</li>
+  <li><strong>The WebAssembly gap.</strong> The ~5&times; penalty is a toolchain
+      property. Whether relaxed SIMD, Memory64, and improved code generation close it
+      to the point where entry-level hardware needs no native prover is a question
+      for the WebAssembly ecosystem rather than for this construction.</li>
+</ul>
+
+<h3>7.3 Self-audit of the constraint system</h3>
+
+<p>
+Gate 1 exists for one failure mode: an under-constrained signal, where the
+constraints do not fully pin a value, so a malicious prover can choose one the
+honest prover never would and still produce a verifying proof. The test suite
+cannot find this. Every test drives the honest prover. A self-audit was run
+against that blind spot. It does not close Gate 1, which requires two or more
+independent external reviews. The full transcript, with tool versions, commands,
+raw output, and reasoning for every dismissed finding, is
+<span class="m">docs/SELF-AUDIT.md</span>.
+</p>
+
+<p>
+<strong>Static analysis.</strong> Two analyzers were run over every deployed
+circuit: the split login circuit, the three split revocation variants, the
+pre-split login circuit, and the enrolment circuit. Picus 138b151 (Veridise),
+which uses an SMT solver to decide whether every output is uniquely determined by
+the inputs, returns <em>the circuit is properly constrained</em> for all six,
+with no solver timeouts. That is a stronger result than a linter pass: within the
+solver's decision procedure, no under-constrained signal exists. circomspect
+0.9.0 (Trail of Bits) reported nothing at any level on the instantiated
+entrypoints. On the parameter-symbolic templates it raised two warning classes,
+both on code that ships. The first: the public input
+<span class="m">epoch_tree</span> has no in-circuit constraint. That is by
+design; it is prover-supplied and verifier-checked for root freshness, the same
+shape as <span class="m">ctx</span> and <span class="m">signal_hash</span>, and it
+is listed among the verifier obligations below. The second: the non-membership
+gadget assigns its inverse witness with the hint operator before constraining it
+on the next line. That is the standard safe pattern, identical in shape to
+circomlib's own <span class="m">IsZero</span>; the assigned signal is uniquely
+pinned by <span class="m">diff &middot; inv === 1</span>, which is unsatisfiable
+exactly when the credential is on the revocation list. A solver verdict bounded
+by a query timeout is not a proof-assistant artifact, and neither tool replaces
+expert review.
+</p>
+
+<p>
+<strong>Manual footgun pass.</strong> A per-template check for the known Circom
+hazards found, on the deployment path: no unconstrained output signal, one hint
+assignment (the safe one above), no missing range check reachable by a malicious
+prover, no component left with an unwired input, and no signal aliasing.
+</p>
+
+<p>
+<strong>Adversarial witness harness.</strong>
+<span class="m">scripts/test_soundness_adversarial.mjs</span> constructs 24
+witnesses an honest generator would never produce and checks the circuit rejects
+each. It works two ways: hand a malformed input to the witness generator and
+require it to fail on a constraint, and take an honest witness, flip one signal to
+an adversarial value, and require both the R1CS satisfaction check and a fresh
+proof to fail. A tampered assignment that still satisfied the constraints, or
+still verified, would be a real soundness bug. None did. The harness covers, each
+against a malicious prover rather than the honest path: a secret that does not
+match the opened leaf; a Merkle path of forged siblings; an out-of-range or
+mis-pointed path index; a proof against a root the path does not open to; a
+revoked credential attempting a non-membership proof; a nullifier rebound to a
+different secret or forced to collide across contexts; an RLN share moved off its
+line or rewritten for a different secret; the enrolment commitment swapped; and
+the enrolment diversity and signature checks. It also recovers the secret
+<span class="m">s</span> end to end from the two proofs a double-actor would
+produce in one <span class="m">(ctx, epoch_action)</span> window, confirming the
+burn is arithmetic, not policy.
+</p>
+
+<p>
+<strong>Trust-assumption red-team.</strong> The residual trust is one honest root
+source among N. If the N mirrors share a certificate authority, a hosting
+provider, or a DNS resolver, a single compromise serves a consistent forgery to
+all of them and the client's cross-check passes. This is the full-eclipse case
+already listed above; the red-team's contribution is to name the concrete shared
+dependency by which N sources collapse to one. Independence in operator, network
+path, and trust root is stated as normative in Section 6; it is not enforced by
+code.
+</p>
+
+<p>
+<strong>What the self-audit does not cover.</strong> Independent expert review.
+A machine-checked proof in a proof assistant; the Picus result is a solver
+verdict bounded by its query timeout, and the harness checks specific signals,
+not a closed proof. The circomlib primitives, which are trusted as-is. The
+verifier and deployment obligations the circuit deliberately does not enforce:
+<span class="m">epoch_tree</span> freshness, the
+<span class="m">signal_hash</span> binding, the authenticity of the published
+revocation list, the backend's authoritative diversity check at enrolment, and
+the refresh-to-login timing separation. And the trusted setup, which is
+evaluation-only regardless of how well the circuit is constrained. Gate 1 stays
+open.
+</p>
+
+<h2>8. Falsification criteria</h2>
+
+<p>
+Stated in advance so that they cannot be adjusted afterwards. This work should be
+considered refuted if any of the following holds.
+</p>
+
+<ol>
+  <li>Credentials trade on an open market at a stable price for more than one
+      quarter. Economic non-transferability would have failed.</li>
+  <li>Fewer than 3 to 5 genuinely independent attesters exist in a target
+      jurisdiction. The diversity predicate <span class="m">D</span> would be
+      theatre, and the security argument that rests on it would be void.</li>
+  <li>The measured <span class="m">&beta;</span> for a target application exceeds the
+      <span class="m">&gamma;</span> that honest users tolerate. Securing the
+      application would price out the humans it is meant to admit.</li>
+  <li>A circuit audit finds an under-constrained signal permitting forged proofs.</li>
+  <li>No platform adopts even a zero-risk shadow-mode evaluation within 12 months.
+      The value proposition would be wrong regardless of whether the cryptography is
+      correct.</li>
+</ol>
+
+<h2>9. Status</h2>
+
+<p>
+What exists: a measured, working system that proves personhood privately, with
+reproducible builds, drop-in OIDC and W3C Verifiable Presentation integration,
+query-free witness maintenance, a closed prover-optimisation search, and a documented
+deployment matrix. Proofs from three independent prover implementations verify
+against one verification key with identical public signals.
+</p>
+
+<p>
+What does not exist: an independent audit, a production deployment, a design partner,
+a measured real-world <span class="m">&beta;</span>, and closure on the five gates in
+Section 7 that remain open. The sixth, attester-level revocation, is closed in this
+version.
+</p>
+
+<p>
+The accurate description is a complete, measured, unreviewed engineering system with
+a candidate security property. It is not a validated standard. Validation is
+conferred by adversaries who fail to break a system and by adopters who build on it,
+and neither has happened yet. Every gate in Section 7.1 is ordinary work that follows
+a first deployment. No cryptography remains on the critical path.
+</p>
+
+<h3>9.1 Delegation to AI agents (not built, not analysed)</h3>
+
+<p>
+An attested human could issue a delegated credential to a software agent, so the
+agent acts with attributable human backing without claiming to be a person. The
+primitives already exist: nullifiers in a separate namespace for agent actions, the
+RLN share to bound rate, and epoch scoping to bound lifetime. None of it has been
+built, and none of it has been analysed.
+</p>
+
+<p>
+Two requirements decide whether it is sound. First, delegation must be visible. A
+verifier must always be able to distinguish an agent acting under delegation from a
+human acting directly. If it cannot, the construction becomes the bot-laundering
+machine it exists to prevent. Second, a per-human cap on live delegations is
+required. Without one, delegation multiplies the actions a single credential can
+take, which makes it a Sybil amplifier and defeats the economics of Section 4.
+</p>
+
+<p>
+Both are stated here as requirements, not as solved problems. This direction needs
+its own security analysis before it is worth building.
+</p>
+
+<p>
+The circuits, the reference implementation, the benchmark harnesses, the raw
+measurement files behind every number in Section 5, and the chronological research
+record including the retractions are published under Apache-2.0 with its Section 3
+patent grant.
+</p>
+
+<h2>References</h2>
+
+<ol class="refs">
+  <li>D. Chaum. Security without identification: transaction systems to make big
+      brother obsolete. <em>Communications of the ACM</em>, 28(10):1030&ndash;1044, 1985.</li>
+  <li>J. Camenisch and A. Lysyanskaya. An efficient system for non-transferable
+      anonymous credentials with optional anonymity revocation. In
+      <em>EUROCRYPT 2001</em>, LNCS 2045, pages 93&ndash;118.</li>
+  <li>J. R. Douceur. The Sybil attack. In <em>Proceedings of the 1st International
+      Workshop on Peer-to-Peer Systems (IPTPS)</em>, LNCS 2429, pages 251&ndash;260, 2002.</li>
+  <li>J. Groth. On the size of pairing-based non-interactive arguments. In
+      <em>EUROCRYPT 2016</em>, LNCS 9666, pages 305&ndash;326.</li>
+  <li>J. H. Saltzer, D. P. Reed, and D. D. Clark. End-to-end arguments in system
+      design. <em>ACM Transactions on Computer Systems</em>, 2(4):277&ndash;288, 1984.</li>
+  <li>Semaphore: a zero-knowledge protocol for anonymous signalling and
+      double-signalling prevention on Ethereum. Privacy and Scaling Explorations,
+      Ethereum Foundation.</li>
+  <li>A. Shamir. How to share a secret. <em>Communications of the ACM</em>,
+      22(11):612&ndash;613, 1979.</li>
+  <li>Rate-Limiting Nullifier: a construction for anonymous rate limiting using
+      Shamir secret sharing. Privacy and Scaling Explorations, Ethereum Foundation.</li>
+  <li>L. Grassi, D. Khovratovich, C. Rechberger, A. Roy, and M. Schofnegger.
+      Poseidon: a new hash function for zero-knowledge proof systems. In
+      <em>USENIX Security 2021</em>, pages 519&ndash;535.</li>
+  <li>P. S. L. M. Barreto and M. Naehrig. Pairing-friendly elliptic curves of prime
+      order. In <em>Selected Areas in Cryptography (SAC) 2005</em>, LNCS 3897,
+      pages 319&ndash;331.</li>
+  <li>R. C. Merkle. A digital signature based on a conventional encryption function.
+      In <em>CRYPTO '87</em>, LNCS 293, pages 369&ndash;378.</li>
+  <li>E. Ben-Sasson, A. Chiesa, E. Tromer, and M. Virza. Succinct non-interactive
+      zero knowledge for a von Neumann architecture. In <em>USENIX Security 2014</em>,
+      pages 781&ndash;796.</li>
+</ol>
+
+<h2>Appendix A. A real proof</h2>
+
+<p>
+Claims about zero-knowledge systems are cheap. This appendix contains an actual
+proof, produced by running the published artefacts, and the transcript of verifying
+it. A reader can regenerate all of it.
+</p>
+
+<h3>A.1 The artefacts</h3>
+
+<table>
+<tr><th>File</th><th class="n">Bytes</th><th>SHA-256</th></tr>
+<tr><td><span class="m">build/wedge_mem_w8_d9_split.r1cs</span></td><td class="n">3,756,792</td><td><span class="m">fbd04ecd&hellip;83eddc27</span></td></tr>
+<tr><td><span class="m">web/wedge_mem_w8_d9_split.wasm</span></td><td class="n">3,212,057</td><td><span class="m">f016efcf&hellip;b4def3a1</span></td></tr>
+<tr><td><span class="m">web/wedge_mem_w8_d9_split_final.zkey</span></td><td class="n">5,764,987</td><td><span class="m">bd7169e4&hellip;a16acc47</span></td></tr>
+<tr><td><span class="m">web/wedge_mem_w8_d9_split_vkey.json</span></td><td class="n">4,023</td><td><span class="m">a4428d64&hellip;faecb356</span></td></tr>
+</table>
+<p class="cap"><strong>Table 9.</strong> The R1CS and WASM hashes match
+<span class="m">supply-chain/artifacts.lock.json</span>, which
+<span class="m">scripts/repro_build.mjs --double</span> reproduces byte-for-byte from
+a clean compile of <span class="m">circuits/</span>. The proving key is not
+reproducible, because it carries ceremony randomness; it is verified against the R1CS
+instead.</p>
+
+<h3>A.2 The proof</h3>
+
+<p>
+Groth16 over BN254. Three group elements, 8 field coordinates, constant size
+regardless of the 4,309 constraints behind it. Re-running
+<span class="m">mkproof.mjs</span> produces different values here and identical
+values in Table 10, because Groth16 proofs are randomised. Section A.5 uses that
+property.
+</p>
+
+<div class="note m" style="font-size:7.9pt; line-height:1.35;">
+pi_a = [<br>
+&nbsp;20845707599544265335649027855620964687374222523455596290683747059733598569414,<br>
+&nbsp;1567567686339441980740655973037063527616023530367543601680152750759479006181, 1 ]<br>
+pi_b = [ [20617072746101944515302261723900367908536597911312429818557596406791920386776,<br>
+&nbsp;&nbsp;&nbsp;14292379644756314352710954835857644588754862533916600688054794785036211194318],<br>
+&nbsp;&nbsp;[14391897212804863468710221759945629259770916899971487247562052198551236621147,<br>
+&nbsp;&nbsp;&nbsp;5234233511664559673585493239283667660077587361521720131010362193139911735457], [1,0] ]<br>
+pi_c = [<br>
+&nbsp;19831573536458535304144255033227867520349154756296659724042617945786514259466,<br>
+&nbsp;11787348736065937792382751628962761115476684537051248968393278075380426303238, 1 ]<br>
+protocol = "groth16", curve = "bn128"
+</div>
+
+<h3>A.3 The seven public signals</h3>
+
+<table>
+<tr><th>#</th><th>Signal</th><th>Value</th></tr>
+<tr><td class="n">0</td><td><span class="m">N</span>, nullifier (output)</td><td><span class="m bk">14824683023501643632115653304856446903925650282274056340992344805449552618966</span></td></tr>
+<tr><td class="n">1</td><td><span class="m">y</span>, RLN share (output)</td><td><span class="m bk">6245802399600452304690568138657552093742378804302159597634167049696237901356</span></td></tr>
+<tr><td class="n">2</td><td><span class="m">root</span>, tree root for epoch_tree (input)</td><td><span class="m bk">20550735135605091646947741900747264636731978524347924805314550072189850280242</span></td></tr>
+<tr><td class="n">3</td><td><span class="m">ctx</span>, context (input)</td><td><span class="m bk">987654321</span></td></tr>
+<tr><td class="n">4</td><td><span class="m">epoch_action</span> (input)</td><td><span class="m bk">11</span></td></tr>
+<tr><td class="n">5</td><td><span class="m">epoch_tree</span> (input)</td><td><span class="m bk">7</span></td></tr>
+<tr><td class="n">6</td><td><span class="m">signalHash</span> (input)</td><td><span class="m bk">143108474036684829574744961435355602015188502350286015805048154501691818351</span></td></tr>
+</table>
+<p class="cap"><strong>Table 10.</strong> That is the whole disclosure. There is no eighth signal. The commitment <span class="m">C</span>, the secret
+<span class="m">s</span>, the Merkle path, and every attester identity are private
+witnesses with no output wire. The verification key reports
+<span class="m">nPublic = 7</span>. Signal 4 is <span class="m">epoch_action</span>, signal 5 is <span class="m">epoch_tree</span>, and the nullifier at signal 0 is <span class="m">Poseidon(s, ctx, epoch_action)</span> with no dependence on <span class="m">epoch_tree</span>.</p>
+
+<h3>A.4 Verification transcript</h3>
+
+<div class="note m" style="font-size:8.4pt;">
+VERIFY: true &nbsp;&nbsp; TAMPERED: false &nbsp;&nbsp; nPublic: 7 &nbsp;&nbsp; proveMs: 849 &nbsp;&nbsp; verifyMs: 15
+</div>
+
+<p>
+<span class="m">VERIFY: true</span> is
+<span class="m">snarkjs.groth16.verify(vkey, publicSignals, proof)</span> on the proof
+above. <span class="m">TAMPERED: false</span> is the negative control: incrementing
+public signal 0 by one and re-verifying the same proof. It is rejected. A verifier
+that accepts both is broken, so the negative control matters as much as the positive
+one. Timings are Node on an i7-9850H and are not the handset figures from Section 5.
+</p>
+
+<h3>A.5 Cross-engine equivalence</h3>
+
+<p>
+The split circuit was proved by two engines on desktop: snarkjs, and rapidsnark
+compiled to WebAssembly (the same C++ prover from Section 5.4, run in Node).
+Comparing the two outputs
+(<span class="m">scripts/xengine_split_check.mjs</span>):
+</p>
+
+<table>
+<tr><th>Comparison</th><th>Result</th><th>Expected</th></tr>
+<tr><td>public signals, all 7, byte-for-byte</td><td>identical</td><td>yes; the statement is the same</td></tr>
+<tr><td><span class="m">pi_a[0]</span>, snarkjs</td><td><span class="m">218834494306333257751695454936&hellip;</span></td><td>&mdash;</td></tr>
+<tr><td><span class="m">pi_a[0]</span>, rapidsnark&rarr;WASM</td><td><span class="m">967877403452917643565710914541&hellip;</span></td><td>differs; Groth16 proofs are randomised</td></tr>
+<tr><td>both verify against the same 7-signal vkey</td><td>true</td><td>yes</td></tr>
+</table>
+<p class="cap"><strong>Table 11.</strong> Identical public signals with different
+group elements is the correct outcome. Groth16 proofs are randomised, so two proofs
+of the same statement differ. Equivalence is established by both verifying under one
+verification key against the same public signals, not by the proofs matching. The
+<span class="m">pi_a[0]</span> values shown are from one run and change on every
+run. rapidsnark native (arm64) was validated this way on the pre-split circuit on
+the A12 and is not re-run here; the equivalence argument is engine-independent.</p>
+
+<h3>A.6 Regenerating this appendix</h3>
+
+<div class="note m" style="font-size:8.4pt;">
+npm install<br>
+node scripts/build.mjs&nbsp;&nbsp;<span style="font-family:Times">// compiles wedge_mem_w8_d9_split (Step 2); constraint counts in Table 2</span><br>
+node scripts/test_rln_burn.mjs&nbsp;&nbsp;<span style="font-family:Times">// the burn invariant: 15 assertions, all green</span><br>
+node scripts/xengine_split_check.mjs&nbsp;&nbsp;<span style="font-family:Times">// cross-engine equivalence, Table 11</span><br>
+node integration/run.mjs&nbsp;&nbsp;<span style="font-family:Times">// OIDC + VP drop-in, 10 assertions</span><br>
+node paper/mkproof.mjs&nbsp;&nbsp;<span style="font-family:Times">// the proof and transcript in A.1 to A.4</span>
+</div>
+
+<hr>
+
+<p style="font-size:9pt;">
+<strong>Reproducing the measurements.</strong> Every figure in Section 5 traces to a
+JSON capture in <span class="m">results/</span> in the accompanying repository.
+<span class="m">scripts/repro_build.mjs --double</span> proves the deployed prover is
+byte-identical to a clean compile of the published circuits.
+<span class="m">scripts/bench_rapidsnark.mjs</span>,
+<span class="m">scripts/bench_wasmprover.mjs</span>,
+<span class="m">scripts/bench_attrib_native.mjs</span> and
+<span class="m">scripts/bench_attrib_wasm.mjs</span> reproduce Tables 4 and 5 over
+adb on an Android device. <span class="m">scripts/measure_phone_rss.mjs</span>
+reproduces Table 3. <span class="m">docs/EVALUATION.md</span> is a walkthrough for a
+reviewer verifying the core claims independently.
+</p>
