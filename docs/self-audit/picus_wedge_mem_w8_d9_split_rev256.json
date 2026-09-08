@@ -1,3 +1,3 @@
-{"caller":"picus/reader.rkt:104:12","level":"WARNING","logger_name":"picus","msg":"/mnt/d/BREAKTHROUGH/sybil-wedge-bench/build/wedge_mem_w8_d9_split_rev256.sym does not exist","timestamp":"2026-09-04T16:45:38"}
+{"caller":"picus/reader.rkt:104:12","level":"WARNING","logger_name":"picus","msg":"<repo>/build/wedge_mem_w8_d9_split_rev256.sym does not exist","timestamp":"2026-09-04T16:45:38"}
 {"caller":"picus.rkt:275:5","level":"INFO","logger_name":"picus","msg":"The circuit is properly constrained","timestamp":"2026-09-04T16:45:38"}
 {"caller":"picus/exit.rkt:19:2","level":"INFO","logger_name":"picus","msg":"Exiting Picus with the code 8","timestamp":"2026-09-04T16:45:38"}

@@ -15,19 +15,19 @@ Exiting Picus with the code 8
 #### exit: 0
 
 #### Picus: wedge_mem_w8_d9_split_rev256   (z3, 60000ms/query)
-/mnt/d/BREAKTHROUGH/sybil-wedge-bench/build/wedge_mem_w8_d9_split_rev256.sym does not exist
+<repo>/build/wedge_mem_w8_d9_split_rev256.sym does not exist
 The circuit is properly constrained
 Exiting Picus with the code 8
 #### exit: 0
 
 #### Picus: wedge_mem_w8_d9_split_rev1024   (z3, 90000ms/query)
-/mnt/d/BREAKTHROUGH/sybil-wedge-bench/build/wedge_mem_w8_d9_split_rev1024.sym does not exist
+<repo>/build/wedge_mem_w8_d9_split_rev1024.sym does not exist
 The circuit is properly constrained
 Exiting Picus with the code 8
 #### exit: 0
 
 #### Picus: wedge_mem_w8_d9   (z3, 30000ms/query)
-/mnt/d/BREAKTHROUGH/sybil-wedge-bench/build/wedge_mem_w8_d9.sym does not exist
+<repo>/build/wedge_mem_w8_d9.sym does not exist
 The circuit is properly constrained
 Exiting Picus with the code 8
 #### exit: 0
@@ -38,9 +38,9 @@ Exiting Picus with the code 8
 #### exit: 0
 
 ======================================================================
-      1 /mnt/d/BREAKTHROUGH/sybil-wedge-bench/build/wedge_mem_w8_d9.sym does not exist
-      1 /mnt/d/BREAKTHROUGH/sybil-wedge-bench/build/wedge_mem_w8_d9_split_rev1024.sym does not exist
-      1 /mnt/d/BREAKTHROUGH/sybil-wedge-bench/build/wedge_mem_w8_d9_split_rev256.sym does not exist
+      1 <repo>/build/wedge_mem_w8_d9.sym does not exist
+      1 <repo>/build/wedge_mem_w8_d9_split_rev1024.sym does not exist
+      1 <repo>/build/wedge_mem_w8_d9_split_rev256.sym does not exist
       6 Exiting Picus with the code 8
       6 The circuit is properly constrained
 

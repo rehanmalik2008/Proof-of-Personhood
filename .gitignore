@@ -18,6 +18,8 @@ scratch_mem/
 # ...but DO publish the verification keys: they are small, they are what a
 # verifier actually needs, and without them nobody can check a proof.
 !build/*_vkey.json
+# ...and the note explaining what is / isn't committed from build/.
+!build/README.md
 
 # The browser demo in web/ IS published (wasm + evaluation-only zkeys + vkeys)
 # so the "verify it yourself" quickstart works out of the box. See web/README.md
@@ -34,6 +36,10 @@ PARTNER-BRIEF.md
 **/playing-against-giants.md
 **/surviving-due-diligence.md
 
+# mutation-testing and ceremony-test scratch (regenerate with the scripts)
+.mut/
+.ceremony-test/
+
 # paper build intermediates (the PDF itself IS committed)
 paper/_built.html
 paper/_chart*.svg
@@ -42,3 +48,14 @@ paper/_appendixA.txt
 paper/_figs.*
 paper/_vp.txt
 paper/_paperproof.json
+
+# self-audit circuit fixtures (regenerate: node scripts/build_selfaudit_circuits.mjs)
+circuits/prln_in.json
+build/multipoint/
+
+# Anonymised paper build for double-blind review — MUST NOT be published:
+# it sits in the same repo as the author byline, AUTHORS, and NOTICE, so
+# publishing it defeats the blind. Regenerate locally with paper/build_anon.mjs.
+paper/*anon*
+paper/proof-of-personhood-anonymous.pdf
+paper/build_anon.mjs
