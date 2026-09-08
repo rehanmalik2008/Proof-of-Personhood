@@ -254,14 +254,28 @@ have the properties claimed in §2 and MUST NOT describe itself as providing the
    audits (constraint soundness / under-constrained signals), plus a review of the
    tree-maintenance and nullifier/RLN code, MUST be completed before any
    production deployment. A formal-soundness pass SHOULD be done where feasible.
-   A **self-audit** has been run (`docs/SELF-AUDIT.md`): Picus 138b151 (Veridise,
-   SMT) returns *"the circuit is properly constrained"* for all six deployed
-   circuits; circomspect 0.9.0 is clean on the instantiated entrypoints (two
-   explained WARNING classes on the symbolic templates); a manual footgun pass;
-   and a 24-check adversarial witness harness
-   (`scripts/test_soundness_adversarial.mjs`) that tampers witnesses against a
-   malicious prover. No soundness bug found. This strengthens the evidence; it is
-   **not** an independent audit and does not satisfy this requirement.
+   A **self-audit** has been run (`docs/SELF-AUDIT.md`). A linear-time
+   **structural forward-determination walk** (`scripts/forward_determination.mjs`)
+   shows every signal, and both public outputs, uniquely determined by the inputs
+   except 72 `IsZero` `<--` hint signals proved to influence no public output —
+   **no solver, no `Poseidon` assumption, no linearization bound**. Corroborated
+   by a tool-independent **two-witness search** at **56 structurally diverse
+   honest witnesses** (its 9 free directions at the deployed witness are exactly
+   the 9 hints free there); a **taint analysis** proving those hints benign; and
+   a **finite-field SMT proof** (cvc5 + CoCoALib, `QF_FF`) that `N`, `y` are
+   uniquely determined with every input symbolic. Picus and cvc5-FF both stall on
+   any circuit with a real `Poseidon` — the structural method exists because they
+   attack a structural property semantically. circomspect 0.9.0 is clean on the instantiated entrypoints; a
+   manual footgun pass; and a 27-check adversarial harness including a
+   null-space-directed layer. **Picus returns *properly constrained* but could
+   not be validated as an oracle for this circuit** (it returns *unknown* or does
+   not terminate on known-under-constrained circuits of the same structure), so
+   its verdict counts only alongside the two-witness search. Mutation testing
+   found one genuine under-constraint in a mutant (a freed nullifier) that the
+   old harness layer missed and the null-space-directed layer catches. No
+   soundness bug in the deployed circuits. This is evidence, **not** an
+   independent audit; it makes one cheaper and better targeted and does not
+   satisfy this requirement.
 
 8. **Revocation latency disclosure (MUST).** The deployment MUST publish its
    effective revocation latency, which is `≥ w` epochs (§5, `w`), and MUST NOT
@@ -325,8 +339,10 @@ exactly the reviewers a large deployment brings.
 |---|---|
 | GDPR right-to-erasure vs. append-only tree | **open legal** — RLN burn + revocation set is the proposed mechanism; needs a counsel memo confirming it satisfies erasure for `N`-as-pseudonymous-data. |
 | Data residency of the broadcast / root-publication state | **open** — needs a per-jurisdiction story. |
-| Formal-methods soundness pass on the circuit | **open** — recommended before production (§6.7). A **self-audit** is done (`docs/SELF-AUDIT.md`): Picus (SMT, Veridise) returns *properly constrained* for all six deployed circuits; circomspect clean on the instantiated entrypoints; a manual footgun pass; and a 24-check adversarial witness harness. No soundness bug found. A solver verdict bounded by its query timeout is not a proof-assistant artifact, and none of this is a substitute for §6.7. |
-| Independent circuit audits (Gate 1) | **open** — self-audit strengthens the evidence (above); ≥ 2 independent external reviews still required before production. |
+| Formal-methods soundness pass on the circuit | **open** — recommended before production (§6.7). A **self-audit** is done (`docs/SELF-AUDIT.md`): a linear-time **structural forward-determination walk** shows every signal and both public outputs uniquely determined by the inputs except 72 `IsZero` `<--` hints proved benign — no solver, no assumption, no linearization. Corroborated by a 56-point two-witness search, a taint proof, and a finite-field SMT proof. circomspect clean; a manual footgun pass; a 27-check adversarial harness. **Picus and cvc5-FF both stall on real `Poseidon`.** No soundness bug in the deployed circuits. Not a substitute for §6.7. |
+| Independent circuit audits (Gate 1) | **open**, and after v1.2 *further from closure than it looked*. Self-audit: a **structural forward-determination walk** (`scripts/forward_determination.mjs`) proves every signal and both public outputs uniquely determined by the inputs except 72 `IsZero` `<--` hints that no output reads — solver-free, no `Poseidon` assumption, no linearization bound; detects the `<--` bug class (M1a) structurally. Corroborated by the 56-point two-witness search (its 9 free directions == the 9 hints free at the deployed witness), a taint proof, and a finite-field SMT proof (cvc5+CoCoALib). **Picus and cvc5-FF both stall on any circuit with a real `Poseidon`.** ≥ 2 independent external reviews still required; this work only makes them cheaper, and even a full determination proof is one failure mode an audit examines, not all. |
+| Simulated memory ceiling (Gate 3 supporting evidence) | **done (v1.2), does not close the gate** — under a hard cgroup cap with swap disabled the prover completes and verifies down to **336 MB** and is OOM-killed at **320 MB** (`docs/self-audit/mem_ceiling_results.txt`). Simulated on desktop x86; Gate 3 names a *device*, not a memory ceiling. The next step closer — an Android emulator at 2–3 GB (real OS, real memory manager) — is scripted (`scripts/wsl_setup_avd.sh`, `docs/self-audit/gate3_android_emulator.md`) but was not run: the build host could not reach the Android SDK endpoint. |
+| Trusted-setup ceremony coordinator (Gate 5) | **built and tested (v1.2), ceremony not run** — sequential pipeline with `verifyFromInit` plus a byte-exact extends-head check, hash-chained append-only transcript, beacon finalization; 27 assertions including 6 adversarial submissions (`docs/CEREMONY.md`). **Circuit set frozen for v1.2** (`CIRCUIT-FREEZE.md`); **run-book written** (`docs/CEREMONY-RUNBOOK.md`). Still not run: a ceremony is only worth running with contributors genuinely independent of each other and the project. Shipped keys stay evaluation-only; Gate 5 stays Open. |
 | Persistent pseudonymous accounts (epoch-independent pairwise id) | **not built** — ~255-constraint circuit addition; no new crypto. |
 | Separating the rate-limit epoch from the tree epoch | **done (v1.1)** — `epoch` split into `epoch_action` + `epoch_tree`, zero added constraints, nPublic 6 → 7; RLN burn binds to `epoch_action` only. |
 | Multi-source root consistency (was: only detectable after the fact) | **done (v1.1)** — client cross-checks the chained head across `N` independent sources before proving and before accepting, fails closed on disagreement or below quorum (`integration/lib/root_consistency.mjs`, 11 assertions). Full eclipse (N6) stays open. |

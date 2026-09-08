@@ -26,13 +26,53 @@ property. It has not been independently reviewed and has never been deployed.**
 | Proving keys in this repo | **evaluation only.** Throwaway single-contribution trusted setup. A compromised setup breaks *soundness*. Never use them for anything real — [`supply-chain/TRUSTED-SETUP.md`](supply-chain/TRUSTED-SETUP.md). |
 | The economic parameter β | **never measured** against a live application. Every figure in the economics section is an estimate. |
 
-A **self-audit** of the constraint system is published in full
-([`docs/SELF-AUDIT.md`](docs/SELF-AUDIT.md)): Picus (SMT) reports every deployed
-circuit *properly constrained*, circomspect is clean on the instantiated
-entrypoints, a manual footgun pass is documented per template, and a 24-check
-adversarial witness harness finds no soundness bug. **That is evidence, not an
-audit.** Self-audit does not close Gate 1 and the word "audited" is not used
-anywhere in this project.
+**Of six production gates, one is closed; Gate 1 gained a tool-independent
+under-constraint check that also clarified how far it still is from closure; Gates
+3 and 5 gained measured evidence. The remaining work is external and scoped.** No
+gate moved, and none is presented as closed.
+
+- **Gate 1.** A [self-audit](docs/SELF-AUDIT.md) found no soundness bug in the
+  deployed circuits. A linear-time
+  [structural forward-determination walk](docs/self-audit/forward_determination.md)
+  — no solver, no `Poseidon` assumption, no linearization — establishes that
+  **every signal, and both public outputs, is uniquely determined by the inputs
+  except 72 `IsZero` `<--` hint signals** that no public output reads. Three
+  prior methods corroborate: a tool-independent
+  [two-witness search](scripts/two_witness_search.mjs) at
+  [56 structurally diverse witnesses](docs/self-audit/two_witness_multipoint.md)
+  (its 9 free directions at the deployed witness are exactly the 9 hints free
+  there); those hint freedoms
+  [proved benign](docs/self-audit/taint_iszero.md) by a taint analysis; and a
+  [finite-field SMT proof](docs/self-audit/ff_smt.md) (cvc5 + CoCoALib) that `N`
+  and `y` are uniquely determined with every input symbolic. Picus and cvc5-FF
+  both **stall on any circuit with a real `Poseidon`** — the structural method
+  exists precisely because they attack a structural property semantically
+  (packaged for the Picus maintainers in
+  [docs/self-audit/picus-upstream-report.md](docs/self-audit/picus-upstream-report.md)).
+  [Mutation testing](docs/self-audit/mutation_table.md), filtered by the
+  two-witness search to genuine signal-level under-constraints, has a denominator
+  of **one**: M1a, a freed nullifier — a real, exploitable under-constraint that
+  circomspect catches syntactically and the old signal-at-a-time harness missed
+  (a null-space-directed harness layer now catches that class). The deployed
+  circuit has no such defect. **Unique determination is one soundness property.**
+  It does not establish that the circuit computes the *intended* function —
+  nullifier correctness, the RLN burn semantics, logic errors in *what* is
+  constrained — which is what an external audit additionally checks. The new work
+  makes an audit faster and better-targeted; it does not predict its outcome, and
+  Gate 1 is understood as *further* from closure than it first looked.
+  **Evidence, not an audit.** The word "audited" is not used anywhere in this
+  project.
+- **Gate 3.** Under a hard cgroup memory cap with swap disabled, the prover
+  completes and verifies down to **336 MB** and is OOM-killed at **320 MB**
+  ([results](docs/self-audit/mem_ceiling_results.txt)). Simulated on desktop x86;
+  the gate names a *device*, so it stays open pending a physical ≤3 GB handset.
+- **Gate 5.** The trusted-setup [ceremony coordinator](docs/CEREMONY.md) is built
+  and tested: 27 assertions, six adversarial submissions rejected, two real
+  coordinator bugs found and fixed. The circuit set is now
+  [frozen for v1.2](CIRCUIT-FREEZE.md) and the run-book is written
+  ([docs/CEREMONY-RUNBOOK.md](docs/CEREMONY-RUNBOOK.md)), but the ceremony has
+  **not** been run — it needs genuinely independent human contributors. The
+  shipped keys remain evaluation-only until it is; Gate 5 stays Open.
 
 ### Production gates — five of six are open
 
@@ -42,11 +82,11 @@ than open research; none is a cryptographic unknown. Full detail:
 
 | # | Gate | Status |
 |---|---|---|
-| 1 | ≥2 independent circuit audits | **Open** — audit-*ready*, not audit-*ed*. Self-audit run; it does not substitute. |
+| 1 | ≥2 independent circuit audits | **Open**, and further from closure than it looked. A linear-time structural forward-determination walk (no solver, no assumption) shows every signal and both public outputs uniquely determined by the inputs except 72 `IsZero` `<--` hints that no output reads; corroborated by a 56-point two-witness search, a taint proof of the hints, and a finite-field SMT proof (cvc5+CoCoALib). Picus and cvc5-FF both stall on real `Poseidon`. circomspect clean; mutation testing found one genuine under-constraint in a mutant (M1a). Makes an external audit cheaper and better targeted; does not substitute for it — a full determination proof is one failure mode an audit examines, not all of them. |
 | 2 | GDPR right-to-erasure legal memo | **Open** — append-only tree vs. a deletion right. Blocks EU deployment. |
-| 3 | Peak RSS + p95 on a ≤3 GB device | **Open** — the measured device is 3.75 GB. Strong evidence, not closure. |
+| 3 | Peak RSS + p95 on a ≤3 GB device | **Open** — the measured device is 3.75 GB. Simulated ceiling: passes at 336 MB, OOM at 320 MB. An Android emulator at 2–3 GB (right OS, real memory manager) is scripted (`scripts/wsl_setup_avd.sh`) but was not run here — the build host could not reach the Android SDK endpoint. Evidence, not closure. |
 | 4 | IP indemnification / liability structure | **Open** |
-| 5 | Trusted-setup ceremony (or transparent-setup migration) | **Open, disclosed** — current keys are evaluation-only |
+| 5 | Trusted-setup ceremony (or transparent-setup migration) | **Open, disclosed** — current keys are evaluation-only. Coordinator built and tested; ceremony not run. |
 | 6 | Attester-level revocation | **Closed (v1.1)** — both paths implemented, measured, tested |
 
 Stated falsification criteria, written in advance so they cannot be moved later,
@@ -64,14 +104,14 @@ npm install                                   # pinned toolchain: Node 24.14.0, 
 node scripts/build.mjs                        # compile + Groth16 setup + self-verified inputs (~18 min)
 
 node scripts/repro_build.mjs --double         # A: two clean builds are byte-identical
-npm test                                      # B/C/G: 72 assertions across 5 suites (below)
+npm test                                      # B/C/G: 75 assertions across 7 suites (below)
 node scripts/bench_node.mjs                   # constraint counts + desktop prove times, every circuit
-node scripts/test_soundness_adversarial.mjs   # G: 24 adversarial witnesses, all must be rejected
+node scripts/test_soundness_adversarial.mjs   # G: 27 adversarial checks incl. null-space-directed Layer C
 ```
 
 `npm test` runs, in order: `test_rln_burn` (15) · `test_root_consistency` (11) ·
-`test_revocation` (9) · `test_soundness_adversarial` (24) · `xengine_split_check`
-· `integration/run` (13).
+`test_revocation` (9) · `test_soundness_adversarial` (27) · `two_witness_search` ·
+`xengine_split_check` · `integration/run` (13).
 
 | track | what it proves | time |
 |---|---|--:|
@@ -81,12 +121,12 @@ node scripts/test_soundness_adversarial.mjs   # G: 24 adversarial witnesses, all
 | D — phone performance | the on-device numbers reproduce (needs an Android + `adb`) | 20 min |
 | E — cross-engine equivalence | snarkjs / C++→WASM / rapidsnark all verify against one vkey, identical public signals | 5 min |
 | F — revocation & multi-source roots | Gate 6 both paths; client fails closed on root disagreement or below quorum | 10 min |
-| G — soundness self-audit | 24 adversarial witnesses rejected; Picus + circomspect clean | 10 min |
+| G — soundness self-audit | 27 adversarial checks (incl. null-space-directed) rejected; two-witness search at 56 points finds no defect in the deployed circuit; 9 IsZero freedoms proved benign; circomspect clean; Picus unvalidated as an oracle here | 10 min |
 
 ## Read this first
 
 - **[paper/proof-of-personhood-without-a-registry.pdf](paper/proof-of-personhood-without-a-registry.pdf)**
-  — the public research paper (v1.1, 23 pages): the problem, the construction, the
+  — the public research paper (v1.2, 28 pages): the problem, the construction, the
   measured results *including the four failed optimisation paths*, what is not
   protected, the open gaps, the self-audit, and an appendix with a real proof and
   its verification transcript. Start here if you are reading rather than running.
@@ -227,7 +267,8 @@ PHONE-RSS.md              operator runbook for OS-level peak-RSS capture on a re
 docs/
   EVALUATION.md           reviewer quickstart — verify the core claims in under an hour
   SELF-AUDIT.md           adversarial self-audit: tools, commands, findings, unverified surface
-  self-audit/             raw analyzer output (circomspect SARIF + logs, Picus logs)
+  DISCOVERY-redundancy-heuristic.md   standalone note: exploitable under-constraints cluster at non-redundantly-determined signals
+  self-audit/             raw analyzer output + forward-determination, two-witness, taint, FF-SMT results
   research-history/       chronological research record, retractions included
 circuits/                 Groth16/BN254 circom sources; wedge_mem_w8_d9_split = the 4,309-constraint login
 scripts/                  build, benchmarks (node + on-device), repro build, SBOM, analyzers, tests
@@ -255,8 +296,23 @@ build/*_vkey.json         verification keys (the rest of build/ is regenerable a
 - Desktop prove-time absolutes vary with machine load; constraint counts are exact.
   On-device numbers are the authoritative ones.
 
+## Citing this work
+
+Author: **Rehan Malik** ([github.com/rehanmalik2008](https://github.com/rehanmalik2008)).
+The construction, circuits, and paper are original work; see [AUTHORS](AUTHORS).
+
+Cite with [`CITATION.cff`](CITATION.cff) — GitHub renders a "Cite this repository"
+button from it. It carries the software entry plus a `preferred-citation` for the
+paper. A permanent archival record (arXiv, and a Zenodo DOI cut from a GitHub
+release) is planned; once minted, its identifier goes in `CITATION.cff` and here.
+
+The first public, timestamped release is **v1.1 (2026-09-04)** — git history and
+the [GitHub release](https://github.com/rehanmalik2008/Proof-of-Personhood/releases/tag/v1.1)
+are the verifiable record. This repository and the paper are a public disclosure
+and constitute prior art for the construction (see [NOTICE](NOTICE)).
+
 ## License
 
-Apache-2.0, with the §3 patent grant. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
-This licence choice is committed irrevocably in MASTER-SPECIFICATION §7: no BSL,
-no SSPL, no future relicense.
+Apache-2.0, with the §3 patent grant. Copyright 2026 Rehan Malik. See
+[LICENSE](LICENSE) and [NOTICE](NOTICE). This licence choice is committed
+irrevocably in MASTER-SPECIFICATION §7: no BSL, no SSPL, no future relicense.

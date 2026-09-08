@@ -1,4 +1,7 @@
 Sybil-Wedge — private proof-of-personhood login
+Proof of Personhood Without a Registry
+
+Copyright 2026 Rehan Malik (github.com/rehanmalik2008).
 
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use
 these files except in compliance with the License. A copy of the License is in
@@ -8,6 +11,25 @@ the file LICENSE in this directory, and at:
 
 This covers the specification, the circuits, the reference implementation, the
 benchmark harnesses, and the documentation in this repository.
+
+AUTHORSHIP AND CITATION
+
+The construction, the circuits, and the paper are the original work of Rehan
+Malik. If you use them, cite the work: see CITATION.cff (and its
+preferred-citation for the paper). Attribution must be preserved under
+Apache-2.0 sections 4(c) and 4(d); this NOTICE file and the paper's byline are
+the attribution notices for that purpose.
+
+PRIOR ART / DEFENSIVE PUBLICATION
+
+This repository and the accompanying paper are a public, timestamped disclosure
+of the construction. The first public release is tagged v1.1 and dated
+2026-09-04 (git history and the GitHub release are the verifiable record);
+earlier design notes are in docs/research-history/. As a public disclosure, this
+material is prior art: it is intended to prevent any party, including later
+contributors, from obtaining patent claims over the construction disclosed here.
+Section 3 of the Apache License additionally grants an irrevocable patent
+license over the contributions in this repository (see PATENT GRANT below).
 
 PATENT GRANT
 

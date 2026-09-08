@@ -28,21 +28,62 @@ system, a manual footgun pass, and an adversarial witness harness that
 constructs the witnesses an honest generator never would and checks the circuit
 rejects them.
 
-**Result summary:** no soundness bug was found.
+**This document was written across several rounds.** Sections 1-10 are the
+original program (`auditing-yourself-honestly.md`). Section 11 is later work:
+mutation testing (`closing-what-code-can-close.md`), a tool-independent
+two-witness search (`what-the-mutation-test-proved.md`) that revised two of the
+earlier claims, then multi-point probing, a taint proof and compositional
+verification (`after-the-oracle.md`, section 11.6), a finite-field SMT encoding
+(`the-last-technical-frontier.md`, section 11.7), and finally a **linear-time
+structural forward-determination walk** that makes the determination result
+solver-independent and unconditional (`the-structural-argument.md`, section 11.8).
+**Read section 11 before trusting the summary below.**
 
-- **Picus** (Veridise; SMT-based under-constrained detection) returns **"the
-  circuit is properly constrained"** (exit code 8 = *safe*) for **all six
-  deployed circuits** — the split login circuit, all three split revocation
-  variants, the pre-split login circuit, and the 13,099-constraint enrolment
-  circuit. No timeouts, no *unknown*. This is a solver result that every output
-  signal is uniquely determined by the inputs, not a linter pass.
-- **circomspect** (Trail of Bits) reports **nothing at any level on the
-  instantiated entrypoints**, and two WARNING classes on the parameter-symbolic
-  templates, both explained below with reasoning (one is a documented verifier
-  obligation on `epochTree`, one is the canonical safe inverse-hint pattern).
-- The **adversarial harness** (`scripts/test_soundness_adversarial.mjs`, 24
-  checks) shows each stated security property is enforced by a constraint that a
-  tampered witness cannot satisfy, tested against a malicious prover.
+**Result summary, as qualified by section 11:** the deployed circuit is **proven
+uniquely determined** — **every signal, and both public outputs, is pinned by the
+constraints except 72 `IsZero` `<--` hint signals proved to influence no public
+output** (section 11.8, `forward_determination.md`; solver-independent, no
+`Poseidon` assumption, no linearization bound, no probe count; corroborated by
+three prior methods). Unique determination is **one** soundness property. It does
+**not** establish that the circuit computes the intended function — nullifier
+correctness, the RLN burn semantics, logic errors in *what* is constrained — which
+is what an external audit additionally checks. This makes an audit faster and
+better-targeted; it does not predict its outcome, and it does not close Gate 1.
+
+- **Forward-determination** (`scripts/forward_determination.mjs`, section 11.8):
+  a linear-time structural walk of the constraint graph. On an `--O1` build of
+  the deployed circuit, every signal is uniquely determined by division except
+  the 72 `IsZero.inv` `<--` hints; **`N` and `y` are determined** with no solver
+  and no assumption. Cross-checks with the null-space search (the 9 free at the
+  deployed witness are exactly the 9 null-space directions). This is the primary
+  determination result; the three below corroborate it.
+- **Two-witness search** (`scripts/two_witness_search.mjs`, sections 11.4b / 11.6):
+  on the deployed circuit, no second satisfying witness moves a public output,
+  within a stated bound (linear null space plus exact non-linear re-check) — now
+  run at **56 structurally diverse honest witnesses** with a stable null-space
+  dimension of 9 and no public-output move at any point. The `IsZero`-hint
+  freedoms are **proved benign** by a taint analysis (`scripts/taint_iszero.mjs`),
+  not merely explained. A compositional argument
+  (`scripts/compositional_verify.mjs`) reduces the whole-circuit question to the
+  single assumption that circomlib `Poseidon` uniquely determines its output. On
+  the abstraction, a finite-field SMT encoding (`scripts/ff_smt_two_witness.mjs`,
+  cvc5+CoCoALib) then proves the two public outputs `N`, `y` **uniquely
+  determined with no linearization bound at all** (section 11.7).
+- **Picus** (Veridise, SMT): returns *properly constrained* for all six deployed
+  circuits. **This is a claim by a tool that could not be shown to detect a known
+  under-constraint in a circuit of this structure** (section 11.4c): it returns
+  *unknown* on a small Poseidon-plus-RLN circuit with a freed output and does not
+  terminate on the full circuit with the same defect. The verdict carries weight
+  only next to the two-witness search, which agrees.
+- **circomspect** (Trail of Bits): nothing at any level on the instantiated
+  entrypoints; two WARNING classes on the symbolic templates, both explained (a
+  documented `epochTree` verifier obligation, and the canonical safe inverse-hint).
+- **Adversarial harness** (`scripts/test_soundness_adversarial.mjs`, 27 checks):
+  each stated property enforced by a constraint a tampered witness cannot satisfy.
+  Its old signal-at-a-time layer missed a coordinated multi-signal under-constraint
+  (M1a); a null-space-directed Layer C (`scripts/nullspace_harness.mjs`, section
+  11.6) now perturbs along the null-space basis and random combinations of it and
+  catches that class.
 
 Remaining unverified surface is listed in section 7.
 
@@ -77,7 +118,7 @@ be a soundness hole *if it were deployed* — it is not), `wedge_core.circom`
 Static analyzers for Circom are Rust/Racket tools with no Windows build. The host
 is Windows 11 with no Visual Studio and only Git-Bash (no C compiler), so the
 analysis ran inside the machine's **WSL2 Ubuntu-22.04**, with the repository
-bind-mounted read-only-in-practice at `/mnt/d/BREAKTHROUGH/sybil-wedge-bench`.
+bind-mounted read-only-in-practice at `<repo>`.
 
 ```
 WSL2 kernel           6.6.87.2-microsoft-standard-WSL2
@@ -113,7 +154,7 @@ Re-run, from the repo root on a Linux box (or WSL):
 
 ```bash
 cargo install circomspect
-bash scripts/run_circomspect.sh          # adjust REPO= path inside if not /mnt/d/...
+bash scripts/run_circomspect.sh          # adjust REPO= path inside if not <repo>/...
 bash scripts/run_circomspect_warn.sh
 node scripts/test_soundness_adversarial.mjs
 ```
@@ -625,3 +666,411 @@ basename, `main_mem_w8_d9_split.sym`, and a Picus-friendly alias,
 `wedge_mem_w8_d9_split.sym`); regenerate with
 `circom2 <src>.circom --sym --O2 -o . -l . -l ../node_modules/circomlib/circuits`
 from `circuits/`.
+
+---
+
+## 11. Mutation testing: does this process actually catch bugs?
+
+*(added v1.2, `closing-what-code-can-close.md` §1)*
+
+Section 8 claims three methods agree that no under-constrained signal was found.
+That is consistent with two different worlds: a genuinely sound circuit, or a
+circuit whose bug all three methods happen to miss. Nothing in section 3 or 5
+distinguishes them, because **none of those tools had ever been shown to catch a
+bug in these circuits.**
+
+Mutation testing distinguishes them. `scripts/mutation_test.mjs` injects a known
+bug into a copy of a deployed circuit, compiles it, and asks each method whether
+it notices. The output is not "the circuit is sound" but **"here is exactly which
+bug classes this process would and would not catch."**
+
+```bash
+node scripts/mutation_test.mjs                  # ~90 min; per mutant: compile + 3 analyses
+node scripts/mutation_test.mjs --only=M4a --keep
+```
+
+Each mutation is applied by exact-string replacement that **throws unless the
+anchor matches exactly once**, so a mutation that silently failed to apply can
+never be scored as "undetected". That guard caught a real methodology error during
+development: two anchors matched both `ResidualSplit` (deployed) and the v1.0
+`Residual` template (not deployed), and would have mutated dead code.
+
+### 11.1 The detection-rate table
+
+Full per-mutant detail: [`self-audit/mutation_table.md`](self-audit/mutation_table.md).
+
+Read "caught" as *the method produced a signal*, not as *an exploitable bug
+existed*. Section 11.2 shows one mutant is behaviourally identical to the original;
+section 11.4 restricts the denominator to the one mutant a two-witness search
+proves is a genuine under-constraint (M1a), and reports the detection rate over
+that.
+
+| | mutants | caught |
+|---|--:|--:|
+| **any of the three methods** | 10 | **9** |
+| circomspect | 10 | 7 |
+| adversarial harness | 10 | 6 |
+| Picus | 10 | 0 (see 11.3) |
+
+| mutant | injected bug | circomspect | Picus | harness |
+|---|---|---|---|---|
+| M1a | `<==` to `<--` on the nullifier `N` | **caught** | inconclusive | missed |
+| M1b | `<==` to `<--` on the commitment `C` | **caught** | missed | missed |
+| M2 | pathIndex range check `selAcc[i][W] === 1` deleted | missed | missed | missed |
+| M3 | root compared against `cur[depth-1]` | missed | missed | **caught** |
+| M4a | `ctx` dropped from the nullifier hash | **caught** | missed | **caught** (A7b) |
+| M4b | `epoch_action` dropped from the nullifier hash | **caught** | missed | missed |
+| M5 | `epoch_action` aliased to `epoch_tree` | **caught** | missed | **caught** (A6b) |
+| M6 | RLN share no longer depends on `signalHash` | **caught** | missed | **caught** (E2, E3) |
+| M7 | in-circuit non-membership constraint deleted | **caught** | missed | **caught** (A8, B5) |
+| M8 | EdDSA verifier disabled at enrolment | missed | missed | **caught** (A10, A11) |
+
+### 11.2 M2 is an equivalent mutant, not a detection gap
+
+M2 was the one mutant no method flagged. Before reporting it as a detection gap it
+was tested directly, and **it is not one.**
+
+Removing `selAcc[i][W] === 1` is what should let an out-of-range `pathIndex`
+through. It does not. Feeding `pathIndex = 8` and `pathIndex = 99` to the mutant's
+witness generator produces exactly the same rejection as the pristine circuit,
+from the same template. The surviving constraint `dotAcc[i][W] === cur[i]` already
+excludes it: with no slot selected the dot product is zero, which would require the
+running Merkle hash to be zero, and a Poseidon output equal to zero is a ~1/p
+event.
+
+`selAcc[i][W] === 1` is therefore **defence in depth rather than load-bearing**,
+and the mutant accepts and rejects exactly the same witnesses as the original. In
+mutation-testing terms it is an *equivalent mutant*, and equivalent mutants are not
+detection gaps. The constraint is free after `--O2` linear elimination (both
+circuits compile to 4,309 constraints) and **should stay**: it makes the intent
+explicit instead of resting on a probabilistic argument.
+
+**Reporting M2 as a surviving mutant would have been wrong**, and the automated
+runner did report it that way. What corrected it was a behavioural test, not a
+tool.
+
+### 11.3 Picus caught nothing, and mostly that is correct
+
+Picus decides **unique determination of outputs given inputs**. Most of these
+mutants leave the circuit perfectly determined and merely *wrong*: a nullifier that
+drops `ctx` is still a deterministic function of the inputs. Returning "properly
+constrained" for those is Picus behaving correctly inside its stated scope, not a
+miss. The same holds for M1b: with `C` unconstrained, the Merkle constraints and
+the public `root` still pin it, and the outputs `N` and `y` never depend on it.
+
+Two things are worth recording anyway.
+
+- **Picus's scope is narrower than a reader of section 3.2 might assume.** "All six
+  deployed circuits properly constrained" is a real result about under-constraint.
+  It says nothing about whether the circuit computes the intended function, and
+  nine of the ten bugs here are of the second kind.
+- **On the one mutant inside its scope, Picus produced no verdict.** M1a was run
+  twice: once it crashed inside `picus.rkt`, once it exceeded a 420 s wall-clock
+  cap. Picus is dramatically slower on a circuit that really is underconstrained,
+  because it keeps hunting for a counterexample: about 35 s on the pristine
+  circuit, still running after 20 minutes on M1a. A tool that cannot answer in
+  bounded time on the failure case is a limitation of the method, and is recorded
+  as inconclusive rather than as a detection.
+
+### 11.4 M1a: a genuine under-constraint, established only after two wrong intermediate calls
+
+M1a replaces `N <== hN.out` with `N <-- hN.out` in the deployed `ResidualSplit`.
+circomspect flags it syntactically. The adversarial harness passes 24/24. Picus
+returns no verdict (below).
+
+**This section has been wrong twice. The record is kept visible on purpose.**
+
+- **v1 (round 3, first pass):** inferred from the compiled circuit that the
+  nullifier was forgeable and that the harness missed a real bug. Right
+  conclusion, but the stated mechanism (single-signal coupling to `y`) was a
+  guess.
+- **v2 (round 3, retraction):** ran two hand forgeries — `N` alone, and `N`+`y`
+  keeping `y - s = N*signalHash` — saw both rejected, and withdrew the claim.
+  **This retraction was itself wrong.** The forgeries never perturbed the internal
+  product `a1x = N*signalHash`, so they could not have found the second witness
+  even though one exists.
+- **v3 (this round, two-witness search):** settled by the tool-independent oracle
+  `scripts/two_witness_search.mjs`. It computes the Jacobian null space of the
+  constraint system at the honest witness and re-checks each direction against the
+  full non-linear R1CS. On the M1a mutant it finds a **verified second witness**
+  that moves the coordinated triple `(main.res.a1x, main.N, main.y)` — and with it
+  the public nullifier `main.N`. `main.N` is under-constrained. The exploit is
+  concrete: a free nullifier means one credential yields unlimited distinct
+  pseudonyms, defeating the sybil property.
+
+| build | nullity vs pristine | verdict |
+|---|--:|---|
+| M1a, O1 | 10 (9 benign `IsZero.inv` + 1) | second witness moves `main.N`, `main.y` — **SOUNDNESS BUG** |
+
+The blind-spot claim in v1 is **reinstated**, now with a witness rather than an
+inference: the adversarial harness misses M1a because its Layer-B tests move one
+witness index at a time, and the second witness requires the three-signal move
+`(a1x, N, y)` that keeps every surviving constraint satisfied. `N`+`y` alone
+breaks `a1x === N*signalHash`; the harness never tries `a1x`.
+
+### 11.4b The nine other mutants are not signal-level under-constraints
+
+The two-witness search was run against the pristine circuit and every mutant that
+could be rebuilt. Results in `docs/self-audit/two_witness_results.md`.
+
+- **Pristine deployed circuit (O2 and O1):** no second witness moves a public
+  output. Nine second witnesses exist, all at `main.mk.eq[i][0].isz.inv` — the
+  `IsZero` hint, free because its comparator input is 0 and read by no public
+  signal. Benign by construction; the same freedom is in circomlib's own `IsZero`.
+- **M1b (`C <--`):** `C` stays pinned by the Merkle path against the public
+  `root`. `N`, `y` determined. Over-determined, not exploitable.
+- **M2:** equivalent mutant (11.2), confirmed behaviourally.
+- **M3 (`root === cur[depth-1]`):** the honest input does not satisfy the mutant
+  (`wtns.calculate` throws). Wrong-tree bug, not a signal freedom.
+- **M4a (`ctx` dropped):** `N`, `y` determined — a different, still-deterministic
+  function. M4b/M5/M6 are the same structural class (determined expression to
+  determined expression) and are marked reasoned, not individually rebuilt.
+- **M7 (non-membership constraint deleted):** `N`, `y` determined; only the benign
+  `IsZero.inv` directions. M7 widens the accepted **input** set (a revoked `C` now
+  proves) — a different bug class, caught by harness A8/B5.
+- **M8 (EdDSA `enabled <-- 0`):** `C`, `N`, `y` determined (elimination completed
+  at `--maxfill 4000`, 178 s). Same as M7: input-set widening, caught by A10/A11.
+
+**Filtered denominator = 1** (M1a). Over that one mutant: circomspect caught it
+syntactically, the adversarial harness missed it, Picus produced no verdict, the
+two-witness search caught it. The unfiltered "9 of 10 produced a signal" counted
+mutants that are mostly not exploitable.
+
+### 11.4c Picus could not be validated as an oracle for this circuit
+
+Per note falsification criterion 2. All runs with Racket 9.3 on PATH; crash and
+timeout treated as no-verdict, never as detection.
+
+| target | constraints | Picus | time | exit |
+|---|--:|---|--:|--:|
+| self-test `out <-- x*2` (nothing constrained) | 2 | **UNDERCONSTRAINED**, prints both witnesses | ~2 s | 9 |
+| deployed circuit, pristine (O2) | 4,309 | properly constrained | ~35 s | 8 |
+| deployed circuit, pristine (O1) | 11,921 | properly constrained | ~35 s | 8 |
+| `Poseidon(3)` + RLN line, output `y` freed | ~150 | **Cannot determine** | ~11 s | 0 |
+| y-free mutant (O2), proven under-constrained at `y` | 4,309 | **no verdict**, >15 min | >900 s | — |
+| y-free mutant (O1) | 11,920 | **no verdict**, >15 min | >900 s | — |
+| M1a mutant | 4,309 | **no verdict** (crash + >7 min) | — | — |
+
+Picus flags a trivial under-constraint. It cannot flag a real Poseidon-plus-RLN
+circuit with a freed output — *unknown* on the small version, non-terminating on
+the full one. Its deduction does not propagate uniqueness through Poseidon.
+
+**Consequence for section 3.2 / paper section 7.3.** The pristine `properly
+constrained` verdict is a claim by a procedure that returns *unknown* or does not
+terminate on known-bad circuits of the same structure. It carries weight only
+as one of two independent methods that agree — the tool-independent two-witness
+search reaches the same "no second witness moves a public output" conclusion on
+the pristine circuit, within its bound. Picus alone is **not a validated
+under-constraint oracle for this circuit**, and the paper now says so.
+
+### 11.5 What this changes, and what it does not
+
+**Changes.** Gate 1's evidence is now a filtered figure, not an unfiltered one. A
+two-witness search (`scripts/two_witness_search.mjs`) restricts the mutant
+denominator to genuine signal-level under-constraints; exactly one of the ten
+qualifies (M1a). Over that one: circomspect caught it syntactically, the
+adversarial harness missed it (11.4), Picus produced no verdict, the two-witness
+search caught it. The exercise also established that Picus is not a validated
+oracle for this circuit (11.4c) and that the circuit is heavily over-determined
+(11.4b) — a real property, and the reason most mutants are not exploitable. A
+shorter, better-aimed brief for an auditor than "please look at everything": one
+known under-constraint class the behavioural and solver methods both miss, and a
+solver whose clean verdict here needs the independent search beside it.
+
+**Does not change.** Gate 1 stays `Open`, and after this round is understood as
+further from closure than section 3.2 read: its strongest single piece of
+evidence (a clean Picus verdict) rests on a tool that could not be shown to detect
+a defect in a circuit of this kind. Ten mutants is a small sample chosen by the
+author of the circuits. No mutant tested the circomlib primitives or the verifier.
+The filtered rate (1 of 1) is not a statement about the probability that the real
+circuits are sound.
+
+### 11.6 After the oracle: multi-point, taint proof, compositional verification
+
+Follow-up round (`after-the-oracle.md`). Four strengthenings of the two-witness
+result; none closes Gate 1, all make an external audit cheaper and better aimed.
+
+**Multi-point probing** (`scripts/two_witness_multipoint.mjs`,
+`docs/self-audit/two_witness_multipoint.md`). The single-point Jacobian null
+space is measure zero on the solution manifold. The search was re-run at **56
+structurally diverse honest witnesses** of the deployed circuit: leftmost /
+rightmost / max-depth / single-level / random path shapes; all-zero / all-maximal
+/ random / alternating / `C`-valued sibling vectors; `s`, `ctx`, both epoch
+counters and `signal_hash` at random values and at field edges (`0`, `1`, `p-1`,
+`p-2`, equal epochs, zero `signal_hash`).
+
+- Null-space dimension is a stable **9 at every one of the 56 points**.
+- **No direction moves a public output at any point** (largest entry on any
+  public column, over all points: exact `0`).
+- Every direction is an `IsZero` inverse hint. The *support* moves with the path
+  shape — the freed hint at level `i` is always `eq[i][path_index[i]].isz.inv`,
+  0 mismatches over 504 (level, point) pairs — but the *dimension* never does.
+- Spectrum question, for an exact field computation: rank over `F_p` is exact,
+  there is no near-zero singular value; each of the nine free columns is an exact
+  zero column of the Jacobian and every other column is a pivot at every point.
+
+Quantified claim replacing "no under-constraint found": *no second witness with a
+non-zero linear component was found at 56 structurally diverse honest witnesses,
+across the full R1CS with exact non-linear re-verification*, large-non-linear-jump
+bound unchanged.
+
+**Taint proof for the nine hint freedoms** (`scripts/taint_iszero.mjs`,
+`docs/self-audit/taint_iszero.md`). "Benign" was folklore; now mechanical. For
+each of the nine `eq[i][path_index[i]].isz.inv`:
+
+- null-space support is exactly `{self}`;
+- its column in the linearised R1CS is an **exact zero column** (0 non-zero rows)
+  — nothing in the system responds to a change in it;
+- `w1 + t*delta` for six field multipliers `t` satisfies all 4,309 non-linear
+  constraints with `N` and `y` **bit-identical**;
+- the transitive closure of the directed constraint-influence relation from the
+  hint contains **no public output**. (The undirected co-occurrence graph is not
+  used: it connects almost everything through the shared input `s` and through
+  `C` entering the tree, and proves nothing.)
+
+All nine: `BENIGN (proved)`.
+
+**Compositional verification** (`scripts/compositional_verify.mjs`,
+`docs/self-audit/compositional_verify.md`). Picus does not terminate on the full
+circuit; the standard answer is to verify at the module boundary.
+
+- *Layer A* — circomlib `Poseidon` alone (`circuits/poseidon_only_k{3,8}.circom`):
+  two-witness search returns null-space dimension **0** at 16 random points for
+  each arity; Picus confirms *properly constrained* for arity 3 (does not
+  terminate for arity 8).
+- *Layer B* — every `Poseidon` in the deployed circuit replaced by a
+  determinism-only relation (`circuits/abstract/poseidon.circom`): the 217-
+  constraint result has null-space dimension **9**, all benign `IsZero` hints,
+  with `N` and `y` determined. Picus still does not terminate even on this.
+- *Composition*: given circomlib `Poseidon` uniquely determines its output, the
+  deployed circuit's public outputs are uniquely determined by its inputs. This
+  does not rescue Picus; it shrinks the circuit-specific check from 4,309
+  constraints to 217, resting on one stated, widely-shared, separately-checked
+  assumption (Layer A).
+
+**Picus finding packaged for upstream** (`docs/self-audit/picus-upstream-report.md`,
+`circuits/poseidon_rln{,_freed}.circom`). A minimal ~262-constraint reproducer:
+Picus returns *cannot determine* on a genuine, minimal under-constraint whose
+free output is downstream of a `Poseidon` permutation output (the two-witness
+search finds the second witness in 0.3 s), and does not terminate on the
+realistic version. Draft issue text is in the report; filing it is a maintainer-
+contact step, not taken here.
+
+**Null-space-directed adversarial harness** (`scripts/nullspace_harness.mjs`,
+wired into `test_soundness_adversarial.mjs` as Layer C). The old Layer B flipped
+one signal at a time and provably missed M1a's coordinated `(a1x, N, y)` move.
+Layer C perturbs along the null-space basis and 128 random linear combinations of
+it, re-verifying each against the full non-linear R1CS — the complete local
+candidate set for a first-order violation. On the pristine circuit: 137
+perturbations, none moves a public output, all non-public freedoms are `IsZero`
+hints. Regression `scripts/nullspace_harness_regression.mjs` rebuilds the M1a
+mutant (`--O2`, clean tree) and runs the same probe: null-space dimension **10**
+(pristine is 9), the extra direction `basis[0]@main.y` and every random
+combination move the public pair `{main.y, main.N}`, `caught = true`. The old
+signal-at-a-time Layer B passed all its checks on the same mutant.
+
+### 11.7 Removing the linearization bound: SMT modulo finite fields
+
+`the-last-technical-frontier.md`, Tasks 1-2. Every result up to here is a Jacobian
+argument, so each carries the same caveat: a second witness reachable only by a
+large non-linear jump with zero linear component is outside it. 56-point probing
+repeats a local check. `scripts/ff_smt_two_witness.mjs` removes the bound by posing
+the two-witness question exactly, as a satisfiability query over the BN254 scalar
+field, and handing it to **cvc5 1.3.4 built with CoCoALib** (`QF_FF`;
+`scripts/wsl_setup_cvc5.sh`). Split into one UNSAT check per public output, with
+`w1_k != w2_k` encoded by a Rabinowitsch inverse. Full results:
+`docs/self-audit/ff_smt.md`.
+
+- **Encoding validated both ways.** Positive control `residual_abstract_freed`
+  (`y <--`): cvc5 returns UNSAT for `N` (still bound) and **SAT for `y` with a
+  concrete second-witness model**. An UNSAT verdict is therefore genuine unique
+  determination, not a spurious inconsistency.
+- **Public outputs: unconditional universal proof.** On the residual projection
+  (`residual_abstract`, 7 constraints: `N = mockPoseidon(s,ctx,epochAction)`,
+  `y = s + N*signalHash`; the Merkle half feeds nothing back per §11.6 taint
+  proof), with **every input symbolic**, cvc5 returns **UNSAT in 0.13 s** for
+  both `N` and `y`. No linearization, no probe count, no bound: `N` and `y` are
+  uniquely determined by `{s, ctx, epochAction, signalHash}`.
+- **Full 217-constraint abstraction: exact, per point.** Inputs pinned to an
+  honest witness, 6 structurally diverse path shapes: **UNSAT in ~1 s** for both
+  outputs at all 6. Removes the *linearization* bound at each point; keeps a
+  *point* bound.
+- **Full 217-constraint abstraction, fully symbolic: does not terminate.** cvc5
+  `gb` runs ~490 s then aborts. The monolithic universal claim is not obtainable
+  by direct SMT here (falsification criterion 2 of the note, for that claim).
+- **Real `Poseidon`: does not terminate.** `Poseidon(3)` alone (261 con) crashes
+  ~463 s; `Poseidon(3)+RLN` (262 con, concrete) crashes ~100 s; `Poseidon(8)`
+  (402 con) blows memory past 4-5.7 GB with either FF sub-solver. Same S-box
+  ideal that stops Picus. So FF-SMT does **not** make Layer A (§11.6) unconditional
+  — Layer A stays an assumption, now known beyond *both* Picus and cvc5-FF.
+
+Net: the linearization bound is removed for the two public outputs (unconditional)
+and made point-wise exact for the whole abstraction; it is not removed for the
+monolithic universal claim. Gate 1 is unaffected — even a complete determination
+proof is one failure mode an audit examines, not the whole of it.
+
+**Merkle-independence lemma (load-bearing for the residual projection).** The
+0.13 s universal UNSAT and the residual line of §11.8 both work on the
+`ResidualSplit` sub-circuit alone, dropping the Merkle half. That drop is an
+explicit lemma, not a convenience: `N` and `y` are functions of
+`{s, ctx, epoch_action, signal_hash}` only; the sole signal shared with the
+Merkle sub-circuit is `C`, flowing one way (`mk.leaf <== res.C`) into the
+opening; nothing flows back. Confirmed mechanically by the directed
+constraint-influence closure in `taint_iszero.md`. Full statement:
+`docs/self-audit/ff_smt.md`, "Lemma (Merkle-independence of the public outputs)".
+
+### 11.8 Forward-determination: the solver-free determination proof
+
+`the-structural-argument.md`, Task 1. `scripts/forward_determination.mjs`. Picus
+and cvc5-FF fail identically on real `Poseidon` because both attack a *structural*
+property *semantically* and pay the `x^5` S-box ideal cost. Forward-determination
+walks the constraint graph instead: seed `determined := {const} ∪ {inputs}`;
+to fixpoint, any constraint `(A·w)(B·w) = (C·w)` that is affine in the
+undetermined signals (A·w, B·w determined, or one of A/B a literal constant) with
+exactly one undetermined signal of invertible coefficient determines that signal
+by division. Linear-time, no solver, no field reasoning.
+
+- **Run on an `--O1` build of the deployed circuit** (11,921 constraints; `--O2`
+  fuses constraints and destroys triangularity — on O2 the pure walk still
+  determines `N` and `y` but stalls on 2,942 Poseidon-internal signals, a
+  representation artefact). Same circuit, same function, same public interface.
+- **Phase 1 (pure forward substitution): 11,720 / 11,990 signals** determined in
+  0.5 s. Stalled: 72 `IsZero.inv` + 72 `IsEqual.out` + 63 `selAcc` + 63 `dotAcc`
+  — the Merkle comparator machinery.
+- **Phase 2 (circomlib `IsZero` `out` closure):** `IsZero` pins `out` by a
+  case-split (`out = [in == 0]`, unique in both branches) which forward
+  substitution does not perform. Closing the 72 `out` with that proven property
+  of the verified gadget (a cited lemma, labelled as such, not a substitution
+  step), then re-running, leaves **72 stalled signals, every one a
+  `main.mk.eq[i][j].isz.inv`** — the genuine `<--` hints that no constraint pins.
+- **Both public outputs `N` and `y` are DETERMINED** (Phase 1, no gadget lemma
+  needed — their cone is the triangular `ResidualSplit` Poseidon). Solver-free,
+  linear-time: no `Poseidon` assumption, no linearization, no probe count.
+- **Falsification #3 — MATCH.** The Jacobian null-space search finds exactly 9
+  free directions at the deployed witness, all `eq[i][0].isz.inv`; those are
+  precisely the structurally-free `inv` whose `IsZero` input is 0 at that witness.
+  The two methods agree.
+- **`M1a` detection:** `<--` = a signal no constraint determines = never enters
+  the set. On an `N <-- hN.out` mutant, `main.N` (a public output) appears in the
+  stalled set and the script exits non-zero. Detects the bug class structurally,
+  in the full circuit, in linear time.
+
+**`Poseidon` determinism, mathematical cross-check** (`compositional_verify.md`,
+recorded as a cited design property): `x ↦ x^5` is a bijection on the BN254
+scalar field because `p ≡ 2 (mod 5)` ⇒ `gcd(5, p−1) = 1` (the reason `α = 5` was
+chosen); the MDS layers are invertible; round-constant adds are translations; so
+the permutation is a composition of bijections, injective. Not a machine-checked
+proof — but an independent argument for the same assumption that §11.8's
+structural walk discharges directly.
+
+**Bottom line.** With §11.8 the circuit is **proven uniquely determined** — every
+signal is pinned by the constraints — which is one soundness property, established
+unconditionally and without a solver. An external audit additionally checks what
+determination does not touch: that the circuit computes the *intended* function —
+nullifier correctness, the RLN binding semantics the burn requires, and logic
+errors in *what* is constrained. Determination establishes none of that and does
+not predict an audit's outcome; it makes the audit faster and better-targeted (a
+reviewer can skip re-deriving that the constraints pin the signals). The soundness
+work is finished to the limit of what one team can establish about its own code.
+**What remains for Gate 1 is independent human review of everything the circuit
+does, and no further code provides it.**

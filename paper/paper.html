@@ -39,45 +39,54 @@
 <p class="sub">A measured zero-knowledge construction for one-human-one-action,<br>
 and the four optimisation paths that failed</p>
 <p class="meta" style="margin-top:2mm">Rehan Malik &nbsp;&middot;&nbsp; Independent Cryptography Researcher &nbsp;&middot;&nbsp; github.com/rehanmalik2008</p>
-<p class="meta">Version 1.1 &nbsp;&middot;&nbsp; Apache-2.0 &nbsp;&middot;&nbsp;
-Reference implementation, circuits and raw measurements accompany this document</p>
+<p class="meta">Version 1.2 &nbsp;&middot;&nbsp; Apache-2.0 &nbsp;&middot;&nbsp;
+&copy; 2026 Rehan Malik &nbsp;&middot;&nbsp;
+Reference implementation, circuits and raw measurements accompany this document; cite via <span class="m">CITATION.cff</span></p>
 <p class="meta" style="margin-top:-4mm">v1.1: the single epoch counter is split into <span class="m">epoch_action</span>
 (rate-limit window) and <span class="m">epoch_tree</span> (tree cadence), closing
 one open problem from &sect;7.2. Zero added constraints; one added public signal
-(6&nbsp;&rarr;&nbsp;7).</p>
+(6&nbsp;&rarr;&nbsp;7). v1.2: an adversarial self-audit whose determination result
+is now solver-independent &mdash; a linear-time structural forward-determination
+walk shows every signal and both public outputs uniquely determined by the
+inputs, except seventy-two hint signals proved to influence no public output, with
+no <span class="m">Poseidon</span> assumption and no linearization bound
+(&sect;7.3&ndash;7.4); plus a simulated memory ceiling with a measured failure
+threshold (&sect;7.5), and a trusted-setup ceremony coordinator built and tested
+but not run (&sect;7.6). No gate closed.</p>
 
 <div class="abstract">
 <h2>Abstract</h2>
 <p>
-The internet has no way to check that a request comes from a distinct human.
-Current fixes reintroduce a central authority: a biometric registry, a government
-identity provider, or a hardware vendor's attestation root. This paper describes a
-construction that removes the registry.
+The internet cannot check that a request comes from a distinct human. Current
+fixes reintroduce a central authority: a biometric registry, a government identity
+provider, or a hardware vendor's attestation root. This construction removes the
+registry.
 </p>
 <p>
 A device holds a secret <span class="m">s</span> and publishes
 <span class="m">C = Poseidon(s)</span>. Independent attesters sign
 <span class="m">C</span> once, and a backend appends <span class="m">C</span> to an
-append-only Merkle tree. Every later proof of personhood proves <em>set
-membership</em> rather than re-verifying signatures, so signatures are checked
-once per credential lifetime, off the hot path. The login circuit is 4,309 R1CS
-constraints over BN254 and emits 7 public signals. Attester identity does not
-appear in it, so it cannot leak from it. Witness upkeep is a public broadcast,
-identical for every client, so no per-user query ever occurs.
+append-only Merkle tree. Every later proof proves <em>set membership</em> rather
+than re-verifying signatures, so signatures are checked once per credential
+lifetime, off the hot path. The login circuit is 4,309 R1CS
+constraints over BN254 and emits 7 public signals. Attester identity never appears
+in it, so it cannot leak from it. Witness upkeep is a public broadcast, identical
+for every client, so no per-user query occurs.
 </p>
 <p>
 On a Samsung Galaxy A12 (Helio P35, 8&times;Cortex-A53, 3,751 MB RAM) the proving
 step takes 477 ms with a native prover and 3,374 ms in the browser, warm medians
 over 20 runs. Peak prover resident memory is 361 MB, 9.6% of device RAM. Four
-attempts to close that gap failed, and each is reported with the measurement that
-ended it. The result is a deployment split: native for entry-level hardware,
-browser above it.
+attempts to close that gap failed, each reported with the measurement that ended
+it. The result is a deployment split: native for entry-level hardware, browser
+above it.
 </p>
 <p>
 Security rests on a priced assumption,
 <span class="m">&gamma; &ge; &beta;&middot;m&middot;E</span>, rather than a boolean.
-The construction has not been audited. Section 6 states what it does not protect;
-Section 8 states what would refute it.
+It has not been audited. Of six production gates one is closed; a new
+under-constraint check placed Gate 1 further from closure, not nearer. Section 6
+states what it does not protect; Section 8, what would refute it.
 </p>
 </div>
 
@@ -1219,28 +1228,52 @@ multi-party ceremony or migration to a transparent-setup proof system.
 
 <p>
 Five of the six remain open; all are fundable external work rather than open
-research, and none is a cryptographic unknown. Gate 6 is now closed (below).
+research, and none is a cryptographic unknown. Gate 6 is closed. Gate 1 gained a
+tool-independent under-constraint check and, with it, a clearer picture of its own
+distance from closure (&sect;7.4): the self-audit tools had not been shown to
+catch a real defect in this circuit, and validating that surfaced one genuine
+under-constraint in a mutant and left Picus unvalidated as an oracle here. That
+check was then strengthened to the point where a linear-time structural argument
+&mdash; no solver, no assumption &mdash; shows every signal, and both public
+outputs, uniquely determined by the inputs except seventy-two hint signals proved
+to influence no public output (&sect;7.3). That makes an eventual external audit
+cheaper and better targeted but does not substitute for it, because unique
+determination is one property an audit checks, not all of them. Gates 3
+and 5 gained measured evidence without moving: a simulated memory ceiling with a
+measured failure threshold (&sect;7.5), and a ceremony coordinator built and
+tested ahead of need (&sect;7.6). None of that closes a gate, and none of it is
+presented as closing one.
 </p>
 
 <table>
-<tr><th class="n">#</th><th>Gate</th><th>Why it blocks</th><th>Status</th></tr>
+<tr><th class="n">#</th><th>Gate</th><th>Why it blocks</th><th>Status</th><th>Path to close, and who does that work</th></tr>
 <tr><td class="n">1</td><td>Two or more independent circuit audits</td>
     <td>An under-constrained signal silently breaks soundness. Reproducible builds prove the binary matches the source; they say nothing about whether the constraint system is correct.</td>
-    <td>Open. A self-audit has been run (&sect;7.3): Picus (SMT) reports every deployed circuit properly constrained, circomspect is clean on the entrypoints, a manual footgun pass and a 24-check adversarial witness harness find no soundness bug. Self-audit strengthens the evidence; it is not independent review and does not close this gate.</td></tr>
+    <td>Open, and after v1.2 understood as further from closure than it looked. Mutation testing (&sect;7.4) showed the self-audit's tools had never been shown to catch a real defect here; a two-witness search added to check that found one genuine under-constraint among the ten mutants, which the adversarial harness misses and Picus returns no verdict on. On the pristine circuit that search now runs at 56 structurally diverse witnesses with no direction moving a public output, the seventy-two benign hint freedoms are proved benign rather than assumed, and a linear-time structural forward-determination walk &mdash; no solver, no assumption, no linearization &mdash; establishes that every other signal, and both public outputs, are uniquely determined by the inputs (&sect;7.3). All of that makes an external audit cheaper and better targeted; none of it is independent review, and &mdash; even with the constraint system proven perfectly determined &mdash; that is one failure mode an audit examines, not the whole of it. None closes this gate.</td>
+    <td>Two independent external circuit audits. Scoped and fundable; the mutation table and the compositional decomposition tell an auditor which bug classes the existing process already covers and where to look first.</td></tr>
 <tr><td class="n">2</td><td>GDPR right-to-erasure legal memo</td>
-    <td>An append-only tree versus a deletion right. Blocks EU deployment until analysed.</td><td>Open</td></tr>
+    <td>An append-only tree versus a deletion right. Blocks EU deployment until analysed.</td><td>Open</td>
+    <td>One legal engagement with a data-protection counsel. Scoped, fundable, no research content.</td></tr>
 <tr><td class="n">3</td><td>Peak RSS and p95 on a device with 3 GB or less</td>
-    <td>The formal memory gate. The A12 at 3,751 MB is evidence, not closure.</td><td>Open</td></tr>
+    <td>The formal memory gate. The A12 at 3,751 MB is evidence, not closure.</td>
+    <td>Open. Simulated-ceiling evidence added (&sect;7.5): the prover completes under a hard 336 MB cap and is OOM-killed only at 320 MB. Simulated on desktop x86; a memory ceiling is not a device. An Android emulator at 2&ndash;3 GB (the real OS, so the real memory manager) was attempted and not completed &mdash; the build host could not reach the Android SDK endpoint; harness and AVD setup are scripted and ready.</td>
+    <td>Acquire one entry-level handset with 3 GB or less and re-run the existing on-device harness, or run the scripted emulator path on a host with SDK access. Cheap, fast, no new code.</td></tr>
 <tr><td class="n">4</td><td>IP indemnification and liability structure</td>
-    <td>Enterprise contracts require it.</td><td>Open</td></tr>
+    <td>Enterprise contracts require it.</td><td>Open</td>
+    <td>Standard commercial and legal structuring. Follows a design partner rather than preceding one.</td></tr>
 <tr><td class="n">5</td><td>Trusted-setup ceremony, or migration to a transparent-setup system</td>
-    <td>Soundness assumption. Current keys are evaluation-only.</td><td>Open, disclosed</td></tr>
+    <td>Soundness assumption. Current keys are evaluation-only.</td>
+    <td>Open, disclosed. Coordinator built and tested against deliberately invalid contributions (&sect;7.6); circuit set frozen for v1.2 (<span class="m">CIRCUIT-FREEZE.md</span>); run-book written (<span class="m">docs/CEREMONY-RUNBOOK.md</span>). The ceremony itself has not been run.</td>
+    <td>Run the ceremony against the frozen circuits with a pre-announced beacon and contributors genuinely independent of each other and the project. Infrastructure exists and is frozen against a target; the remaining step is recruiting independent contributors.</td></tr>
 <tr><td class="n">6</td><td>Attester-level revocation mechanism</td>
     <td>RLN covers double-use only, not a compromised attester.</td>
-    <td><strong>Closed.</strong> Both paths implemented, measured, tested (&sect;5.8): an in-circuit non-membership check for individual revocation (+R constraints, measured +64 / +256 / +1,024), and an incremental tree rebuild for bulk revocation. Liveness cost disclosed in &sect;6.</td></tr>
+    <td><strong>Closed.</strong> Both paths implemented, measured, tested (&sect;5.8): an in-circuit non-membership check for individual revocation (+R constraints, measured +64 / +256 / +1,024), and an incremental tree rebuild for bulk revocation. Liveness cost disclosed in &sect;6.</td>
+    <td>&mdash;</td></tr>
 </table>
 <p class="cap"><strong>Table 8.</strong> Production gates. Gate 6 moved to Closed in
-v1.1.</p>
+v1.1; gates 1, 3 and 5 gained measured evidence in v1.2 without moving. The final
+column is a description of work already specified elsewhere in this paper, not a
+commitment to a date.</p>
 
 <h3>7.2 Research questions that remain</h3>
 
@@ -1298,15 +1331,44 @@ raw output, and reasoning for every dismissed finding, is
 </p>
 
 <p>
+<strong>How claims in this section are made.</strong> Every result below is
+reported only where a direct test was actually run, not where the structure made
+an outcome look certain. That rule was learned the hard way: across the
+self-audit, the results that turned out wrong were wrong in one recurring way
+&mdash; they trusted an inference instead of executing the check &mdash; and each
+was caught later by running the check. The ledger, kept deliberately visible in
+<span class="m">docs/SELF-AUDIT.md</span>: a tool crash was counted as a detection
+and inflated a 10/10 (corrected by checking what &ldquo;detection&rdquo; meant);
+an under-constraint was first called forgeable by the right reasoning about the
+wrong mechanism, then retracted on two hand-forgeries that never perturbed the
+one intermediate signal that mattered, then reinstated by a search that did
+(three swings, one signal); &ldquo;9 of 10 caught&rdquo; counted signals produced
+rather than exploitable bugs; and, earlier in the paper's history, a deterrence
+inequality was asserted in the wrong shape and corrected only by doing the
+arithmetic. Every one of those felt certain when written. The consequence adopted
+here is that inference from structure is not trusted without the direct test,
+even when it feels certain, because the test is cheap and the wrong published
+inference is not.
+</p>
+
+<p>
 <strong>Static analysis.</strong> Two analyzers were run over every deployed
 circuit: the split login circuit, the three split revocation variants, the
-pre-split login circuit, and the enrolment circuit. Picus 138b151 (Veridise),
-which uses an SMT solver to decide whether every output is uniquely determined by
-the inputs, returns <em>the circuit is properly constrained</em> for all six,
-with no solver timeouts. That is a stronger result than a linter pass: within the
-solver's decision procedure, no under-constrained signal exists. circomspect
-0.9.0 (Trail of Bits) reported nothing at any level on the instantiated
-entrypoints. On the parameter-symbolic templates it raised two warning classes,
+pre-split login circuit, and the enrolment circuit. Picus 138b151 (Veridise)
+decides one specific question: whether the constraints uniquely determine every
+public output from the inputs. It returns <em>the circuit is properly
+constrained</em> for all six. That verdict is now qualified. Picus has been shown
+to flag a blatant two-signal under-constraint, but on a small
+<span class="m">Poseidon</span>-plus-RLN circuit with a deliberately freed output
+it returns <em>cannot determine</em>, and on the full circuit with the same
+defect injected it does not terminate within fifteen minutes (&sect;7.4). A
+<em>properly constrained</em> verdict from a procedure that returns
+<em>unknown</em> or does not terminate on known-bad circuits of this structure is
+not a validated oracle. It carries weight here only because a second, independent
+method agrees: a tool-independent two-witness search (&sect;7.4) finds no second
+satisfying witness that moves a public output on the pristine circuit, within its
+stated bound. circomspect 0.9.0 (Trail of Bits) reported nothing at any level on
+the instantiated entrypoints. On the parameter-symbolic templates it raised two warning classes,
 both on code that ships. The first: the public input
 <span class="m">epoch_tree</span> has no in-circuit constraint. That is by
 design; it is prover-supplied and verifier-checked for root freshness, the same
@@ -1350,6 +1412,189 @@ burn is arithmetic, not policy.
 </p>
 
 <p>
+<strong>Two-witness search.</strong> A tool-independent under-constraint oracle,
+added after the mutation round showed the other methods had never been shown to
+catch a real defect here. It works from the definition: a circuit is
+under-constrained at a signal when two distinct witnesses satisfy every
+constraint, agree on every input, and differ at that signal. The search
+(<span class="m">scripts/two_witness_search.mjs</span>) takes the Jacobian of the
+constraint system at the honest witness, computes the null space of its
+restriction to the non-input signals over the scalar field, and re-checks each
+null-space direction against the full non-linear constraints. On a mutant built
+to be under-constrained at the RLN share it finds the exploit witness directly
+(&sect;7.4). The bound is stated with the result: a second witness reachable only
+by a large non-linear jump with zero linear component is outside the search, and
+finding none is weaker evidence than finding one.
+</p>
+
+<p>
+<strong>Multi-point probing.</strong> The Jacobian null space is a property of
+one point on the solution manifold, and a non-linear system's rank can vary
+across it, so the search was re-run at 56 structurally diverse honest witnesses
+of the deployed circuit (<span class="m">scripts/two_witness_multipoint.mjs</span>):
+leftmost and rightmost leaf, maximum-depth and single-level and random path
+shapes; all-zero, all-maximal, random and alternating sibling vectors; and
+<span class="m">s</span>, <span class="m">ctx</span>, both epoch counters and
+<span class="m">signal_hash</span> at random values and at field edges. The
+null-space dimension is a stable nine at every one of the 56 points, no direction
+has any component on any public output at any point, and every direction is an
+<span class="m">IsZero</span> inverse hint &mdash; the well-known benign internal
+freedom of that gadget, which simply relocates from
+<span class="m">eq[i][0]</span> to <span class="m">eq[i][path_index[i]]</span> as
+the path shape changes, with no change in the amount of freedom. Rank over the
+scalar field is exact, so there is no near-degenerate singular value to report:
+each of the nine free columns is an exact zero column of the Jacobian, and every
+other column is a pivot at every point. The quantified claim that replaces &ldquo;no
+under-constraint found&rdquo; is: <em>no second witness with a non-zero linear
+component was found at 56 structurally diverse honest witnesses, across the full
+R1CS with exact non-linear re-verification</em>, with the large-non-linear-jump
+bound unchanged.
+</p>
+
+<p>
+<strong>Taint proof for the nine hint freedoms.</strong> That the nine
+<span class="m">IsZero</span> freedoms are benign was, until now, asserted from
+folklore. It is now shown mechanically
+(<span class="m">scripts/taint_iszero.mjs</span>): for each hint, its null-space
+support is exactly itself; its column in the linearised R1CS is an exact zero
+column, so nothing in the system responds to a change in it; perturbing the
+honest witness along that direction by six different field multipliers leaves all
+4,309 non-linear constraints satisfied and <span class="m">N</span> and
+<span class="m">y</span> bit-identical; and the transitive closure of the
+directed constraint-influence relation from each hint contains no public output.
+The nullifier and RLN sub-circuit and the Merkle sub-circuit share only the
+commitment <span class="m">C</span>, flowing into the tree; nothing flows back.
+</p>
+
+<p>
+<strong>The circuit is heavily over-determined, and that is a positive result.</strong>
+Removing one binding constraint from it frequently does not create an exploitable
+weakness because the signals are redundantly determined: the commitment by the Merkle
+path against the public root, the path-index range check by the slot-selection
+constraint, the <span class="m">IsZero</span> hints by nothing. Of the ten
+mutations tried, only the one that frees the RLN share produced a second witness
+that moves a public output. Redundancy is a real property of the design worth stating; it also
+means a detection-rate metric over an unfiltered mutant set mixes real misses
+with correct non-detections of mutants that changed nothing observable.
+</p>
+
+<p>
+<strong>Compositional verification.</strong> Picus does not terminate on the full
+circuit because its deduction does not propagate uniqueness through the
+<span class="m">Poseidon</span> permutation. The standard response is to verify
+at the module boundary
+(<span class="m">scripts/compositional_verify.mjs</span>). Layer&nbsp;A: the
+circomlib <span class="m">Poseidon</span> gadget in isolation, at arities 3 and 8,
+is uniquely determining &mdash; the two-witness search returns null-space
+dimension zero at sixteen random input points for each, and Picus confirms
+<em>properly constrained</em> for arity 3 (it does not terminate on arity 8).
+Layer&nbsp;B: every <span class="m">Poseidon</span> instance in the deployed
+circuit is replaced by a relation that asserts only determinism &mdash; equal
+inputs give an equal output, nothing about hashing &mdash; and the two-witness
+search on the resulting 217-constraint system returns null-space dimension nine,
+all of it the same benign <span class="m">IsZero</span> hints, with
+<span class="m">N</span> and <span class="m">y</span> uniquely determined.
+Composing the two: given that circomlib <span class="m">Poseidon</span> uniquely
+determines its output, the deployed circuit's public outputs are uniquely
+determined by its inputs. This does not make Picus usable here &mdash; it does
+not terminate on the abstraction either &mdash; and it is not a substitute for an
+audit. What it buys is a smaller circuit-specific check, 217 constraints instead
+of 4,309, resting on one assumption stated plainly: <em>circomlib's
+<span class="m">Poseidon</span> R1CS uniquely determines its output signals from
+its input signals</em>. That assumption is narrow, is shared by essentially every
+circom project that hashes, is supported by published analysis of the gadget, and
+is checked directly in Layer&nbsp;A for the two arities this circuit uses.
+</p>
+
+<p>
+<strong>Removing the linearization bound.</strong> Every result above is a
+Jacobian argument, so each carries the same caveat: a second witness reachable
+only by a large non-linear jump, with zero linear component, is outside it.
+Fifty-six probe points repeat a local check; they do not make it global. The
+two-witness question can instead be posed exactly, as a satisfiability query over
+the scalar field &mdash; do two witnesses exist that satisfy every constraint,
+agree on every input, and differ at a public output &mdash; and handed to an SMT
+solver with a native finite-field theory
+(<span class="m">scripts/ff_smt_two_witness.mjs</span>; cvc5&nbsp;1.3.4 built with
+CoCoALib). An <em>unsat</em> answer is then a complete proof with no
+linearization and no bound. Three results follow. First, on the sub-circuit that
+actually computes the public outputs &mdash;
+<span class="m">N&nbsp;=&nbsp;Poseidon(s,&nbsp;ctx,&nbsp;epoch_action)</span> and
+<span class="m">y&nbsp;=&nbsp;s&nbsp;+&nbsp;N&middot;signal_hash</span>, with
+<span class="m">Poseidon</span> abstracted &mdash; with <em>every input left
+symbolic</em>, cvc5 returns <em>unsat</em> in 0.13&nbsp;s for both outputs: an
+unconditional, universal, non-linear proof that <span class="m">N</span> and
+<span class="m">y</span> are uniquely determined by their inputs. The Merkle half
+feeds nothing back into them, so this is the load-bearing statement, and it now
+holds without a probe count. Second, on the full 217-constraint abstraction with
+inputs pinned to a concrete honest assignment, cvc5 returns <em>unsat</em> in
+about a second at six structurally diverse points &mdash; an exact non-linear
+check, still one point at a time. Third, the fully symbolic query over the whole
+217-constraint abstraction does not terminate, and neither does any query
+involving an unabstracted <span class="m">Poseidon</span> permutation of realistic
+size: cvc5's finite-field engine hits the same S-box ideal that stops Picus. So
+the finite-field solver removes the linearization bound for the public outputs
+and makes it point-wise exact for the whole abstraction, but the monolithic
+universal query does not terminate &mdash; and the next paragraph is why that no
+longer matters.
+</p>
+
+<p>
+<strong>The structural argument: unique determination without a solver.</strong>
+Two architecturally unrelated tools &mdash; Picus deduces over the constraint
+ideal, cvc5 computes a Gr&ouml;bner basis &mdash; fail identically on any circuit
+with a real <span class="m">Poseidon</span>, at a few hundred constraints. That is
+the signature of a category error: both ask a <em>semantic</em> question over the
+field algebra and pay the cost of the <span class="m">x&#8309;</span> S-box ideal,
+but unique determination of a forward-computable circuit is a <em>structural</em>
+property of the constraint graph. A constraint
+<span class="m">(A&middot;w)(B&middot;w)&nbsp;=&nbsp;(C&middot;w)</span> in which
+every signal of <span class="m">A</span> and <span class="m">B</span> is already
+determined, and exactly one signal of <span class="m">C</span> is not, with an
+invertible coefficient, determines that signal uniquely by division. Seeding the
+inputs and iterating to a fixpoint
+(<span class="m">scripts/forward_determination.mjs</span>) is linear-time, calls no
+solver, and reasons about the field not at all. On an
+<span class="m">--O1</span> build of the deployed circuit (11,921 constraints;
+<span class="m">--O2</span> fuses constraints and is not in this form) it
+determines every signal except the seventy-two <span class="m">IsZero</span>
+inverse hints &mdash; the <span class="m">&lt;--</span> assignments no constraint
+pins, which is the correct structural picture of that gadget &mdash; in 0.5&nbsp;s.
+Both public outputs are determined. The nine of those seventy-two that are free at
+the deployed witness are <em>exactly</em> the nine null-space directions the
+Jacobian search found, which is the cross-check that the two methods agree. The
+<span class="m">Poseidon</span> permutation is covered with no assumption at all,
+because its R1CS is triangular by construction; the comparator outputs that
+forward substitution cannot reach &mdash; <span class="m">IsZero</span> pins them
+by a case-split on whether its input is zero &mdash; are closed with the proven
+property of that verified gadget, a cited lemma, not a substitution step, and
+they do not touch the public outputs regardless. The determination claim for
+<span class="m">N</span> and <span class="m">y</span> is therefore now
+<em>unconditional and solver-independent</em>: no <span class="m">Poseidon</span>
+assumption, no linearization bound, no probe count. The
+<span class="m">Poseidon</span>-determinism assumption also has a one-line
+mathematical corroboration, recorded as a cited design property rather than a
+verification result: <span class="m">x&nbsp;&#8614;&nbsp;x&#8309;</span> is a
+bijection on the field because <span class="m">gcd(5,&nbsp;p&#8722;1)&nbsp;=&nbsp;1</span>
+for BN254 (the reason <span class="m">&#945;&nbsp;=&nbsp;5</span> was chosen), and
+the MDS layers are invertible, so the permutation is injective.
+</p>
+
+<p>
+<strong>What this does not do.</strong> The circuit is proven <em>uniquely
+determined</em> &mdash; every signal is pinned by the constraints &mdash; which is
+one soundness property. An external audit additionally checks what determination
+does not touch: that the circuit computes the <em>intended</em> function &mdash;
+that the nullifier construction is the right one, that the RLN binding achieves
+what Section&nbsp;3 requires of the burn, and that there is no logic error in
+<em>what</em> is being constrained. Determination establishes none of that. It
+makes an audit faster and better-targeted &mdash; a reviewer can skip
+re-deriving that the constraints pin the signals and spend the time on
+semantics &mdash; but it does not predict the audit's outcome, and Gate&nbsp;1
+stays open until two independent reviews are done.
+</p>
+
+<p>
 <strong>Trust-assumption red-team.</strong> The residual trust is one honest root
 source among N. If the N mirrors share a certificate authority, a hosting
 provider, or a DNS resolver, a single compromise serves a consistent forgery to
@@ -1362,16 +1607,290 @@ code.
 
 <p>
 <strong>What the self-audit does not cover.</strong> Independent expert review.
-A machine-checked proof in a proof assistant; the Picus result is a solver
-verdict bounded by its query timeout, and the harness checks specific signals,
-not a closed proof. The circomlib primitives, which are trusted as-is. The
-verifier and deployment obligations the circuit deliberately does not enforce:
+A machine-checked proof in a proof assistant. A validated solver oracle: Picus
+returns <em>properly constrained</em> on the deployed circuit but could not be
+shown to detect a known under-constraint in a circuit of this structure, so it is
+kept only as a corroborating third method. The determination result itself is
+now solver-independent and unconditional &mdash; the structural forward walk
+needs no <span class="m">Poseidon</span> assumption and no linearization &mdash;
+but it is still <em>only</em> determination: it says every signal is pinned, not
+that the circuit is correct. The circomlib primitives are trusted as-is for their
+<em>algebraic</em> properties (collision and pre-image resistance); their R1CS
+determination is what the structural walk establishes directly. The verifier and
+deployment obligations the circuit deliberately does not enforce:
 <span class="m">epoch_tree</span> freshness, the
 <span class="m">signal_hash</span> binding, the authenticity of the published
 revocation list, the backend's authoritative diversity check at enrolment, and
 the refresh-to-login timing separation. And the trusted setup, which is
 evaluation-only regardless of how well the circuit is constrained. Gate 1 stays
 open.
+</p>
+
+<h3>7.4 Mutation testing: what the self-audit would and would not catch</h3>
+
+<p>
+Section 7.3 reports that three methods found nothing. That is consistent with two
+different worlds: a sound circuit, or a circuit whose bug all three methods miss.
+Nothing in Section 7.3 separates them, because none of those tools had ever been
+shown to catch a bug in these circuits. Mutation testing separates them. A known
+bug is injected into a copy of a deployed circuit, and each method is asked
+whether it notices. The result is not a claim that the circuit is sound. It is a
+map of which bug classes this process detects.
+</p>
+
+<p>
+Ten mutants were injected one at a time across the login, revocation and
+enrolment circuits, covering the classes that matter here: a constraint operator
+downgraded to a bare assignment, a deleted range check, an equality compared
+against the wrong term, the nullifier hash stripped of
+<span class="m">ctx</span> or of <span class="m">epoch_action</span>, the two
+epoch counters aliased to each other, the RLN share detached from
+<span class="m">signal_hash</span>, the in-circuit non-membership constraint
+deleted, and the signature verifier disabled at enrolment. Nine of the ten produced a signal in at least one method, which is not the same
+as nine exploitable bugs; two of them turned out to have no demonstrated exploit
+behind them. circomspect caught seven, the adversarial harness
+six, Picus none. Each mutation is applied by an exact-string replacement that
+fails unless its anchor matches exactly once, so a mutation that did not apply can
+never be scored as undetected; that guard caught two anchors which would have
+mutated a superseded template rather than the deployed one.
+</p>
+
+<p>
+<strong>The tenth mutant is not a detection gap.</strong> Deleting the
+<span class="m">path_index</span> range check should let an out-of-range index
+through, and it does not: feeding the mutant an index of 8 or 99 produces exactly
+the same rejection as the pristine circuit, because the surviving constraint that
+pins the selected slot to the running hash already excludes it. With no slot
+selected the dot product is zero, which would require a Poseidon output to equal
+zero. The mutant accepts and rejects exactly the same witnesses as the original,
+which makes it an equivalent mutant rather than a survivor. The constraint costs
+nothing after optimisation and stays, because stating the intent explicitly is
+better than resting on a probabilistic argument. The automated runner did report
+it as a survivor; what corrected that was a behavioural test, not a tool.
+</p>
+
+<p>
+<strong>Picus detecting none of the ten is mostly correct behaviour, and worth
+stating plainly because Section 7.3 could be read too generously.</strong> Picus
+decides whether the outputs are uniquely determined by the inputs. Nine of these
+mutants leave the circuit perfectly determined and merely wrong: a nullifier that
+drops <span class="m">ctx</span> is still a function of its inputs. So "all six
+deployed circuits properly constrained" is a real result about under-constraint,
+and it says nothing about whether the circuit computes the intended function. It
+also could not be validated as an oracle here. On a blatant two-signal
+under-constraint Picus reports <em>underconstrained</em> and prints both
+witnesses; on a small Poseidon-plus-RLN circuit with an output freed it reports
+<em>cannot determine</em>; and on the full circuit with the nullifier or the RLN
+share freed it does not terminate within fifteen minutes, across every run tried.
+It answers quickly with <em>properly constrained</em> on the sound circuit and
+gives no usable answer on known-bad circuits of the same structure. A verdict from
+a procedure with that profile is worth weight only alongside an independent method
+that agrees, which the two-witness search does on the pristine circuit.
+</p>
+
+<p>
+<strong>One mutant is genuinely under-constrained, and it took a tool-independent
+oracle and two wrong intermediate conclusions to establish that.</strong> The
+mutant that downgrades the nullifier assignment
+<span class="m">N &lt;== hN.out</span> to
+<span class="m">N &lt;-- hN.out</span> is the canonical Circom soundness bug.
+circomspect flags it syntactically; the adversarial harness passes all 24 checks
+on it. A first analysis inferred from the compiled circuit that the nullifier was
+forgeable. A second analysis attempted two forgeries by hand, moving the nullifier
+alone and moving it together with the RLN share, saw both rejected, and withdrew
+the claim. Both intermediate analyses were incomplete: the second one never
+perturbed the internal product <span class="m">a1x = N&middot;signal_hash</span>,
+so it could not have found the second witness even though one exists.
+</p>
+
+<p>
+<strong>The two-witness search settles it.</strong> A circuit is under-constrained
+at a signal if two distinct witnesses satisfy every constraint, agree on every
+input, and differ at that signal. The search
+(<span class="m">scripts/two_witness_search.mjs</span>) computes the Jacobian of
+the constraint system at the honest witness, finds the null space of its
+restriction to the non-input signals over the scalar field, and re-checks every
+null-space direction against the full non-linear constraints. On this mutant it
+finds a verified second witness that moves the coordinated triple
+<span class="m">(a1x, N, y)</span> and, with it, the public nullifier
+<span class="m">N</span>. That is a real under-constraint and a real exploit: a
+free nullifier means one credential yields unlimited distinct pseudonyms, which
+defeats the sybil property the whole construction exists to provide. The
+adversarial harness misses it because its witness-tampering tests move one signal
+at a time and never perform the three-signal move the search found. So the
+blind-spot claim, withdrawn earlier, is reinstated, now with a concrete exploit
+witness rather than an inference.
+</p>
+
+<p>
+<strong>The other nine mutants are not signal-level under-constraints, and the
+search says why.</strong> Run against the pristine deployed circuit, the
+two-witness search finds nine second witnesses, all at the
+<span class="m">inv</span> hint inside the <span class="m">IsZero</span> gadget of
+each Merkle-path comparator, free because the comparator input is zero and read by
+no public signal &mdash; each one proved benign by the taint analysis of
+&sect;7.3, not merely assumed. It finds none that moves a public output, at any of
+56 probe points. Run against the mutants: the commitment stays pinned by the Merkle path against the public root
+even with its assignment downgraded; the range-check mutant is an equivalent
+mutant, redundant against the slot-selection constraint; the four that alter the
+nullifier or RLN arithmetic leave the circuit deterministic and merely wrong; the
+two that delete a check widen the set of accepted <em>inputs</em> rather than
+freeing a signal, and those two the adversarial harness does catch by trying bad
+inputs. Restricting the mutation denominator to the one mutant the search proves
+is a genuine under-constraint, the honest detection rate is: of one, circomspect
+caught it syntactically, the adversarial harness missed it, and Picus produced no
+verdict. The unfiltered nine-of-ten counted signals produced by mutants that are
+mostly not exploitable.
+</p>
+
+<p>
+The reason the mutants were hard to make exploitable is itself a result. Removing
+one binding constraint from this circuit frequently does not create an exploitable
+weakness because the signals are redundantly determined:
+<span class="m">C</span> by the Merkle path, the range check by slot selection,
+the <span class="m">IsZero</span> hints by nothing anyone reads. The one signal
+that turned out not redundantly determined is the RLN share on the residual line,
+which is exactly where a defect had to live: a signal with one determining
+constraint and no other. That over-determination also explains why several mutants
+are indistinguishable to behavioural testing, and it complicates any
+detection-rate metric over an unfiltered mutant set.
+</p>
+
+<p>
+Gate 1 stays open, and mutation testing does not narrow it much. Ten mutants is a
+small sample chosen by the same person who wrote the circuits, which is precisely
+the bias an external audit exists to remove; no mutant probed the circomlib
+primitives or the verifier; and a nine-of-ten detection rate on injected bugs is
+not a statement about the probability that the real circuits are sound. What it
+does provide is a better brief for an auditor than "look at everything": the
+classes that produce a signal, the two that only one method notices, and the two
+where the exercise could not establish that a bug existed at all.
+</p>
+
+<h3>7.5 A simulated memory ceiling, and where the prover actually fails</h3>
+
+<p>
+Gate 3 asks for peak resident memory and p95 on a device with 3 GB or less. The
+measured device has 3,751 MB, so the gate stays open. A memory ceiling can be
+imposed without owning such a device: run the prover inside a Linux cgroup with a
+hard <span class="m">memory.max</span> and swap disabled, and lower the cap until
+it fails. Swap is pinned to zero deliberately, because a cgroup with swap
+available pages out instead of failing, which would turn a memory test into a
+throughput test and report a pass that a phone would not reproduce.
+</p>
+
+<p>
+The result is a measured failure threshold rather than an estimate. Witness
+calculation plus a Groth16 prove plus verification of the deployed login circuit
+completes and verifies at every ceiling from 4,096 MB down to <strong>336 MB</strong>,
+charging a peak of 326 to 387 MB to the cgroup. At <strong>320 MB</strong> the
+kernel OOM-kills it. The threshold therefore sits between 320 and 336 MB, roughly
+an order of magnitude below the 3 GB the gate names, and the cgroup-charged peak
+agrees with the 361 MB peak resident memory measured on the A12. The prover also
+adapts downward: as the ceiling tightens from 4,096 MB to 336 MB the charged peak
+falls from 380 MB to 326 MB, which is the allocator and the garbage collector
+responding to pressure rather than a fixed working set.
+</p>
+
+<p>
+<strong>This does not close Gate 3, and the gate's wording is why.</strong> It
+names a device, not a memory ceiling, and the distinction is load-bearing: a
+cgroup cap on a desktop x86 core does not reproduce a weak in-order mobile core,
+Android's allocator, its low-memory killer, or the smaller effective budget a
+browser tab receives under real pressure. Every number here is labelled simulated
+on desktop x86, pending confirmation on physical hardware of 3 GB or less. What
+the result does establish is direction: the margin is wide enough that acquiring
+a device is a confirmation step rather than a risk, which is the opposite of what
+an early warning would have looked like.
+</p>
+
+<p>
+The path one step closer than a cgroup &mdash; an Android emulator capped at
+2&nbsp;GB and 3&nbsp;GB, which runs the real Android OS and so reproduces the
+allocator and the low-memory killer the cgroup cannot &mdash; was attempted and
+not completed: the build environment could not reach the Android SDK download
+endpoint (repeated stalls mid-transfer). The adb-based harness
+(<span class="m">scripts/measure_phone_rss.mjs</span>) is emulator-agnostic
+already, and the AVD setup is scripted
+(<span class="m">scripts/wsl_setup_avd.sh</span>), so this is a provisioning gap
+on one machine, not a design gap. It would still not close the gate &mdash; an
+emulator reproduces the memory manager but not mobile memory bandwidth, thermals,
+or OEM policy &mdash; but it would move the evidence from &ldquo;simulated on the
+wrong OS&rdquo; to &ldquo;measured on the right OS, pending physical hardware.&rdquo;
+</p>
+
+<h3>7.6 A ceremony coordinator, built and tested, deliberately not run</h3>
+
+<p>
+Gate 5 stays open and the shipped keys stay evaluation-only. What changed is that
+the infrastructure to replace them exists and has been tested against
+deliberately invalid inputs.
+</p>
+
+<p>
+A Groth16 Phase-2 ceremony is sequential. Contribution <span class="m">i+1</span>
+transforms the state that contribution <span class="m">i</span> produced, and the
+security property, that the toxic waste is unrecoverable if any single
+participant destroyed their entropy, holds only if the chain really is a chain.
+The coordinator enforces that with four checks before it will advance the head:
+the upload parses as a zkey; <span class="m">zKey.verifyFromInit</span> accepts
+the whole chain from the frozen initial key; the submission carries exactly one
+more contribution than the head and the head's contribution records are a
+byte-exact prefix of it; and the submission is not a byte-identical replay of the
+head.
+</p>
+
+<p>
+The third check is the one that matters and the one a naive coordinator omits. A
+participant can contribute onto the <em>initial</em> key rather than the current
+head, producing a chain of length one that passes
+<span class="m">zKey.verifyFromInit</span> on its own. The test suite asserts
+exactly that, confirming the library call returns valid for the fork and that the
+coordinator rejects it anyway. Without the prefix check the ceremony is a tree,
+and an attacker discards every honest contribution by submitting their own short
+branch.
+</p>
+
+<p>
+The transcript is append-only and hash-chained: each entry records the digest of
+the entire log preceding it, so editing an earlier entry is detectable, and the
+test suite doctors a rejection into an acceptance to confirm the chain breaks.
+Rejected submissions are recorded alongside accepted ones, because a log that
+records only successes is not an audit trail. A beacon step mixes in a public
+value that nobody could predict when the ceremony opened, which removes the
+last-participant advantage even if every human contributor colluded;
+finalization refuses to run without one.
+</p>
+
+<p>
+The coordinator verifies cryptographic transcripts, so the coordinator itself can
+be wrong. It was tested the same way the circuits were: 27 assertions against a
+throwaway circuit with four honest participants and six adversarial submissions
+covering replay, forking from the initial key, rollback, byte corruption, two
+contributions bundled as one, and non-zkey garbage. All six are rejected, the
+head does not move, and an honest contribution still succeeds afterwards.
+<strong>Two real bugs in the coordinator were found this way and fixed:</strong>
+snarkjs returns false rather than raising when a beacon hash is odd-length hex or
+the iteration exponent falls outside its accepted range, so an unchecked call
+silently produces no file, and a coordinator that ignored the return value would
+have published a ceremony whose final beacon never happened.
+</p>
+
+<p>
+<strong>It has not been run.</strong> A ceremony binds keys to one exact circuit,
+and that circuit changed twice in earlier work &mdash; the epoch split, then
+revocation. It has now been stable across four rounds of analysis, so the circuit
+set is frozen for v1.2: <span class="m">CIRCUIT-FREEZE.md</span> records the
+source, R1CS, and constraint-count hashes, cross-checked against the reproducible
+build lock, and the operational sequence is written up
+(<span class="m">docs/CEREMONY-RUNBOOK.md</span>). The remaining blocker is not
+the freeze; it is that a ceremony is only worth running with contributors who are
+genuinely independent of each other and of this project &mdash; the whole content
+of the 1-of-N-honest guarantee &mdash; and recruiting them is out of scope for
+the authors alone. Gate 5 moves from open with no infrastructure to open with the
+infrastructure built, tested, and frozen against a target, which is a smaller
+claim than closure and the only one the evidence supports. The shipped keys
+remain evaluation-only.
 </p>
 
 <h2>8. Falsification criteria</h2>

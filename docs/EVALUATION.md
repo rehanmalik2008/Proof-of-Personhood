@@ -17,7 +17,10 @@ repo alone, that is stated explicitly at the end.
 | D — phone performance | the MASTER-SPEC §4 numbers reproduce | an Android phone + `adb`, or nothing (desktop bracket) | 20 min |
 | E — cross-engine equivalence | snarkjs / C++→WASM / rapidsnark proofs all verify against one vkey with identical public signals | Node (+ phone for on-device) | 5 min |
 | F — revocation & multi-source roots | Gate 6 both paths (in-circuit non-membership `+R` measured; incremental bulk rebuild measured); client fails closed on root disagreement / below quorum | Node | 10 min |
-| G — soundness self-audit | Picus (SMT) = *properly constrained* for all 6 deployed circuits; 24 adversarial witnesses all rejected; circomspect clean on the entrypoints | Node (+ Rust/Racket/WSL for the analyzers) | 10 min |
+| G — soundness self-audit | **structural forward-determination** proves every signal + both public outputs uniquely determined except 72 `IsZero` `<--` hints (no solver, no assumption, no linearization); corroborated by a 56-point two-witness search (9 free == 9 hints free at the deployed witness), a taint proof, and a finite-field SMT proof; 27 adversarial checks rejected; circomspect clean; Picus and cvc5-FF both stall on real `Poseidon` | Node (+ Rust/Racket/cvc5/WSL) | 30 min |
+| H — mutation testing | filtered by two-witness search: 1 of 10 mutants is a genuine under-constraint (M1a, a freed nullifier the old harness layer missed and the null-space-directed layer catches) | Node + WSL analyzers | 90 min |
+| I — ceremony coordinator | sequential MPC pipeline rejects replay, fork, rollback, corruption, double-contribution and garbage | Node | 10 min |
+| J — simulated memory ceiling | Gate 3 supporting evidence: prover passes at 336 MB, OOM at 320 MB. Android-emulator path (2–3 GB, real OS) scripted but not run here — no SDK-endpoint access (`gate3_android_emulator.md`) | Linux/WSL + root (cgroup v2) | 15 min |
 
 Prereq once: `npm install` (toolchain is pinned — Node `24.14.0`, `circom2`
 `0.2.23`, `circomlib` `2.0.5`, `snarkjs` `0.7.6`; see `package.json` `engines` and
@@ -30,6 +33,7 @@ Prereq once: `npm install` (toolchain is pinned — Node `24.14.0`, `circom2`
 ```bash
 node scripts/repro_build.mjs --double     # build twice, assert byte-identical
 node scripts/repro_build.mjs --verify     # build once, check every hash against the lock file
+node scripts/circuit_freeze.mjs           # v1.2 freeze: source/r1cs/constraint hashes vs artifacts.lock.json (CIRCUIT-FREEZE.md)
 ```
 
 - `--double` proves the circom compile and the Groth16 `setup` are **deterministic**
@@ -203,7 +207,20 @@ Every other track drives the **honest** prover. This one drives a **malicious**
 one. Full transcript: [`SELF-AUDIT.md`](SELF-AUDIT.md).
 
 ```bash
-node scripts/test_soundness_adversarial.mjs   # 24 adversarial checks, host Node
+node scripts/forward_determination.mjs        # STRUCTURAL: every signal + N,y determined except 72 IsZero <-- hints; ~5s, no solver
+node scripts/test_soundness_adversarial.mjs   # 27 adversarial checks incl. null-space-directed Layer C, host Node
+node scripts/two_witness_search.mjs           # tool-independent under-constraint oracle on the deployed circuit
+node scripts/gen_input_multipoint.mjs         # 56 structurally diverse honest witnesses
+node scripts/two_witness_multipoint.mjs       # ~13 min: the search re-run at all 56 points
+node scripts/taint_iszero.mjs                 # mechanical proof the 9 IsZero freedoms are benign
+node scripts/build_selfaudit_circuits.mjs && node scripts/compositional_verify.mjs --picus  # Poseidon at the module boundary
+bash scripts/wsl_setup_cvc5.sh                # cvc5 1.3.4 + CoCoALib (finite-field SMT), into /opt/cvc5
+node scripts/ff_smt_two_witness.mjs circuits/residual_abstract.r1cs   # UNSAT -> N,y uniquely determined, no linearization bound
+node scripts/nullspace_harness_regression.mjs # rebuilds M1a, confirms the null-space layer catches it
+node scripts/mutation_test.mjs                # ~90 min: 10 injected bugs vs all 3 methods
+node scripts/ceremony/test_ceremony.mjs       # 27 assertions: ceremony coordinator + 6 attacks
+# Gate 3 simulated ceiling (Linux/WSL, needs root for cgroup v2):
+sudo bash scripts/mem_ceiling_test.sh 3072 2560 2048 512 384 336 320
 # static analysis (Linux/WSL):
 bash scripts/wsl_install_analyzers.sh         # circomspect + Racket 9.3 + Picus
 bash scripts/run_circomspect_warn.sh          # WARNING-only signal-to-noise view
@@ -221,22 +238,103 @@ bash scripts/run_picus.sh                     # SMT under-constrained detection 
   swapped) and requires **both** `snarkjs.wtns.check` and a fresh `groth16` proof
   to fail. Three end-to-end checks recover the real `s` from the two proofs a
   double-actor would produce.
+- **Forward-determination** (`scripts/forward_determination.mjs`,
+  `forward_determination.md`) — the primary determination result, and the only
+  one with no solver. Seed the inputs; to fixpoint, any constraint that is affine
+  in the undetermined signals with exactly one unknown of invertible coefficient
+  determines that unknown by division. On an `--O1` build of the deployed circuit
+  (`--O2` fuses constraints and breaks triangularity): every signal is
+  determined except the 72 `IsZero.inv` `<--` hints; **`N` and `y` are
+  determined**; runtime ~0.5 s. Linear-time, no field reasoning, so the `x⁵`
+  S-box costs nothing — which is why it decides what Picus and cvc5-FF cannot.
+  The 9 hints free at the deployed witness are exactly the 9 null-space
+  directions the Jacobian search finds (cross-check). Detects the `<--` bug class
+  (M1a) structurally: an unconstrained public output never enters the determined
+  set.
+- **Two-witness search** (`scripts/two_witness_search.mjs`) — a tool-independent
+  under-constraint oracle. A circuit is under-constrained at a signal iff two
+  distinct witnesses satisfy every constraint, agree on every input, and differ
+  at that signal. It takes the Jacobian of the R1CS at the honest witness,
+  computes the null space of its non-input columns over the scalar field, and
+  re-checks each direction against the full non-linear constraints. On the
+  deployed circuit: **no second witness moves a public output**; 9 second
+  witnesses exist at the `IsZero` `inv` hint of each Merkle comparator, free
+  because the comparator input is 0 and read by nothing observable (the same
+  benign freedom is in circomlib). On a mutant with the RLN share freed it finds
+  the exploit witness. Bound: linear null space + exact non-linear re-check; a
+  defect reachable only by a large non-linear jump is outside it.
+- **Multi-point probing** (`scripts/two_witness_multipoint.mjs`, `two_witness_multipoint.md`).
+  The single-point null space is measure zero on the solution manifold, so the
+  search is re-run at **56 structurally diverse honest witnesses** (leftmost /
+  rightmost / max-depth / random path shapes; zero / maximal / random / `C`-valued
+  siblings; `s`, `ctx`, both epochs and `signal_hash` at random and at field
+  edges). Null-space dimension is a stable **9** at every point; no direction
+  moves a public output at any point; each free column is an exact zero column of
+  the Jacobian, so there is no near-degenerate determination to report.
+- **Taint proof** (`scripts/taint_iszero.mjs`, `taint_iszero.md`). Each of the 9
+  `IsZero` freedoms is shown benign mechanically: singleton null-space support;
+  exact-zero Jacobian column; six field multipliers along the direction leave all
+  4,309 constraints satisfied with `N`, `y` bit-identical; and the directed
+  constraint-influence closure from the hint reaches no public output.
+- **Compositional verification** (`scripts/compositional_verify.mjs`,
+  `compositional_verify.md`). Layer A: circomlib `Poseidon(3)` and `Poseidon(8)`
+  are uniquely determining in isolation (two-witness dimension 0 at 16 points
+  each; Picus confirms arity 3). Layer B: with every `Poseidon` replaced by a
+  determinism-only relation, the 217-constraint circuit is uniquely determined
+  (dimension 9, all benign hints). Composed: the deployed circuit's outputs are
+  uniquely determined given one stated assumption — circomlib `Poseidon` uniquely
+  determines its output.
+- **Finite-field SMT** (`scripts/ff_smt_two_witness.mjs`, `ff_smt.md`; cvc5 1.3.4
+  built with CoCoALib, `QF_FF` — `scripts/wsl_setup_cvc5.sh`). The two-witness
+  query posed exactly, no linearization. On the residual projection of the
+  abstraction (`N`, `y`, `Poseidon` mocked), **all inputs symbolic → UNSAT in
+  0.13 s** for both outputs: an unconditional universal proof they are uniquely
+  determined. Positive control (`y <--`): `N` UNSAT, `y` **SAT** with a model.
+  Full 217-constraint abstraction: UNSAT at 6 concrete points (exact, per-point);
+  the fully symbolic query does not terminate, and neither does any query over a
+  real `Poseidon` (crash / >4 GB memory), the same wall Picus hits.
 - **circomspect 0.9.0.** Clean on the instantiated deployed entrypoints (all
   levels). On the symbolic templates, two WARNING classes, both explained in
   `SELF-AUDIT.md` §3.1: `epoch_tree` has no in-circuit constraint (by design —
   verifier-checked; it is a deployment obligation), and the non-membership gadget
   uses the canonical safe inverse-hint pattern (`inv` pinned by the next line).
 - **Picus 138b151** (Veridise; SMT, z3 backend). Returns **"the circuit is
-  properly constrained"** (exit 8 = *safe*) for **all six deployed circuits** —
-  the split login circuit, the three split-revocation variants, the pre-split
-  login circuit, and the enrolment circuit — with no timeouts. `SELF-AUDIT.md`
-  §3.2; raw logs in `docs/self-audit/picus_full_run.txt`.
+  properly constrained"** for all six deployed circuits. **This could not be
+  validated as an oracle for this circuit:** Picus flags a blatant 2-signal
+  under-constraint (exit 9, prints both witnesses), but on a small Poseidon+RLN
+  circuit with an output freed it returns *cannot determine*, and on the full
+  circuit with the same defect it does not terminate within 15 minutes (nor on
+  the 217-constraint abstraction, nor on `Poseidon(8)` alone). Its *properly
+  constrained* verdict counts only alongside the two-witness search, which agrees
+  on the deployed circuit. The reproducer and a ready-to-file issue body are
+  packaged (`docs/self-audit/picus-upstream-report.md`,
+  `picus-upstream-issue.md`); it is not filed — `Veridise/Picus` has issues
+  disabled and this environment has no `gh`/token. `SELF-AUDIT.md` §11.4c / §11.6;
+  `docs/self-audit/two_witness_results.md`.
 
-**Pass:** `run_picus.sh` prints `The circuit is properly constrained` six times;
-`test_soundness_adversarial.mjs` prints `24 passed, 0 failed`;
-`run_circomspect_warn.sh` shows `(no warnings/errors)` for every `main_*`
-entrypoint. **No soundness bug is a result, not a guarantee** — Gate 1 needs
-independent review.
+**Mutation testing** (`docs/self-audit/mutation_table.md`,
+`docs/self-audit/two_witness_results.md`) measures the self-audit's own
+detection rate. Ten bug classes are injected one at a time; the two-witness
+search then filters the denominator to genuine signal-level under-constraints.
+**Exactly one of the ten qualifies — M1a, a freed nullifier that is real and
+exploitable.** circomspect catches it syntactically; the old signal-at-a-time
+harness layer missed it (its Layer-B tests move one signal at a time; the second
+witness needs the coordinated `(a1x, N, y)` move); the null-space-directed
+Layer C catches it (`nullspace_harness_regression.mjs`: null-space dimension 10,
+the extra direction moves `{N, y}`); Picus gives no verdict. The other nine are
+equivalent mutants, wrong-but-deterministic functions, or input-set widenings —
+the last of which the adversarial harness does catch by trying bad inputs. The
+unfiltered "9 of 10 produced a signal" is not a bug count.
+
+**Pass:** `two_witness_search.mjs` prints `No second witness moved a public signal`
+for the deployed circuit; `two_witness_multipoint.mjs` prints `nullity is stably 9`
+across 56 points with `largest null-space entry on ANY public column ... 0`;
+`taint_iszero.mjs` prints `all 9 proved benign`; `test_soundness_adversarial.mjs`
+prints `27 passed, 0 failed`; `run_circomspect_warn.sh` shows `(no
+warnings/errors)` for every `main_*` entrypoint; `run_picus.sh` prints `The
+circuit is properly constrained` six times (a verdict that, per §11.4c, needs the
+two-witness search beside it). **No soundness bug is a result, not a guarantee** —
+Gate 1 needs independent review; this work only makes it cheaper and better aimed.
 
 ---
 

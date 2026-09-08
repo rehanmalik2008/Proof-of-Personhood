@@ -1,17 +1,58 @@
 cff-version: 1.2.0
-message: "If you use this protocol or code, please cite it as below."
+message: >-
+  If you use this protocol, its circuits, or this code, please cite both the
+  software (this entry) and the paper (preferred-citation, below).
+type: software
+title: "Proof of Personhood Without a Registry"
+abstract: >-
+  A measured zero-knowledge construction for one-human-one-action gating with no
+  central registry, no biometrics, and no hardware root of trust. Enrolment
+  proves k independent attestations once; every later login proves set membership
+  in a published Poseidon Merkle tree plus a per-context rate-limiting-nullifier
+  share, in a 4,309-constraint Groth16/BN254 circuit. The repository carries the
+  reference implementation, the circuits, an OIDC / W3C Verifiable Presentation
+  integration, reproducible builds, an adversarial self-audit that includes a
+  tool-independent two-witness under-constraint search, and the raw on-device
+  measurements.
 authors:
-  - family-names: "Malik"
-    given-names: "Rehan"
-title: "Proof of Personhood Without a Registry: Measured Zero-Knowledge Proofs on Commodity Handsets"
-version: 1.2.0
-date-released: 2026-09-01
+  - family-names: Malik
+    given-names: Rehan
+    alias: rehanmalik2008
+version: "1.2.0"
+date-released: 2026-09-07
+license: Apache-2.0
 url: "https://github.com/rehanmalik2008/Proof-of-Personhood"
 repository-code: "https://github.com/rehanmalik2008/Proof-of-Personhood"
+repository-artifact: "https://github.com/rehanmalik2008/Proof-of-Personhood/releases"
 keywords:
   - zero-knowledge
   - proof-of-personhood
   - sybil-resistance
+  - rate-limiting-nullifier
   - rln
   - circom
   - groth16
+  - bn254
+  - privacy
+  - digital-identity
+identifiers:
+  - type: url
+    value: "https://github.com/rehanmalik2008/Proof-of-Personhood/releases/tag/v1.1"
+    description: >-
+      First public, timestamped release (2026-09-04): source, circuits, and the
+      v1.1 paper PDF. Establishes the public-disclosure date for the construction.
+preferred-citation:
+  type: article
+  title: >-
+    Proof of Personhood Without a Registry: A Measured Zero-Knowledge
+    Construction for One-Human-One-Action
+  authors:
+    - family-names: Malik
+      given-names: Rehan
+  year: 2026
+  month: 9
+  url: "https://github.com/rehanmalik2008/Proof-of-Personhood/releases"
+  notes: >-
+    The reference implementation, the circuits, and the raw measurements
+    accompany the paper in the repository. A permanent archival record (arXiv,
+    Zenodo DOI) is planned; add its identifier here once minted.

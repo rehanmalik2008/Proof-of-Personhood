@@ -1,0 +1,11 @@
+Authors of "Proof of Personhood Without a Registry"
+(the construction, the circuits, the reference implementation, and the paper)
+
+  Rehan Malik  <github.com/rehanmalik2008>
+    Original inventor and sole author. Independent cryptography researcher.
+
+Attribution is required under the Apache License, Version 2.0 (see LICENSE,
+NOTICE). To cite this work, use CITATION.cff.
+
+Contributors who submit changes are listed by git history. Contribution does not
+transfer authorship of the underlying construction or paper.
