@@ -1,0 +1,11 @@
+# circuits/residual_abstract_freed.r1cs
+# 2026-09-07T18:16:53.469Z
+
+===== output #1 =====
+unsat
+
+
+===== output #2 =====
+sat
+
+

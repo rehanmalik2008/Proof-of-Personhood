@@ -1,0 +1,94 @@
+
+=== two-witness search : wedge_mem_w8_d9_split ===
+r1cs   <repo>\build\wedge_mem_w8_d9_split.r1cs
+sym    <repo>\build\main_mem_w8_d9_split.sym
+input  <repo>\build\input_mem_w8_d9_split.json
+
+wires 4378 | constraints 4309 | outputs 2 | pub-in 5 | prv-in 82
+FIXED (constant + 87 input signals): 88
+FREE  (outputs + internal): 4290
+
+honest witness satisfies all constraints
+Jacobian over FREE columns: 4309 x 4290, 69660 nonzeros (avg 16.2/row)
+
+  (skip main.root: it is a fixed input)
+  (skip main.ctx: it is a fixed input)
+  (skip main.epochAction: it is a fixed input)
+  (skip main.epochTree: it is a fixed input)
+  (skip main.signalHash: it is a fixed input)
+  (skip main.res.C: not in .sym or folded by --O2)
+  (skip main.res.N: not in .sym or folded by --O2)
+  (skip main.res.y: not in .sym or folded by --O2)
+  (skip main.res.a1x: not in .sym or folded by --O2)
+  (skip main.mk.cur[0]: not in .sym or folded by --O2)
+  (skip main.mk.cur[9]: not in .sym or folded by --O2)
+public signals (moving any of these is a soundness bug): indices 1..2
+
+running sparse Gaussian elimination over the scalar field ...
+elimination done in 2.9s | rank 4281 / 4290 | nullity 9 | max row fill 99
+
+GLOBAL RESULT: nullity 9 > 0 — candidate under-constrained signals exist.
+
+nullspace basis dim 9; 9 distinct signals carry nonzero mass:
+   main.mk.eq[0][0].isz.inv
+   main.mk.eq[1][0].isz.inv
+   main.mk.eq[2][0].isz.inv
+   main.mk.eq[3][0].isz.inv
+   main.mk.eq[4][0].isz.inv
+   main.mk.eq[5][0].isz.inv
+   main.mk.eq[6][0].isz.inv
+   main.mk.eq[7][0].isz.inv
+   main.mk.eq[8][0].isz.inv
+
+verifying each nullspace direction against the full (nonlinear) R1CS:
+   second witness at non-public signal(s): main.mk.eq[0][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[1][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[2][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[3][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[4][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[5][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[6][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[7][0].isz.inv
+   second witness at non-public signal(s): main.mk.eq[8][0].isz.inv
+
+per-target:
+   main.N                   determined (no nullspace direction touches it)
+   main.y                   determined (no nullspace direction touches it)
+   main.mk.cur[1]           determined (no nullspace direction touches it)
+   main.mk.cur[1]           determined (no nullspace direction touches it)
+   main.mk.cur[2]           determined (no nullspace direction touches it)
+   main.mk.cur[2]           determined (no nullspace direction touches it)
+   main.mk.cur[3]           determined (no nullspace direction touches it)
+   main.mk.cur[3]           determined (no nullspace direction touches it)
+   main.mk.cur[4]           determined (no nullspace direction touches it)
+   main.mk.cur[4]           determined (no nullspace direction touches it)
+   main.mk.cur[5]           determined (no nullspace direction touches it)
+   main.mk.cur[5]           determined (no nullspace direction touches it)
+   main.mk.cur[6]           determined (no nullspace direction touches it)
+   main.mk.cur[6]           determined (no nullspace direction touches it)
+   main.mk.cur[7]           determined (no nullspace direction touches it)
+   main.mk.cur[7]           determined (no nullspace direction touches it)
+   main.mk.cur[8]           determined (no nullspace direction touches it)
+   main.mk.cur[8]           determined (no nullspace direction touches it)
+
+SEARCH BOUND: Jacobian nullspace at the honest witness + exact
+nonlinear re-check of every nullspace direction. A second witness
+that exists only via a nonlinear path with zero linear component is
+NOT covered. Absence of a found second witness is weaker evidence
+than a found one.
+
+
+9 second-witness direction(s) at NON-PUBLIC signals only:
+   {main.mk.eq[0][0].isz.inv}
+   {main.mk.eq[1][0].isz.inv}
+   {main.mk.eq[2][0].isz.inv}
+   {main.mk.eq[3][0].isz.inv}
+   {main.mk.eq[4][0].isz.inv}
+   {main.mk.eq[5][0].isz.inv}
+   {main.mk.eq[6][0].isz.inv}
+   {main.mk.eq[7][0].isz.inv}
+   {main.mk.eq[8][0].isz.inv}
+  benign if these are IsZero-style scratch hints (free when input==0) that
+  no public signal reads; a real bug if they are a removed check.
+
+No second witness moved a public signal; non-public directions need review.

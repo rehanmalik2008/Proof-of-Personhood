@@ -87,11 +87,13 @@ for (const d of readdirSync("circuits")) {
 }
 for (const c of CIRCUITS) {
   console.log(`\n== compiling ${c.src} ==`);
-  circom2([`${c.src}.circom`, "--r1cs", "--wasm", "--O2",
+  circom2([`${c.src}.circom`, "--r1cs", "--wasm", "--sym", "--O2",
            "-o", ".", "-l", ".", "-l", "../node_modules/circomlib/circuits"],
           { cwd: join(ROOT, "circuits") });
   copyFileSync(join("circuits", `${c.src}.r1cs`), join("build", `${c.name}.r1cs`));
   copyFileSync(join("circuits", `${c.src}_js`, `${c.src}.wasm`), join("build", `${c.name}.wasm`));
+  // .sym gives scripts/two_witness_search.mjs readable signal names (optional)
+  try { copyFileSync(join("circuits", `${c.src}.sym`), join("build", `${c.src}.sym`)); } catch {}
 }
 
 // --- 3. powers of tau (2^15 = 32,768 -- fits wedge_ship at 29,122; generated locally) ---

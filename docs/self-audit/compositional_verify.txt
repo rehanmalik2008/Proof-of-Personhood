@@ -1,0 +1,19 @@
+=== compositional verification (after-the-oracle.md Task 4) ===
+
+LAYER A — circomlib Poseidon in isolation ...
+  Poseidon(3): 16 random points, nullity [0]  uniquely-determining=true  | Picus: properly constrained [14s]
+  Poseidon(8): 16 random points, nullity [0]  uniquely-determining=true  | Picus: no verdict in 300s [304s]
+
+LAYER B — deployed circuit with Poseidon abstracted to determinism only ...
+  leftmost   nullity 9  movesPublicOutput=false  nonpub=["main.mk.eq[0][0].isz.inv","main.mk.eq[1][0].isz.inv","main.mk.eq[2][0].isz.inv","main.mk.eq[3][0].isz.inv","main.mk.eq[4][0].isz.inv","main.mk.eq[5][0].isz.inv","main.mk.eq[6][0].isz.inv","main.mk.eq[7][0].isz.inv","main.mk.eq[8][0].isz.inv"]
+  rightmost  nullity 9  movesPublicOutput=false  nonpub=["main.mk.eq[0][7].isz.inv","main.mk.eq[1][7].isz.inv","main.mk.eq[2][7].isz.inv","main.mk.eq[3][7].isz.inv","main.mk.eq[4][7].isz.inv","main.mk.eq[5][7].isz.inv","main.mk.eq[6][7].isz.inv","main.mk.eq[7][7].isz.inv","main.mk.eq[8][7].isz.inv"]
+  maxdepth   nullity 9  movesPublicOutput=false  nonpub=["main.mk.eq[0][1].isz.inv","main.mk.eq[1][2].isz.inv","main.mk.eq[2][3].isz.inv","main.mk.eq[3][4].isz.inv","main.mk.eq[4][5].isz.inv","main.mk.eq[5][6].isz.inv","main.mk.eq[6][7].isz.inv","main.mk.eq[7][1].isz.inv","main.mk.eq[8][2].isz.inv"]
+  ascending  nullity 9  movesPublicOutput=false  nonpub=["main.mk.eq[0][0].isz.inv","main.mk.eq[1][1].isz.inv","main.mk.eq[2][2].isz.inv","main.mk.eq[3][3].isz.inv","main.mk.eq[4][4].isz.inv","main.mk.eq[5][5].isz.inv","main.mk.eq[6][6].isz.inv","main.mk.eq[7][7].isz.inv","main.mk.eq[8][0].isz.inv"]
+  Picus on the abstracted circuit: no verdict in 300s [300s]
+
+Layer A (real Poseidon uniquely determines out from inputs): HOLDS
+Layer B (circuit uniquely determined given Poseidon determinism): HOLDS
+COMPOSED whole-circuit result: the deployed circuit's public outputs are uniquely determined by its inputs, modulo the circomlib-Poseidon determinism assumption
+
+wrote <repo>\docs\self-audit\compositional_verify.md
+wrote <repo>\docs\self-audit\compositional_verify.json

@@ -1,0 +1,24 @@
+{
+  "tag": "poseidon8_symbolic",
+  "r1cs": "circuits/poseidon_only_k8.r1cs",
+  "wires": 411,
+  "constraints": 402,
+  "nPubOut": 1,
+  "inputsFixed": 8,
+  "tlimitS": 900,
+  "ffSolver": "gb",
+  "mode": "split",
+  "subqueries": [
+    {
+      "output": 1,
+      "verdict": "no-verdict",
+      "seconds": 295.91,
+      "exit": 9,
+      "stats": []
+    }
+  ],
+  "stamp": "2026-09-07T18:08:23.220Z",
+  "verdict": "UNDECIDED (at least one sub-query not solved)",
+  "anySat": false,
+  "anyUndecided": true
+}

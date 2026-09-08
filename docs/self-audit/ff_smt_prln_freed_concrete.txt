@@ -1,0 +1,16 @@
+# circuits/poseidon_rln_freed.r1cs
+# 2026-09-07T18:01:06.232Z
+
+===== output #1 =====
+
+cvc5 interrupted by timeout.
+cvc5::CONSTANT = { UNKNOWN_TYPE_CONSTANT: 537 }
+cvc5::TERM = { <unsupported>: 535, <unsupported>: 1, <unsupported>: 355, <unsupported>: 6915 }
+driver::filename = <repo>/build/ff-smt/prln_freed_concrete.out1.smt2
+global::totalTime = 120006ms
+
+
+===== output #2 =====
+
+
+

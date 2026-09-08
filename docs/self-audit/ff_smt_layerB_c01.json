@@ -1,0 +1,31 @@
+{
+  "tag": "layerB_c01",
+  "r1cs": "circuits/main_abstract_split.r1cs",
+  "wires": 286,
+  "constraints": 217,
+  "nPubOut": 2,
+  "inputsFixed": 87,
+  "tlimitS": 300,
+  "ffSolver": "gb",
+  "mode": "split",
+  "subqueries": [
+    {
+      "output": 1,
+      "verdict": "unsat",
+      "seconds": 1.151,
+      "exit": 0,
+      "stats": []
+    },
+    {
+      "output": 2,
+      "verdict": "unsat",
+      "seconds": 1.168,
+      "exit": 0,
+      "stats": []
+    }
+  ],
+  "stamp": "2026-09-07T17:43:05.480Z",
+  "verdict": "UNIQUELY DETERMINED (proof)",
+  "anySat": false,
+  "anyUndecided": false
+}

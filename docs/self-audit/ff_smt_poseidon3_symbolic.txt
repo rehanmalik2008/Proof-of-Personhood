@@ -1,0 +1,7 @@
+# circuits/poseidon_only_k3.r1cs
+# 2026-09-07T17:58:26.529Z
+
+===== output #1 =====
+
+
+

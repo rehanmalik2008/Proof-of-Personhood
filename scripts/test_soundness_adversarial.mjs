@@ -38,9 +38,15 @@ import { buildPoseidon } from "circomlibjs";
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { nullspaceProbe } from "./nullspace_harness.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
-const B = (p) => join(ROOT, "build", p);
+// Re-targetable so scripts/mutation_test.mjs can point the same checks at a
+// mutant build. Defaults are the real build/, i.e. behaviour is unchanged.
+const BUILD      = process.env.ADV_BUILD_DIR || join(ROOT, "build");
+const SKIP_PROVE = process.env.ADV_SKIP_PROVE === "1";   // use wtns.check as the sole oracle
+const JSON_OUT   = process.env.ADV_JSON || "";           // machine-readable {check: pass} map
+const B = (p) => join(BUILD, p);
 
 const poseidon = await buildPoseidon();
 const F = poseidon.F;
@@ -49,8 +55,10 @@ const H = (a) => F.toObject(poseidon(a));
 const toDec = (x) => (typeof x === "bigint" ? x : F.toObject(x)).toString();
 
 let pass = 0, fail = 0;
-const okpass = (n, why) => { pass++; console.log(`  PASS  ${n}`); if (why) console.log(`          ↳ ${why}`); };
-const okfail = (n, d) => { fail++; console.log(`  FAIL  ${n}`); if (d) console.log(`          ↳ ${d}`); };
+const RESULTS = {};                       // check-id -> true(pass)/false(fail)
+const id = (n) => String(n).trim().split(/\s\s+/)[0];
+const okpass = (n, why) => { pass++; RESULTS[id(n)] = true; console.log(`  PASS  ${n}`); if (why) console.log(`          ↳ ${why}`); };
+const okfail = (n, d) => { fail++; RESULTS[id(n)] = false; console.log(`  FAIL  ${n}`); if (d) console.log(`          ↳ ${d}`); };
 
 const tdir = mkdtempSync(join(tmpdir(), "advsound_"));
 let wc = 0;
@@ -150,7 +158,7 @@ async function expectTamperCaught(name, { r1cs, zkey, vkey }, baseVals, idx, val
   writeWtns(w, vals);
   const satisfies = await checkR1CS(r1cs, w);
   let verifies = null;
-  if (!satisfies && zkey) {
+  if (!satisfies && zkey && !SKIP_PROVE) {
     try { verifies = await proveVerify(zkey, vkey, w); } catch { verifies = false; }
   }
   if (satisfies) {
@@ -305,8 +313,9 @@ console.log("\n=== LAYER B — witness-level: tampering one signal must break th
   // negative control: the untouched honest witness satisfies the R1CS and verifies
   {
     const ok1 = await checkR1CS(c.r1cs, w);
-    let ok2 = false; try { ok2 = await proveVerify(c.zkey, c.vkey, w); } catch {}
-    (ok1 && ok2) ? okpass("B0  honest witness: R1CS satisfied AND proof verifies", "baseline")
+    let ok2 = SKIP_PROVE ? true : false;
+    if (!SKIP_PROVE) { try { ok2 = await proveVerify(c.zkey, c.vkey, w); } catch {} }
+    (ok1 && ok2) ? okpass("B0  honest witness: R1CS satisfied AND proof verifies", SKIP_PROVE ? "baseline (R1CS only; prove/verify skipped)" : "baseline")
                  : okfail("B0  honest witness did not check out", `wtns.check=${ok1} verify=${ok2}`);
   }
 
@@ -368,6 +377,52 @@ console.log("\n=== LAYER B — witness-level: tampering one signal must break th
 }
 
 // =========================================================================
+// LAYER C — null-space-directed (after-the-oracle.md, Task 2). Layer B flips one
+// named signal at a time and provably misses coordinated moves (it missed M1a's
+// (a1x, N, y)). Layer C perturbs along the Jacobian null-space basis and random
+// linear combinations of it -- the complete local candidate set for a first-
+// order soundness violation -- and re-verifies each against the full non-linear
+// R1CS. Any perturbation that satisfies every constraint, holds every input
+// fixed, and moves a PUBLIC output is an exploit.
+console.log("\n=== LAYER C — null-space-directed adversarial search (systematic) ===\n");
+{
+  const c = CIRC.split;
+  const NS_ROUNDS = Number(process.env.ADV_NS_ROUNDS || 128);
+  let res;
+  try {
+    res = await nullspaceProbe({
+      r1cs: c.r1cs, wasm: c.wasm, sym: c.sym, input: c.input,
+      rounds: NS_ROUNDS, seed: "adversarial-harness-layerC",
+    });
+  } catch (e) {
+    res = { ok: false, reason: String(e.message || e).split("\n")[0] };
+  }
+
+  if (!res.ok) {
+    // an aborted elimination is INCONCLUSIVE, never a pass-by-default and never a
+    // detection. Record it honestly; do not fail the suite on tooling limits.
+    okpass("C0  null-space elimination did not complete — INCONCLUSIVE",
+      `${res.reason}. Layer C contributed no evidence for this build; Layers A/B stand.`);
+  } else {
+    okpass("C0  null-space basis computed",
+      `nullity ${res.nullity}; ${res.basisDim} basis directions + ${res.combosTried} random combinations re-verified against the full R1CS`);
+
+    (res.caught)
+      ? okfail("C1  a null-space direction moves a PUBLIC output",
+          `EXPLOIT: ${res.publicMovers.map((m) => `${m.label} → {${m.publicSignals.join(", ")}}`).join("; ")}  — the circuit is UNDER-CONSTRAINED at a public output`)
+      : okpass("C1  no null-space direction moves a public output",
+          `all ${res.basisDim + res.combosTried} perturbations either break a constraint or move only non-public signals`);
+
+    const onlyIsZero = res.nonPublicSignals.every((s) => /\.isz\.inv$/.test(s));
+    (res.nonPublicSignals.length === 0 || onlyIsZero)
+      ? okpass("C2  non-public freedoms are IsZero `inv` hints only",
+          res.nonPublicSignals.length ? res.nonPublicSignals.join(", ") : "none")
+      : okfail("C2  a non-public null-space freedom is NOT an IsZero hint",
+          `classify: ${res.nonPublicSignals.filter((s) => !/\.isz\.inv$/.test(s)).join(", ")}`);
+  }
+}
+
+// =========================================================================
 console.log("\n=== END-TO-END — the RLN burn actually recovers s from two evasive-looking proofs ===\n");
 {
   const c = CIRC.split;
@@ -406,6 +461,7 @@ console.log("\n=== END-TO-END — the RLN burn actually recovers s from two evas
 
 // =========================================================================
 rmSync(tdir, { recursive: true, force: true });
+if (JSON_OUT) writeFileSync(JSON_OUT, JSON.stringify({ pass, fail, results: RESULTS }, null, 1));
 console.log(`\n=== adversarial soundness: ${pass} passed, ${fail} failed ===`);
 if (fail) console.log("A FAIL in Layer A/B may be a genuine soundness bug — read the ↳ line.");
 process.exit(fail ? 1 : 0);

@@ -1,0 +1,6232 @@
+{
+  "r1cs": "<repo>\\build\\wedge_mem_w8_d9_split.r1cs",
+  "points": 56,
+  "nullityValues": [
+    9
+  ],
+  "supportSignatureCount": 13,
+  "allCarriersAreIsZeroInv": true,
+  "spectrumClasses": [
+    "no-direct-pivot"
+  ],
+  "maxPublicColumnEntryOverAllPoints": "0",
+  "anyPublicMover": false,
+  "rows": [
+    {
+      "id": "00",
+      "ok": true,
+      "tag": {
+        "id": "00",
+        "file": "point_00.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "01",
+      "ok": true,
+      "tag": {
+        "id": "01",
+        "file": "point_01.json",
+        "path": "allseven",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": true,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][7].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][7].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][7].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "02",
+      "ok": true,
+      "tag": {
+        "id": "02",
+        "file": "point_02.json",
+        "path": "ascending",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][1].isz.inv",
+        "main.mk.eq[2][2].isz.inv",
+        "main.mk.eq[3][3].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][5].isz.inv",
+        "main.mk.eq[6][6].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "03",
+      "ok": true,
+      "tag": {
+        "id": "03",
+        "file": "point_03.json",
+        "path": "descending",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][6].isz.inv",
+        "main.mk.eq[2][5].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][3].isz.inv",
+        "main.mk.eq[5][2].isz.inv",
+        "main.mk.eq[6][1].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "04",
+      "ok": true,
+      "tag": {
+        "id": "04",
+        "file": "point_04.json",
+        "path": "alt_0_7",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "05",
+      "ok": true,
+      "tag": {
+        "id": "05",
+        "file": "point_05.json",
+        "path": "alt_1_4",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          1,
+          4,
+          1,
+          4,
+          1,
+          4,
+          1,
+          4,
+          1
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][1].isz.inv",
+        "main.mk.eq[1][4].isz.inv",
+        "main.mk.eq[2][1].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][1].isz.inv",
+        "main.mk.eq[5][4].isz.inv",
+        "main.mk.eq[6][1].isz.inv",
+        "main.mk.eq[7][4].isz.inv",
+        "main.mk.eq[8][1].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][1].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "06",
+      "ok": true,
+      "tag": {
+        "id": "06",
+        "file": "point_06.json",
+        "path": "allmid",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][4].isz.inv",
+        "main.mk.eq[1][4].isz.inv",
+        "main.mk.eq[2][4].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][4].isz.inv",
+        "main.mk.eq[6][4].isz.inv",
+        "main.mk.eq[7][4].isz.inv",
+        "main.mk.eq[8][4].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][4].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "07",
+      "ok": true,
+      "tag": {
+        "id": "07",
+        "file": "point_07.json",
+        "path": "onlyL0",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][3].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "08",
+      "ok": true,
+      "tag": {
+        "id": "08",
+        "file": "point_08.json",
+        "path": "onlyL4",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][5].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "09",
+      "ok": true,
+      "tag": {
+        "id": "09",
+        "file": "point_09.json",
+        "path": "onlyLlast",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "10",
+      "ok": true,
+      "tag": {
+        "id": "10",
+        "file": "point_10.json",
+        "path": "maxdepth",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          1,
+          2
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][1].isz.inv",
+        "main.mk.eq[1][2].isz.inv",
+        "main.mk.eq[2][3].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][5].isz.inv",
+        "main.mk.eq[5][6].isz.inv",
+        "main.mk.eq[6][7].isz.inv",
+        "main.mk.eq[7][1].isz.inv",
+        "main.mk.eq[8][2].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][2].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "11",
+      "ok": true,
+      "tag": {
+        "id": "11",
+        "file": "point_11.json",
+        "path": "random",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          4,
+          2,
+          4,
+          3,
+          1,
+          3,
+          3,
+          2,
+          4
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][4].isz.inv",
+        "main.mk.eq[1][2].isz.inv",
+        "main.mk.eq[2][4].isz.inv",
+        "main.mk.eq[3][3].isz.inv",
+        "main.mk.eq[4][1].isz.inv",
+        "main.mk.eq[5][3].isz.inv",
+        "main.mk.eq[6][3].isz.inv",
+        "main.mk.eq[7][2].isz.inv",
+        "main.mk.eq[8][4].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][4].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "12",
+      "ok": true,
+      "tag": {
+        "id": "12",
+        "file": "point_12.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "13",
+      "ok": true,
+      "tag": {
+        "id": "13",
+        "file": "point_13.json",
+        "path": "allzero",
+        "sib": "one",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "14",
+      "ok": true,
+      "tag": {
+        "id": "14",
+        "file": "point_14.json",
+        "path": "allzero",
+        "sib": "max",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "15",
+      "ok": true,
+      "tag": {
+        "id": "15",
+        "file": "point_15.json",
+        "path": "allzero",
+        "sib": "rand",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "16",
+      "ok": true,
+      "tag": {
+        "id": "16",
+        "file": "point_16.json",
+        "path": "allzero",
+        "sib": "alt",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "17",
+      "ok": true,
+      "tag": {
+        "id": "17",
+        "file": "point_17.json",
+        "path": "allzero",
+        "sib": "dupC",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "18",
+      "ok": true,
+      "tag": {
+        "id": "18",
+        "file": "point_18.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "19",
+      "ok": true,
+      "tag": {
+        "id": "19",
+        "file": "point_19.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "edge_zero",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "20",
+      "ok": true,
+      "tag": {
+        "id": "20",
+        "file": "point_20.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "edge_one",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "21",
+      "ok": true,
+      "tag": {
+        "id": "21",
+        "file": "point_21.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "big_epoch",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "22",
+      "ok": true,
+      "tag": {
+        "id": "22",
+        "file": "point_22.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "equal_epoch",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "23",
+      "ok": true,
+      "tag": {
+        "id": "23",
+        "file": "point_23.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "s_max",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "24",
+      "ok": true,
+      "tag": {
+        "id": "24",
+        "file": "point_24.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "sh_zero",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "25",
+      "ok": true,
+      "tag": {
+        "id": "25",
+        "file": "point_25.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "ctx_big",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "26",
+      "ok": true,
+      "tag": {
+        "id": "26",
+        "file": "point_26.json",
+        "path": "ascending",
+        "sib": "rand",
+        "val": "big_epoch",
+        "pathIndex": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][1].isz.inv",
+        "main.mk.eq[2][2].isz.inv",
+        "main.mk.eq[3][3].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][5].isz.inv",
+        "main.mk.eq[6][6].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "27",
+      "ok": true,
+      "tag": {
+        "id": "27",
+        "file": "point_27.json",
+        "path": "maxdepth",
+        "sib": "alt",
+        "val": "s_max",
+        "pathIndex": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          1,
+          2
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][1].isz.inv",
+        "main.mk.eq[1][2].isz.inv",
+        "main.mk.eq[2][3].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][5].isz.inv",
+        "main.mk.eq[5][6].isz.inv",
+        "main.mk.eq[6][7].isz.inv",
+        "main.mk.eq[7][1].isz.inv",
+        "main.mk.eq[8][2].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][2].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "28",
+      "ok": true,
+      "tag": {
+        "id": "28",
+        "file": "point_28.json",
+        "path": "allseven",
+        "sib": "max",
+        "val": "s_max",
+        "pathIndex": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": true,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][7].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][7].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][7].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "29",
+      "ok": true,
+      "tag": {
+        "id": "29",
+        "file": "point_29.json",
+        "path": "alt_0_7",
+        "sib": "dupC",
+        "val": "sh_zero",
+        "pathIndex": [
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "30",
+      "ok": true,
+      "tag": {
+        "id": "30",
+        "file": "point_30.json",
+        "path": "allmid",
+        "sib": "one",
+        "val": "equal_epoch",
+        "pathIndex": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][4].isz.inv",
+        "main.mk.eq[1][4].isz.inv",
+        "main.mk.eq[2][4].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][4].isz.inv",
+        "main.mk.eq[6][4].isz.inv",
+        "main.mk.eq[7][4].isz.inv",
+        "main.mk.eq[8][4].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][4].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "31",
+      "ok": true,
+      "tag": {
+        "id": "31",
+        "file": "point_31.json",
+        "path": "descending",
+        "sib": "rand",
+        "val": "ctx_big",
+        "pathIndex": [
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][6].isz.inv",
+        "main.mk.eq[2][5].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][3].isz.inv",
+        "main.mk.eq[5][2].isz.inv",
+        "main.mk.eq[6][1].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "32",
+      "ok": true,
+      "tag": {
+        "id": "32",
+        "file": "point_32.json",
+        "path": "onlyL4",
+        "sib": "rand",
+        "val": "edge_zero",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][5].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "33",
+      "ok": true,
+      "tag": {
+        "id": "33",
+        "file": "point_33.json",
+        "path": "onlyLlast",
+        "sib": "rand",
+        "val": "edge_one",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "34",
+      "ok": true,
+      "tag": {
+        "id": "34",
+        "file": "point_34.json",
+        "path": "allmid",
+        "sib": "alt",
+        "val": "equal_epoch",
+        "pathIndex": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][4].isz.inv",
+        "main.mk.eq[1][4].isz.inv",
+        "main.mk.eq[2][4].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][4].isz.inv",
+        "main.mk.eq[6][4].isz.inv",
+        "main.mk.eq[7][4].isz.inv",
+        "main.mk.eq[8][4].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][4].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "35",
+      "ok": true,
+      "tag": {
+        "id": "35",
+        "file": "point_35.json",
+        "path": "allseven",
+        "sib": "max",
+        "val": "random",
+        "pathIndex": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": true,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][7].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][7].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][7].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "36",
+      "ok": true,
+      "tag": {
+        "id": "36",
+        "file": "point_36.json",
+        "path": "onlyL0",
+        "sib": "alt",
+        "val": "edge_one",
+        "pathIndex": [
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][3].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "37",
+      "ok": true,
+      "tag": {
+        "id": "37",
+        "file": "point_37.json",
+        "path": "onlyLlast",
+        "sib": "dupC",
+        "val": "edge_zero",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "38",
+      "ok": true,
+      "tag": {
+        "id": "38",
+        "file": "point_38.json",
+        "path": "onlyL4",
+        "sib": "alt",
+        "val": "sh_zero",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][5].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "39",
+      "ok": true,
+      "tag": {
+        "id": "39",
+        "file": "point_39.json",
+        "path": "onlyLlast",
+        "sib": "rand",
+        "val": "s_max",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "40",
+      "ok": true,
+      "tag": {
+        "id": "40",
+        "file": "point_40.json",
+        "path": "onlyLlast",
+        "sib": "zero",
+        "val": "ctx_big",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "41",
+      "ok": true,
+      "tag": {
+        "id": "41",
+        "file": "point_41.json",
+        "path": "onlyL4",
+        "sib": "rand",
+        "val": "random",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][5].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "42",
+      "ok": true,
+      "tag": {
+        "id": "42",
+        "file": "point_42.json",
+        "path": "alt_1_4",
+        "sib": "max",
+        "val": "big_epoch",
+        "pathIndex": [
+          1,
+          4,
+          1,
+          4,
+          1,
+          4,
+          1,
+          4,
+          1
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][1].isz.inv",
+        "main.mk.eq[1][4].isz.inv",
+        "main.mk.eq[2][1].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][1].isz.inv",
+        "main.mk.eq[5][4].isz.inv",
+        "main.mk.eq[6][1].isz.inv",
+        "main.mk.eq[7][4].isz.inv",
+        "main.mk.eq[8][1].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][1].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "43",
+      "ok": true,
+      "tag": {
+        "id": "43",
+        "file": "point_43.json",
+        "path": "allzero",
+        "sib": "one",
+        "val": "equal_epoch",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "44",
+      "ok": true,
+      "tag": {
+        "id": "44",
+        "file": "point_44.json",
+        "path": "alt_0_7",
+        "sib": "max",
+        "val": "sh_zero",
+        "pathIndex": [
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "45",
+      "ok": true,
+      "tag": {
+        "id": "45",
+        "file": "point_45.json",
+        "path": "allseven",
+        "sib": "zero",
+        "val": "ctx_big",
+        "pathIndex": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": true,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][7].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][7].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][7].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "46",
+      "ok": true,
+      "tag": {
+        "id": "46",
+        "file": "point_46.json",
+        "path": "descending",
+        "sib": "dupC",
+        "val": "sh_zero",
+        "pathIndex": [
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][6].isz.inv",
+        "main.mk.eq[2][5].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][3].isz.inv",
+        "main.mk.eq[5][2].isz.inv",
+        "main.mk.eq[6][1].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "47",
+      "ok": true,
+      "tag": {
+        "id": "47",
+        "file": "point_47.json",
+        "path": "alt_0_7",
+        "sib": "dupC",
+        "val": "edge_zero",
+        "pathIndex": [
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "48",
+      "ok": true,
+      "tag": {
+        "id": "48",
+        "file": "point_48.json",
+        "path": "random",
+        "sib": "max",
+        "val": "sh_zero",
+        "pathIndex": [
+          2,
+          3,
+          5,
+          7,
+          4,
+          0,
+          2,
+          4,
+          6
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][2].isz.inv",
+        "main.mk.eq[1][3].isz.inv",
+        "main.mk.eq[2][5].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][2].isz.inv",
+        "main.mk.eq[7][4].isz.inv",
+        "main.mk.eq[8][6].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][6].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "49",
+      "ok": true,
+      "tag": {
+        "id": "49",
+        "file": "point_49.json",
+        "path": "allseven",
+        "sib": "zero",
+        "val": "ctx_big",
+        "pathIndex": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": true,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][7].isz.inv",
+        "main.mk.eq[2][7].isz.inv",
+        "main.mk.eq[3][7].isz.inv",
+        "main.mk.eq[4][7].isz.inv",
+        "main.mk.eq[5][7].isz.inv",
+        "main.mk.eq[6][7].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "50",
+      "ok": true,
+      "tag": {
+        "id": "50",
+        "file": "point_50.json",
+        "path": "allmid",
+        "sib": "alt",
+        "val": "s_max",
+        "pathIndex": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": true
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][4].isz.inv",
+        "main.mk.eq[1][4].isz.inv",
+        "main.mk.eq[2][4].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][4].isz.inv",
+        "main.mk.eq[6][4].isz.inv",
+        "main.mk.eq[7][4].isz.inv",
+        "main.mk.eq[8][4].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][4].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "51",
+      "ok": true,
+      "tag": {
+        "id": "51",
+        "file": "point_51.json",
+        "path": "ascending",
+        "sib": "dupC",
+        "val": "ctx_big",
+        "pathIndex": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][1].isz.inv",
+        "main.mk.eq[2][2].isz.inv",
+        "main.mk.eq[3][3].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][5].isz.inv",
+        "main.mk.eq[6][6].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "52",
+      "ok": true,
+      "tag": {
+        "id": "52",
+        "file": "point_52.json",
+        "path": "descending",
+        "sib": "dupC",
+        "val": "random",
+        "pathIndex": [
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][6].isz.inv",
+        "main.mk.eq[2][5].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][3].isz.inv",
+        "main.mk.eq[5][2].isz.inv",
+        "main.mk.eq[6][1].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "53",
+      "ok": true,
+      "tag": {
+        "id": "53",
+        "file": "point_53.json",
+        "path": "ascending",
+        "sib": "max",
+        "val": "s_max",
+        "pathIndex": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          0
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][1].isz.inv",
+        "main.mk.eq[2][2].isz.inv",
+        "main.mk.eq[3][3].isz.inv",
+        "main.mk.eq[4][4].isz.inv",
+        "main.mk.eq[5][5].isz.inv",
+        "main.mk.eq[6][6].isz.inv",
+        "main.mk.eq[7][7].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "54",
+      "ok": true,
+      "tag": {
+        "id": "54",
+        "file": "point_54.json",
+        "path": "descending",
+        "sib": "dupC",
+        "val": "s_max",
+        "pathIndex": [
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0,
+          7
+        ],
+        "leftmost": false,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][7].isz.inv",
+        "main.mk.eq[1][6].isz.inv",
+        "main.mk.eq[2][5].isz.inv",
+        "main.mk.eq[3][4].isz.inv",
+        "main.mk.eq[4][3].isz.inv",
+        "main.mk.eq[5][2].isz.inv",
+        "main.mk.eq[6][1].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][7].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][6].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][5].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][4].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][3].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][2].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][1].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][7].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][7].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][6].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][5].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][4].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][3].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][2].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][1].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][7].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    },
+    {
+      "id": "55",
+      "ok": true,
+      "tag": {
+        "id": "55",
+        "file": "point_55.json",
+        "path": "allzero",
+        "sib": "zero",
+        "val": "edge_zero",
+        "pathIndex": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "leftmost": true,
+        "rightmost": false,
+        "maxdepth": false
+      },
+      "rank": 4281,
+      "free": 4290,
+      "nullity": 9,
+      "maxRowFill": 99,
+      "support": [
+        "main.mk.eq[0][0].isz.inv",
+        "main.mk.eq[1][0].isz.inv",
+        "main.mk.eq[2][0].isz.inv",
+        "main.mk.eq[3][0].isz.inv",
+        "main.mk.eq[4][0].isz.inv",
+        "main.mk.eq[5][0].isz.inv",
+        "main.mk.eq[6][0].isz.inv",
+        "main.mk.eq[7][0].isz.inv",
+        "main.mk.eq[8][0].isz.inv"
+      ],
+      "carrierClass": [
+        {
+          "signal": "main.mk.eq[0][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[1][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[2][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[3][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[4][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[5][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[6][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[7][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        },
+        {
+          "signal": "main.mk.eq[8][0].isz.inv",
+          "pivotCoeff": "no-direct-pivot"
+        }
+      ],
+      "publicMovers": [],
+      "nonPublicDirCount": 9,
+      "nonPublicDirs": [
+        [
+          "main.mk.eq[0][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[1][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[2][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[3][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[4][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[5][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[6][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[7][0].isz.inv"
+        ],
+        [
+          "main.mk.eq[8][0].isz.inv"
+        ]
+      ],
+      "killedDirCount": 0,
+      "maxPublicColumnEntry": "0"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+
+=== multi-point two-witness search ===
+r1cs   <repo>\build\wedge_mem_w8_d9_split.r1cs
+points <repo>\build\multipoint
+
+wires 4378 | constraints 4309 | outputs 2 | FREE 4290
+public signals (a null-space direction moving any of these is a soundness bug): 1..2
+
+probing 56 structurally diverse honest witnesses ...
+
+  point_00.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:random] 13.6s
+  point_01.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allseven rightmost sib:zero val:random] 14.0s
+  point_02.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [ascending mixed sib:zero val:random] 13.4s
+  point_03.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [descending mixed sib:zero val:random] 13.7s
+  point_04.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [alt_0_7 mixed sib:zero val:random] 13.3s
+  point_05.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [alt_1_4 maxdepth sib:zero val:random] 13.7s
+  point_06.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allmid maxdepth sib:zero val:random] 14.6s
+  point_07.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyL0 mixed sib:zero val:random] 13.8s
+  point_08.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyL4 mixed sib:zero val:random] 13.6s
+  point_09.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyLlast mixed sib:zero val:random] 14.1s
+  point_10.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [maxdepth maxdepth sib:zero val:random] 14.6s
+  point_11.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [random maxdepth sib:zero val:random] 14.0s
+  point_12.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:random] 13.5s
+  point_13.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:one val:random] 14.2s
+  point_14.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:max val:random] 14.0s
+  point_15.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:rand val:random] 14.2s
+  point_16.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:alt val:random] 14.0s
+  point_17.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:dupC val:random] 13.6s
+  point_18.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:random] 13.7s
+  point_19.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:edge_zero] 13.4s
+  point_20.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:edge_one] 13.4s
+  point_21.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:big_epoch] 14.5s
+  point_22.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:equal_epoch] 13.5s
+  point_23.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:s_max] 13.4s
+  point_24.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:sh_zero] 13.5s
+  point_25.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:ctx_big] 13.8s
+  point_26.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [ascending mixed sib:rand val:big_epoch] 13.6s
+  point_27.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [maxdepth maxdepth sib:alt val:s_max] 13.8s
+  point_28.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allseven rightmost sib:max val:s_max] 13.7s
+  point_29.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [alt_0_7 mixed sib:dupC val:sh_zero] 15.6s
+  point_30.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allmid maxdepth sib:one val:equal_epoch] 14.0s
+  point_31.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [descending mixed sib:rand val:ctx_big] 14.3s
+  point_32.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyL4 mixed sib:rand val:edge_zero] 14.2s
+  point_33.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyLlast mixed sib:rand val:edge_one] 14.4s
+  point_34.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allmid maxdepth sib:alt val:equal_epoch] 13.8s
+  point_35.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allseven rightmost sib:max val:random] 13.8s
+  point_36.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyL0 mixed sib:alt val:edge_one] 14.3s
+  point_37.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyLlast mixed sib:dupC val:edge_zero] 13.5s
+  point_38.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyL4 mixed sib:alt val:sh_zero] 14.8s
+  point_39.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyLlast mixed sib:rand val:s_max] 13.6s
+  point_40.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyLlast mixed sib:zero val:ctx_big] 15.0s
+  point_41.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [onlyL4 mixed sib:rand val:random] 14.9s
+  point_42.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [alt_1_4 maxdepth sib:max val:big_epoch] 14.3s
+  point_43.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:one val:equal_epoch] 13.6s
+  point_44.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [alt_0_7 mixed sib:max val:sh_zero] 13.5s
+  point_45.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allseven rightmost sib:zero val:ctx_big] 14.0s
+  point_46.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [descending mixed sib:dupC val:sh_zero] 13.5s
+  point_47.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [alt_0_7 mixed sib:dupC val:edge_zero] 13.7s
+  point_48.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [random mixed sib:max val:sh_zero] 13.8s
+  point_49.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allseven rightmost sib:zero val:ctx_big] 13.7s
+  point_50.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allmid maxdepth sib:alt val:s_max] 14.5s
+  point_51.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [ascending mixed sib:dupC val:ctx_big] 14.6s
+  point_52.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [descending mixed sib:dupC val:random] 14.0s
+  point_53.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [ascending mixed sib:max val:s_max] 13.8s
+  point_54.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [descending mixed sib:dupC val:s_max] 13.6s
+  point_55.json  nullity 9  rank 4281/4290  killed 0  nonpub-dirs 9  maxPubColEntry 0  [allzero leftmost sib:zero val:edge_zero] 14.1s
+
+================= AGGREGATE =================
+points analysed            : 56 / 56
+distinct nullity values    : {9}
+distinct support signatures: 13
+every null-space carrier is an IsZero `inv` hint, at every point : YES
+
+null-space support vs path shape:
+  allzero     1 distinct support(s)   e.g. eq[0][0] eq[1][0] eq[2][0] eq[3][0] eq[4][0] eq[5][0] eq[6][0] eq[7][0] eq[8][0]
+  allseven    1 distinct support(s)   e.g. eq[0][7] eq[1][7] eq[2][7] eq[3][7] eq[4][7] eq[5][7] eq[6][7] eq[7][7] eq[8][7]
+  ascending   1 distinct support(s)   e.g. eq[0][0] eq[1][1] eq[2][2] eq[3][3] eq[4][4] eq[5][5] eq[6][6] eq[7][7] eq[8][0]
+  descending  1 distinct support(s)   e.g. eq[0][7] eq[1][6] eq[2][5] eq[3][4] eq[4][3] eq[5][2] eq[6][1] eq[7][0] eq[8][7]
+  alt_0_7     1 distinct support(s)   e.g. eq[0][0] eq[1][7] eq[2][0] eq[3][7] eq[4][0] eq[5][7] eq[6][0] eq[7][7] eq[8][0]
+  alt_1_4     1 distinct support(s)   e.g. eq[0][1] eq[1][4] eq[2][1] eq[3][4] eq[4][1] eq[5][4] eq[6][1] eq[7][4] eq[8][1]
+  allmid      1 distinct support(s)   e.g. eq[0][4] eq[1][4] eq[2][4] eq[3][4] eq[4][4] eq[5][4] eq[6][4] eq[7][4] eq[8][4]
+  onlyL0      1 distinct support(s)   e.g. eq[0][3] eq[1][0] eq[2][0] eq[3][0] eq[4][0] eq[5][0] eq[6][0] eq[7][0] eq[8][0]
+  onlyL4      1 distinct support(s)   e.g. eq[0][0] eq[1][0] eq[2][0] eq[3][0] eq[4][5] eq[5][0] eq[6][0] eq[7][0] eq[8][0]
+  onlyLlast   1 distinct support(s)   e.g. eq[0][0] eq[1][0] eq[2][0] eq[3][0] eq[4][0] eq[5][0] eq[6][0] eq[7][0] eq[8][7]
+  maxdepth    1 distinct support(s)   e.g. eq[0][1] eq[1][2] eq[2][3] eq[3][4] eq[4][5] eq[5][6] eq[6][7] eq[7][1] eq[8][2]
+  random      2 distinct support(s)   e.g. eq[0][4] eq[1][2] eq[2][4] eq[3][3] eq[4][1] eq[5][3] eq[6][3] eq[7][2] eq[8][4]
+
+pivot-coefficient classes across all carriers/points: {no-direct-pivot}
+(a carrier whose ONLY pivot is 'witness-dependent' would be the F_p analogue of a
+ near-zero singular value; multi-point rank stability is the test that it is not spurious)
+
+largest null-space entry on ANY public column, over ALL points : 0
+
+wrote <repo>\docs\self-audit\two_witness_multipoint.json
+
+RESULT: nullity is stably 9 across 56 structurally diverse
+honest witnesses; every null-space direction is an IsZero `inv` hint; no
+null-space direction has any component on any public output at any point.
+
+QUANTIFIED CLAIM: no second witness with a non-zero linear component was
+found at 56 structurally diverse honest witnesses, across the full
+R1CS with exact non-linear re-verification of every null-space direction.
+BOUND: a second witness reachable only by a large non-linear jump with zero
+linear component is outside this search.

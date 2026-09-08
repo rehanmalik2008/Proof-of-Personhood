@@ -1,0 +1,57 @@
+# Taint proof — the 9 `IsZero` `inv` freedoms
+
+Circuit: `wedge_mem_w8_d9_split.r1cs`  ·  wires 4378  ·  constraints 4309  ·  public outputs 2 (indices 1..2 = `main.N`, `main.y`)
+
+Null-space dimension at the honest witness: **9**; **9** of those basis directions are anchored at a `main.mk.eq[i][j].isz.inv` hint with singleton support (one per Merkle level, at the selected slot `j = pathIndex[i]`).
+
+Overall: **all 9 proved benign** — for every hint: its null-space support is exactly `{self}`; its column in the linearised R1CS is an exact zero column; the full non-linear R1CS stays satisfied along the whole perturbation line (6 field multipliers) with `main.N` and `main.y` bit-identical; and its directed Jacobian-influence closure contains no public output.
+
+| # | `inv` signal | support | J-column non-zero rows | non-linear re-check ×6 | directed influence → {N,y} | verdict |
+|---|---|---|--:|---|---|---|
+| 225 | `eq[0][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 233 | `eq[1][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 241 | `eq[2][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 249 | `eq[3][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 257 | `eq[4][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 265 | `eq[5][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 273 | `eq[6][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 281 | `eq[7][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+| 289 | `eq[8][0].isz.inv` | `{self}` | 0 | 0 R1CS violations, N & y bit-identical | unreachable | BENIGN (proved) |
+
+## Mechanism
+
+circomlib `IsZero` is `inv <-- in != 0 ? 1/in : 0;  out <== 1 - in*inv;  in*out === 0`.
+The only R1CS constraint containing `inv` is the quadratic `in * inv === 1 - out`. At
+each of these gadgets the comparator input `in = pathIndex[i] - j` is **0** at the honest
+witness (slot `j` is the one `pathIndex[i]` selects), so that constraint degenerates to
+`0 === 1 - out`, which pins `out = 1` with no dependence on `inv`. `inv` is therefore
+free. Three independent mechanical checks agree that moving it changes nothing else:
+
+1. **Null-space support** — the Jacobian null-space basis vector anchored at `inv` has
+   support exactly `{inv}`; no other signal moves with it, even to first order.
+2. **Zero Jacobian column** — `inv` has coefficient 0 in the linearised R1CS row of
+   *every* constraint (`J-column non-zero rows = 0`). Nothing in the system responds
+   to a change in `inv`. This is also the finite-field statement that there is no
+   near-degenerate / marginal determination here — the column is exactly zero, not small.
+3. **Exact non-linear re-check** — `w1 + t·delta` for `t ∈ {1, 2, 7, 1.2e19, p-1,
+   0x9e37…}` satisfies all 4309 constraints of the full non-linear R1CS,
+   and `main.N`, `main.y` are bit-identical to the honest witness in every case.
+
+## Directed influence (constraint-graph trace)
+
+A signal `x` can influence a public output `o` only if there is a chain of constraints
+whose linearised rows successively share a non-zero coefficient from `x` to `o`. Taking
+the transitive closure of that relation from each `inv`, **no public output (`main.N`,
+`main.y`) is reached** — the closure is in fact empty, because `inv`'s Jacobian column
+is zero. Even the closure from `IsZero.out` (which *does* feed the Merkle slot routing)
+does not reach a public output.
+
+> The **undirected** signal co-occurrence graph is deliberately not used: it connects
+> almost every internal signal to `main.N` / `main.y` through the shared private input
+> `s` (which appears in `C = Poseidon(s)`, in the tree, and in `y = s + N·signalHash`)
+> and through `C` entering the tree as the leaf, so it proves nothing. The nullifier/RLN
+> sub-circuit (`ResidualSplit`) and the Merkle sub-circuit (`MerkleWide`) share exactly
+> that one signal `C`, flowing *in*; nothing flows back. `main.N = Poseidon(s, ctx,
+> epochAction)` and `main.y = s + N·signalHash` depend only on `{s, ctx, epochAction,
+> signalHash}`.
+

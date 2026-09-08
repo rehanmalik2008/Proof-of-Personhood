@@ -1,0 +1,31 @@
+{
+  "tag": "layerB_symbolic",
+  "r1cs": "circuits/main_abstract_split.r1cs",
+  "wires": 286,
+  "constraints": 217,
+  "nPubOut": 2,
+  "inputsFixed": 87,
+  "tlimitS": 2400,
+  "ffSolver": "gb",
+  "mode": "split",
+  "subqueries": [
+    {
+      "output": 1,
+      "verdict": "no-verdict",
+      "seconds": 489.724,
+      "exit": 1,
+      "stats": []
+    },
+    {
+      "output": 2,
+      "verdict": "no-verdict",
+      "seconds": 0.141,
+      "exit": 4294967295,
+      "stats": []
+    }
+  ],
+  "stamp": "2026-09-07T17:57:59.944Z",
+  "verdict": "UNDECIDED (at least one sub-query not solved)",
+  "anySat": false,
+  "anyUndecided": true
+}

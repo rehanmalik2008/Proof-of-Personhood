@@ -1,0 +1,31 @@
+{
+  "tag": "residual_abstract_freed",
+  "r1cs": "circuits/residual_abstract_freed.r1cs",
+  "wires": 12,
+  "constraints": 6,
+  "nPubOut": 2,
+  "inputsFixed": 4,
+  "tlimitS": 60,
+  "ffSolver": "gb",
+  "mode": "split",
+  "subqueries": [
+    {
+      "output": 1,
+      "verdict": "unsat",
+      "seconds": 5.566,
+      "exit": 0,
+      "stats": []
+    },
+    {
+      "output": 2,
+      "verdict": "sat",
+      "seconds": 0.129,
+      "exit": 0,
+      "stats": []
+    }
+  ],
+  "stamp": "2026-09-07T18:16:53.469Z",
+  "verdict": "SECOND WITNESS EXISTS",
+  "anySat": true,
+  "anyUndecided": false
+}

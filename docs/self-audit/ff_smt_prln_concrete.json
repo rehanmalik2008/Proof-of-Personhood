@@ -1,0 +1,31 @@
+{
+  "tag": "prln_concrete",
+  "r1cs": "circuits/poseidon_rln.r1cs",
+  "wires": 267,
+  "constraints": 262,
+  "nPubOut": 2,
+  "inputsFixed": 4,
+  "tlimitS": 120,
+  "ffSolver": "gb",
+  "mode": "split",
+  "subqueries": [
+    {
+      "output": 1,
+      "verdict": "no-verdict",
+      "seconds": 103.298,
+      "exit": 3221225725,
+      "stats": []
+    },
+    {
+      "output": 2,
+      "verdict": "no-verdict",
+      "seconds": 0.135,
+      "exit": 4294967295,
+      "stats": []
+    }
+  ],
+  "stamp": "2026-09-07T18:04:26.356Z",
+  "verdict": "UNDECIDED (at least one sub-query not solved)",
+  "anySat": false,
+  "anyUndecided": true
+}

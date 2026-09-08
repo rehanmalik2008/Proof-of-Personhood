@@ -1,0 +1,37 @@
+[
+ {
+  "id": "M1a",
+  "fam": "split",
+  "cls": "`<==` to `<--` (assignment without constraint)",
+  "what": "nullifier output N assigned but never constrained",
+  "compile": "ok",
+  "circomspect": "DETECTED (1 new)",
+  "picus": "INCONCLUSIVE (no verdict in 420s) [420s]",
+  "harness": "missed",
+  "newFails": [],
+  "detectedBy": [
+   "circomspect"
+  ],
+  "csDetail": [
+   "warning: Using the signal assignment operator `<--` is not necessary here."
+  ],
+  "picusVerdict": "no verdict in 420s",
+  "picusSecs": 420,
+  "picusTail": ""
+ },
+ {
+  "id": "M2",
+  "fam": "split",
+  "cls": "removed range check",
+  "what": "pathIndex in-range enforcement (selAcc[i][W] === 1) deleted",
+  "compile": "ok",
+  "circomspect": "missed",
+  "picus": "missed [28s]",
+  "harness": "missed",
+  "newFails": [],
+  "detectedBy": [],
+  "picusVerdict": "properly constrained",
+  "picusSecs": 28,
+  "picusTail": "<repo>/.mut/M2/build/wedge_mem_w8_d9_split.sym does not exist | The circuit is properly constrained | Exiting Picus with the code 8"
+ }
+]

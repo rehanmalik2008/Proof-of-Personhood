@@ -1,0 +1,28 @@
+# Simulated memory-ceiling test — Gate 3 SUPPORTING EVIDENCE, NOT gate closure.
+# Gate 3 requires peak RSS + p95 on a PHYSICAL device with <=3 GB RAM. A cgroup
+# cap on desktop x86 does not reproduce a mobile in-order core, Android's
+# allocator, or its low-memory killer. Simulated; pending physical confirmation.
+# host: Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2) | Intel Core i7-9850H @ 2.60GHz | 7831 MB RAM
+# node: v24.20.0 | circuit: wedge_mem_w8_d9_split (4,309 constraints)
+# work: witness-calc + Groth16 prove + verify | cgroup v2, memory.swap.max=0
+# date: 2026-09-06T06:21:11Z
+# ceiling	result	cgroup_peak	process_VmHWM	prove_ms	note
+4096MB	PASS	380MB	442MB	1624	verified
+3072MB	PASS	380MB	420MB	7200	verified
+2560MB	PASS	387MB	427MB	1524	verified
+2048MB	PASS	380MB	420MB	1600	verified
+1536MB	PASS	383MB	423MB	1607	verified
+1280MB	PASS	381MB	421MB	1366	verified
+1024MB	PASS	384MB	424MB	1262	verified
+768MB	PASS	386MB	426MB	1592	verified
+640MB	PASS	382MB	421MB	1728	verified
+576MB	PASS	384MB	424MB	1700	verified
+512MB	PASS	347MB	389MB	1931	verified
+448MB	PASS	327MB	368MB	1728	verified
+416MB	PASS	337MB	379MB	1685	verified
+384MB	PASS	340MB	382MB	1387	verified
+368MB	PASS	335MB	376MB	1719	verified
+352MB	PASS	348MB	389MB	1839	verified
+336MB	PASS	326MB	367MB	1511	verified
+320MB	FAIL	320MB	NAMB	NA	OOM-killed by kernel (oom_kill=1)
+256MB	FAIL	256MB	NAMB	NA	OOM-killed by kernel (oom_kill=1)

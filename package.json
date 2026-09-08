@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node scripts/test_rln_burn.mjs && node scripts/test_root_consistency.mjs && node scripts/test_revocation.mjs && node scripts/test_soundness_adversarial.mjs && node scripts/xengine_split_check.mjs && node integration/run.mjs",
+    "test": "node scripts/test_rln_burn.mjs && node scripts/test_root_consistency.mjs && node scripts/test_revocation.mjs && node scripts/test_soundness_adversarial.mjs && node scripts/two_witness_search.mjs && node scripts/forward_determination.mjs && node scripts/xengine_split_check.mjs && node integration/run.mjs",
     "bench": "node scripts/bench_node.mjs",
     "serve": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
@@ -13,7 +13,7 @@
     "sbom": "node scripts/gen_sbom.mjs"
   },
   "keywords": [],
-  "author": "",
+  "author": "Rehan Malik (https://github.com/rehanmalik2008)",
   "license": "Apache-2.0",
   "type": "module",
   "engines": {
@@ -25,5 +25,9 @@
     "circomlib": "2.0.5",
     "circomlibjs": "0.1.7",
     "snarkjs": "0.7.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rehanmalik2008/Proof-of-Personhood"
   }
 }
