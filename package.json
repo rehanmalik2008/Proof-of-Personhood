@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node scripts/test_rln_burn.mjs && node scripts/test_root_consistency.mjs && node scripts/test_revocation.mjs && node scripts/test_soundness_adversarial.mjs && node scripts/two_witness_search.mjs && node scripts/forward_determination.mjs && node scripts/xengine_split_check.mjs && node integration/run.mjs",
+    "test": "node scripts/test_rln_burn.mjs && node scripts/test_root_consistency.mjs && node scripts/test_revocation.mjs && node scripts/test_nonmembership_imt.mjs && node scripts/test_soundness_adversarial.mjs && node scripts/two_witness_search.mjs && node scripts/forward_determination.mjs && node scripts/xengine_split_check.mjs && node integration/run.mjs",
     "bench": "node scripts/bench_node.mjs",
     "serve": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",

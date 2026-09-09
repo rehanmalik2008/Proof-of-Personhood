@@ -18,6 +18,14 @@ pragma circom 2.1.0;
 // production system would instead commit it as one root (KZG / sorted-Merkle)
 // and prove non-membership against that -- O(depth) hashes, ~255 constr/hash,
 // crossover near R ~ 40. Both are measured in bench_revocation.mjs.
+//
+// >>> SUPERSEDED for large R by wedge_nonmembership_imt.circom (the-reduction.md
+// >>> Phase 1): an indexed Merkle tree gives non-membership at cost INDEPENDENT
+// >>> of R (measured +8,168 constraints at IMT depth 20, capacity ~1.05M) and
+// >>> nPublic = 8 constant instead of 7 + R. Raw-constraint crossover ~R 8,200;
+// >>> the IMT wins on verifier bandwidth / vkey size immediately. See
+// >>> docs/self-audit/nonmembership_imt.md. This file is kept for the small-R
+// >>> regime and as the measured baseline.
 // ---------------------------------------------------------------------------
 
 include "poseidon.circom";

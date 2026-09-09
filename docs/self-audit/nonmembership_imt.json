@@ -1,0 +1,42 @@
+{
+  "base": 4309,
+  "model": {
+    "fixed": 3308,
+    "perLevel": 243
+  },
+  "rows": [
+    {
+      "depth": 16,
+      "name": "wedge_mem_w8_d9_split_revimt16",
+      "src": "main_mem_w8_d9_split_revimt16",
+      "constraints": 11505,
+      "wires": 11587,
+      "publicInputs": 6,
+      "privateInputs": 117,
+      "publicOutputs": 2,
+      "added": 7196
+    },
+    {
+      "depth": 20,
+      "name": "wedge_mem_w8_d9_split_revimt20",
+      "src": "main_mem_w8_d9_split_revimt20",
+      "constraints": 12477,
+      "wires": 12563,
+      "publicInputs": 6,
+      "privateInputs": 125,
+      "publicOutputs": 2,
+      "added": 8168
+    },
+    {
+      "depth": 24,
+      "name": "wedge_mem_w8_d9_split_revimt24",
+      "src": "main_mem_w8_d9_split_revimt24",
+      "constraints": 13449,
+      "wires": 13539,
+      "publicInputs": 6,
+      "privateInputs": 133,
+      "publicOutputs": 2,
+      "added": 9140
+    }
+  ]
+}
