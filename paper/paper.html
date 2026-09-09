@@ -495,6 +495,14 @@ The security rule penalises centralisation directly rather than relying on gover
 to prevent it.
 </p>
 
+<p>
+The attester pool size <span class="m">n</span> is also a privacy parameter, not
+only an availability one. Under randomised assignment a bulk revocation leaks a
+cohort of about <span class="m">N&middot;k/n</span> users (&sect;6), so a larger
+pool leaks a smaller fraction per compromise. This adds a design pressure toward
+large <span class="m">n</span> that the economics alone do not produce.
+</p>
+
 <h3>2.6 Relation to prior constructions</h3>
 
 <p>
@@ -1238,6 +1246,31 @@ prove: its cached witness no longer hashes to the current root. An attester
 compromise therefore causes a refresh-window interruption for the whole
 population. This is a liveness cost, not a security one, and it is the price of
 bulk revocation without a per-user query.
+</p>
+
+<p>
+<strong>Bulk-revocation cohort leak.</strong> Revoking a compromised attester
+tombstones every credential it signed, and the changed leaves are public, so an
+observer learns the set of credentials that attester signed &mdash; a linkage
+across every user in that set. A user whose proofs begin failing in the
+revocation block is identifiable as a member by timing alone. With
+<span class="m">n</span> attesters, <span class="m">k</span> signers per
+credential, and the randomised assignment that grinding-resistance requires, the
+leaked set has about <span class="m">N&middot;k/n</span> members, so an affected
+user's anonymity set shrinks by a factor of roughly <span class="m">n/k</span>
+(about 30,000 members and a 33&times; reduction at
+<span class="m">N = 10<sup>6</sup></span>, <span class="m">k = 3</span>,
+<span class="m">n = 100</span>). Two properties bound the harm: the
+<span class="m">k</span>-sets overlap, so revocation selects a subset rather than
+partitioning the population; and assignment is random, so the leaked set shares
+no real-world attribute and the linkage carries no semantic content. Removing the
+leak entirely needs non-membership against an encrypted revocation set, which is
+impractical in-circuit today. Prospective-only revocation &mdash; refusing new
+attestations from the compromised party while leaving its existing credentials
+live &mdash; preserves privacy completely, and it forfeits the economic bound of
+Section 4, because the fake credentials it already signed survive.
+<span class="m">n</span> is therefore a privacy parameter as well as an
+availability one: a larger pool leaks a smaller fraction of users per compromise.
 </p>
 
 <p>
