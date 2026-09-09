@@ -706,6 +706,58 @@ measured for a real application in this work. The ranges above are estimates. Se
 8 lists this as a falsification criterion.
 </p>
 
+<h3>4.4 What the low <span class="m">&gamma;</span> rests on</h3>
+
+<p>
+The <span class="m">$0.05</span> to <span class="m">$2.00</span> figure is only
+reachable because attesters do the work of telling a legitimate enrollee from a
+bulk forger. That capability is what lets the mechanism charge an honest user
+almost nothing while charging an attacker the cost of corrupting
+<span class="m">k</span> independent parties. Remove the attesters and that
+price gap closes: with no party holding out-of-band knowledge of who is
+enrolling, a protocol that reads only the bits a device sends cannot separate
+someone seeking one credential from someone seeking a thousand, so the two pay
+the same. The honest cost then rises to meet the deterrence price
+<span class="m">&beta;&middot;m&middot;E</span>, which is the range this section
+spent effort driving <em>down</em>.
+</p>
+
+<p>
+Stated as an impossibility triangle: a Sybil-resistance mechanism can have at
+most two of (i) no trusted party in its path, (ii) honest cost per identity well
+below <span class="m">&beta;&middot;m&middot;E</span>, (iii) attacker cost per
+identity at or above <span class="m">&beta;&middot;m&middot;E</span>. Proof-of-work
+and a plain sequential-time cost take (i) and (iii) and give up (ii); a biometric
+registry takes (ii) and (iii) and gives up (i). This construction takes (ii) and
+(iii): it is accessible and Sybil-resistant, and it pays for that with the
+attester assumption. The low <span class="m">&gamma;</span> and the institutional
+dependency are the same design choice seen from two sides, and the paper should
+not be read as offering one without the other.
+</p>
+
+<p>
+We do not claim the triangle is a theorem here. The weaker empirical statement is
+what the evidence supports: across the proof-of-personhood systems we surveyed,
+every one that is cheap for honest users relies on some party or quorum
+&mdash; an attester set, a KYC provider, a vouching graph, a biometric operator
+&mdash; performing that separation, and no deployed system is known that is
+cheap, open, and Sybil-resistant at once. If such a system is exhibited, this
+subsection is wrong and should be revised.
+</p>
+
+<p>
+That empirical statement has a principled grounding, set out in a companion
+theory note and not relied on here. Any challenge a person solves in a fraction
+of a second on a few joules has, under the physical Church&ndash;Turing thesis, a
+cheap algorithm that has simply not been found yet, and a widely deployed
+challenge supplies the labelled examples that help find it; so the price gap a
+purely digital test can create is expected to decay rather than hold. This is a
+grounding argument, not a proof: the thesis is not itself a theorem, brain-energy
+estimates are contested, and the simulation overhead could be large in a
+particular case. The economics in this section rest on the empirical claim above,
+with the grounding recorded only for context.
+</p>
+
 <h2>5. Measured results</h2>
 
 <p>
