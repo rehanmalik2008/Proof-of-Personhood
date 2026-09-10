@@ -1,0 +1,241 @@
+{
+  "epoch_definition": "1 day (tree-publication / staging cadence)",
+  "rate_band_per_day": {
+    "RHO_PERM": {
+      "low": 0.00044,
+      "central": 0.00079,
+      "high": 0.0014
+    },
+    "RHO_GAP": {
+      "low": 0.15,
+      "central": 0.3,
+      "high": 0.5
+    }
+  },
+  "band_used": "central",
+  "references": [
+    "Smartphone replacement cycle ~2.5-3.5 yr (Kantar Worldpanel / CCS Insight, 2019-2023): ~0.1%/day device turnover, only a fraction credential-losing.",
+    "Phone loss/theft ~2-3%/yr (Prey Project annual reports; Lookout 'mobile lost & found'): permanent-loss floor ~7e-5/day absent social recovery.",
+    "Consumer mobile app annual retention: ~20-40% of engaged users remain after 12 months (AppsFlyer / Adjust retention benchmarks 2021-2023) => 15-40%/yr permanent attrition for engaged cohorts.",
+    "SaaS annual logo churn median ~10-15% (well-run), consumer/prosumer higher (ChartMogul / Recurly benchmarks).",
+    "DAU/MAU ratio ~0.2 median, 0.1-0.3 typical for consumer apps (Sequoia / a16z engagement benchmarks); wallets and identity apps toward the low end."
+  ],
+  "mc_crosscheck_N1e6": {
+    "mean": 789.93,
+    "std": 28.13,
+    "expected_mean": 790,
+    "expected_std": 28.11
+  },
+  "note": [
+    "T_naive = |C|/(rho_perm N)  -- the source's Result B2 staging depth.",
+    "T_hide_perEpoch adds the observer's per-epoch fluctuation tolerance (z=2); ~ T_naive for large rho N.",
+    "T_hide_patient = |C|^2/(z^2 rho_perm N) -- depth to hide from an observer AGGREGATING the whole window. >> T_naive whenever |C| >> z^2.",
+    "precision_at_T_naive = per-member cohort-membership precision a 'did they ever return' classifier gets at T = T_naive; if >> 0 the cohort is still individually recoverable.",
+    "T_precision_below_10pct = 9 |C| / (rho_perm N) -- the depth that actually buys individual-member privacy. ~10x T_naive."
+  ],
+  "cells": [
+    {
+      "C": 1000,
+      "N": 100000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 79,
+      "T_naive_epochs": 12.7,
+      "T_hide_perEpoch_epochs": 10.3,
+      "T_hide_patient_epochs": 3164.6,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 113.9,
+      "T_precision_below_1pct_epochs": 1253.2,
+      "C_exceeds_daily_attrition": true
+    },
+    {
+      "C": 1000,
+      "N": 1000000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 790,
+      "T_naive_epochs": 1.3,
+      "T_hide_perEpoch_epochs": 1.2,
+      "T_hide_patient_epochs": 316.5,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 11.4,
+      "T_precision_below_1pct_epochs": 125.3,
+      "C_exceeds_daily_attrition": true
+    },
+    {
+      "C": 1000,
+      "N": 10000000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 7900,
+      "T_naive_epochs": 0.1,
+      "T_hide_perEpoch_epochs": 0.1,
+      "T_hide_patient_epochs": 31.6,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 1.1,
+      "T_precision_below_1pct_epochs": 12.5,
+      "C_exceeds_daily_attrition": false
+    },
+    {
+      "C": 10000,
+      "N": 100000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 79,
+      "T_naive_epochs": 126.6,
+      "T_hide_perEpoch_epochs": 103.3,
+      "T_hide_patient_epochs": 316455.7,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 1139.2,
+      "T_precision_below_1pct_epochs": 12531.6,
+      "C_exceeds_daily_attrition": true
+    },
+    {
+      "C": 10000,
+      "N": 1000000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 790,
+      "T_naive_epochs": 12.7,
+      "T_hide_perEpoch_epochs": 11.8,
+      "T_hide_patient_epochs": 31645.6,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 113.9,
+      "T_precision_below_1pct_epochs": 1253.2,
+      "C_exceeds_daily_attrition": true
+    },
+    {
+      "C": 10000,
+      "N": 10000000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 7900,
+      "T_naive_epochs": 1.3,
+      "T_hide_perEpoch_epochs": 1.2,
+      "T_hide_patient_epochs": 3164.6,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 11.4,
+      "T_precision_below_1pct_epochs": 125.3,
+      "C_exceeds_daily_attrition": true
+    },
+    {
+      "C": 30000,
+      "N": 100000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 79,
+      "T_naive_epochs": 379.7,
+      "T_hide_perEpoch_epochs": 310,
+      "T_hide_patient_epochs": 2848101.3,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 3417.7,
+      "T_precision_below_1pct_epochs": 37594.9,
+      "C_exceeds_daily_attrition": true
+    },
+    {
+      "C": 30000,
+      "N": 1000000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 790,
+      "T_naive_epochs": 38,
+      "T_hide_perEpoch_epochs": 35.5,
+      "T_hide_patient_epochs": 284810.1,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 341.8,
+      "T_precision_below_1pct_epochs": 3759.5,
+      "C_exceeds_daily_attrition": true
+    },
+    {
+      "C": 30000,
+      "N": 10000000,
+      "rhoPerm": 0.00079,
+      "lambda_perEpoch": 7900,
+      "T_naive_epochs": 3.8,
+      "T_hide_perEpoch_epochs": 3.7,
+      "T_hide_patient_epochs": 28481,
+      "precision_at_T_naive": 0.5,
+      "T_precision_below_10pct_epochs": 34.2,
+      "T_precision_below_1pct_epochs": 375.9,
+      "C_exceeds_daily_attrition": true
+    }
+  ],
+  "structural_cohort_Nk_over_n": [
+    {
+      "k": 3,
+      "n": 50,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 75.95,
+      "T_precision_below_10pct_epochs": 683.5
+    },
+    {
+      "k": 3,
+      "n": 100,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 37.97,
+      "T_precision_below_10pct_epochs": 341.8
+    },
+    {
+      "k": 3,
+      "n": 300,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 12.66,
+      "T_precision_below_10pct_epochs": 113.9
+    },
+    {
+      "k": 3,
+      "n": 1000,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 3.8,
+      "T_precision_below_10pct_epochs": 34.2
+    },
+    {
+      "k": 3,
+      "n": 3000,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 1.27,
+      "T_precision_below_10pct_epochs": 11.4
+    },
+    {
+      "k": 3,
+      "n": 10000,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 0.38,
+      "T_precision_below_10pct_epochs": 3.4
+    },
+    {
+      "k": 5,
+      "n": 50,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 126.58,
+      "T_precision_below_10pct_epochs": 1139.2
+    },
+    {
+      "k": 5,
+      "n": 100,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 63.29,
+      "T_precision_below_10pct_epochs": 569.6
+    },
+    {
+      "k": 5,
+      "n": 300,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 21.1,
+      "T_precision_below_10pct_epochs": 189.9
+    },
+    {
+      "k": 5,
+      "n": 1000,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 6.33,
+      "T_precision_below_10pct_epochs": 57
+    },
+    {
+      "k": 5,
+      "n": 3000,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 2.11,
+      "T_precision_below_10pct_epochs": 19
+    },
+    {
+      "k": 5,
+      "n": 10000,
+      "rho_perm": 0.00079,
+      "T_naive_epochs_k_over_n_rho": 0.63,
+      "T_precision_below_10pct_epochs": 5.7
+    }
+  ]
+}
