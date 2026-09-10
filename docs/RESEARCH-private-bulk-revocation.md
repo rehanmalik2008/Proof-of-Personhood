@@ -1,26 +1,29 @@
 # Private bulk revocation: the accumulator is the wrong layer, and churn hides the cohort only partly
 
-**Problem B of `two-mechanisms.md`.** Reports **measured** values from
-`scripts/sim/churn_privacy_ratio.mjs` and `scripts/sim/staging_correlation_attack.mjs`
-(outputs `docs/self-audit/sim_churn_privacy.md`, `sim_staging_attack.md`), not
-asserted ones. Builds on `docs/THEOREM-three-attacks.md` (**3A**, Theorem 7 —
-the cohort leak, `|C| ≈ Nk/n`) and `docs/THEOREM-equilibrium-problem4.md`
-(**EQ**, Theorem 4).
+**Problem B of `two-mechanisms.md` and `the-attribution-bottleneck.md`.** Reports
+**measured** values from `scripts/sim/churn_privacy_ratio.mjs`,
+`staging_correlation_attack.mjs`, and `reenrollment_gap.mjs` (outputs
+`docs/self-audit/sim_churn_privacy.md`, `sim_staging_attack.md`,
+`sim_reenrollment_gap.md`), not asserted ones. Builds on
+`docs/THEOREM-three-attacks.md` (**3A**, Theorem 7 — the cohort leak,
+`|C| ≈ Nk/n`) and `docs/THEOREM-equilibrium-problem4.md` (**EQ**, Theorem 4).
 
 | item | claim | status after simulation |
 |---|---|---|
 | Result B1 | the binding leak is the timing channel, not the accumulator | **CONFIRMED** — staging-attack AUC ≈ 1 in every cell (a revocation event is always detectable) |
 | Theorem 9 | cohort membership leaks through prover behaviour regardless of the accumulator | **CONFIRMED** |
 | Result B2 | cohort privacy governed by `\|C\|/(ρN)`; staged revocation to the churn floor hides it | **DOWNGRADED** — hides only under uniform randomised staging at ≈ 3× the naive depth, and only *partially* (a 1%-FPR observer still fingers 8–15 % of members) |
-| Theorem 10 | economics ↔ privacy ↔ latency, no config optimises both | **CONFIRMED and quantified** — staging depth `T ≳ 3\|C\|/(ρ_perm N)` epochs of extended attacker revenue |
+| Result 2 | staging depth `T = k/(nρ)` is independent of population `N` | **CONFIRMED** — `\|C\| = Nk/n` and `ρN` both scale with `N`; `n` enters twice |
+| Result 3 | pairing revocation with automatic re-enrollment moves the floor `ρ_perm → ρ_gap` (~380×) | **HELD, but rescaled to ~3–10×** — a second channel (gap co-timing) imposes a `T_stage` floor of ~30–90 epochs that the `ρ_gap` substitution does not remove |
+| Theorem 10 | economics ↔ privacy ↔ latency, no config optimises both | **CONFIRMED, softened by re-enrollment** — staging depth drops from ~100–340 epochs (small `n`, `ρ_perm`) to ~30–90 epochs |
 
-**Carry-over correction, now measured: do not build the batch-indistinguishable
+**Carry-over correction, still holds: do not build the batch-indistinguishable
 accumulator.** Result B1 is confirmed — the accumulator addresses a secondary
-leak while the timing channel remains the binding one. And Task 1+2 show cohort
-privacy is *partly* achievable through churn (uniform staging), so the
-accumulator work is unnecessary either way: if churn hides the cohort the
-accumulator is redundant; if it does not (small `n`), a hidden batch structure
-would not have saved it, because the login-failure timing channel is untouched.
+leak while the timing channel is binding. Re-enrollment (Task 2) does not change
+this: it hides *which users* were in the cohort, not *that* a revocation
+occurred, and the accumulator would not touch either channel. If churn +
+re-enrollment hides the cohort the accumulator is redundant; if it does not, a
+hidden batch structure would not have saved it.
 
 ---
 
@@ -165,6 +168,87 @@ eliminated.
 
 ---
 
+## 3A. Re-enrollment: which churn rate applies [Result 2 CONFIRMED, Result 3 HELD & RESCALED]
+
+`scripts/sim/reenrollment_gap.mjs`. `the-attribution-bottleneck.md` argues that
+permanent lockout of an innocent revoked user is a **defect**, not a requirement:
+the correct behaviour is **automatic re-enrollment** (obtain `k` fresh
+attestations from uncorrupted attesters, resume proving). That changes the
+observable from a *permanent stop* (noise floor `ρ_perm ≈ 7.9e-4/day`) to a
+*transient gap* (noise floor `ρ_gap ≈ 0.30/day`, ~380× larger).
+
+### 3A.1 Result 2 — the staging depth is population-independent [CONFIRMED]
+
+For the structural cohort, `|C| = Nk/n` and the churn floor is `ρN`, so
+`T ≈ |C|/(ρN) = k/(nρ)` — **`N` cancels**. A 10 M-user system needs the same
+staging depth as a 100 k one. `n` enters twice: it shrinks the cohort *and*
+shortens the staging. `n` is the dominant privacy parameter.
+
+### 3A.2 Result 3 — re-enrollment does help, but a second channel binds
+
+The re-enrolled cohort was run against the same staging-correlation observer, now
+with two classifiers: **gap length** (one overlong gap starting in the revocation
+window, then resumption) and **gap co-timing** (many members' gaps *ending* in the
+same epoch bucket). `recall@1%FPR` = max of the two. Measured (`N=30k`, cohort
+5 %, natural-gap distribution mean 10.8 d, **p90 21 d**, p95 38 d):
+
+| staging `T_stage` | re-enroll delay `D_mean` | recall @1%FPR | reading |
+|---:|---:|---:|---|
+| 90 (wide) | 2–30 d | ≤ 0.05 | cohort hidden across the plausible range |
+| 90 | 45 d | 0.07 | |
+| 90 | 60 d | 0.16 | still mostly hidden; `D* > 60 d` |
+| 30 | ≤ 21 d | ≤ 0.08 | hidden while `D` within natural p90 |
+| 30 | 45–60 d | 0.20–0.31 | length channel separates |
+| 7 (tight) | 14 d, synchronized | 0.36 | **fails** — gap-ends cluster |
+| 7 | 30 d, spread | 0.25 | **fails** — co-timing fires |
+
+**What the `ρ_gap` substitution gets right:** the *rate*-detection floor does
+move to `ρ_gap`, so the per-epoch revocation rate is a non-issue at any feasible
+`T_stage`.
+
+**What it misses:** the **gap co-timing channel**. All cohort members' gaps start
+in the revocation window and — if re-enrollment delay has low variance — end in a
+narrow window too. That cluster is detectable independent of gap *length*.
+Spreading it needs a wide `T_stage` (≥ ~90 epochs) or high per-member delay
+variance. So re-enrollment does **not** reduce the staging depth to the
+sub-day `T ≈ 3k/(nρ_gap)` the note computes; it reduces it from the `ρ_perm`
+regime's **~100–340 epochs** (small `n`) to **~30–90 epochs** — roughly
+**3–10×**, not 380×.
+
+> **Result 3 (measured).** Pairing bulk revocation with automatic re-enrollment
+> converts the timing signal from a permanent stop to a transient gap and removes
+> the rate-detection channel, but the gap co-timing channel imposes a residual
+> staging floor of ~30–90 epochs. Net: staging depth drops ~3–10× versus the
+> `ρ_perm` regime, making Problem B **feasible for small `n`** (previously a dead
+> end) at a staging cost of weeks rather than months. Requirements: (i) wide
+> staging `T_stage ≳ 90` epochs; (ii) re-enrollment `D` within ~ the natural gap
+> p90 (≈ 21 d here); (iii) per-member `D` variance, or rely on (i);
+> (iv) re-enrollment shaped identically to fresh enrollment (§3A.3).
+
+### 3A.3 Falsification #3 — does re-enrolling produce its own signature?
+
+Re-enrollment = `k` attestation transactions + a tree insertion, clustered after
+`t_rev`. If shaped **identically to initial enrollment** — same transaction
+types, same insertion path, a fresh unlinkable commitment `C` (the design
+already keeps `C` private) — the only residual is the **timing cluster** of
+enrollments in `[t_rev, t_rev + T_stage + D]`, which the wide-`T_stage`
+requirement (3A.2) already spreads. A distinct "re-enroll" endpoint or flag, or a
+linkable new credential, would re-expose the cohort at the enrollment step.
+**Normative: one enrollment path, fresh unlinkable `C`, spread completion.**
+The `spread=false` (synchronized) rows above show synchronized re-enrollment at
+tight staging is recovered (recall 0.36–0.68) — the co-timing signature is real.
+
+### 3A.4 The attacker re-enrolls too
+
+The attacker's fake credentials can also seek fresh attestations — but only from
+attesters he has bribed, which costs **fresh corruption** (a new `k`-set, new
+bribes `k·b`). That is the intended behaviour and it preserves EQ's logic:
+re-enrollment does not give the attacker a free portfolio refresh. Not
+separately simulated; the interaction is `γ(N) += k·b` per forced re-enrollment
+cycle, on top of the grinding term.
+
+---
+
 ## 4. Theorem 10 — economics ↔ privacy ↔ latency [CONFIRMED, quantified]
 
 > **Theorem 10.** Immediate bulk revocation maximises economic security
@@ -173,23 +257,31 @@ eliminated.
 > revenue by up to `T` epochs. `T` is a direct trade between the two, with no
 > configuration optimising both.
 
-**Quantified.** The privacy-effective depth measured in §3 is
-`T ≳ 3 × |C|/(ρ_perm N)` epochs — for the structural cohort, `T ≳ 3k/(nρ_perm)`:
+**Quantified — two regimes.** Without re-enrollment (permanent lockout) the
+privacy-effective depth is `T ≳ 3k/(nρ_perm)`; **with re-enrollment** (§3A) the
+gap co-timing channel sets `T_stage ≳ ~90` epochs, roughly `n`-independent in
+that range:
 
-| n | T (privacy-effective, k=3) | extended attacker revenue factor |
-|---:|---:|---|
-| 100 | ~114 days | `(1 + Tλ)` with `T ≈ 114` — prohibitive |
-| 1,000 | ~11 days | modest |
-| 3,000 | ~4 days | small |
-| 10,000 | ~1 day | negligible |
+| n | T without re-enrollment (`ρ_perm`, k=3) | T with re-enrollment (co-timing floor) |
+|---:|---:|---:|
+| 100 | ~114 days (prohibitive) | **~90 days** |
+| 1,000 | ~11 days | ~90 days |
+| 3,000 | ~4 days | ~30–90 days |
+| 10,000 | ~1 day | ~30 days |
+
+Re-enrollment helps *most* at small `n` (114 d → 90 d and now feasible), and is
+roughly neutral or slightly worse at large `n` (the co-timing floor exceeds the
+`ρ_perm` depth there — so at `n ≥ 3,000` permanent staging at `3k/(nρ_perm)` may
+already be shorter, and re-enrollment's value is then the *innocent-user*
+treatment, not additional privacy).
 
 Attacker revenue under staging (3A / EQ): roughly
 `(1−q)^N · N · R · (1 + Tλ)` for a collection-rate factor `λ`, carried into the
 `k(S+V) + 1.58kB ≥ βmE/q` condition. **Cohort privacy is a disclosed parameter
 `T`, priced against the economic bound — not a leak to be cryptographically
 eliminated.** The design pressure is toward **large `n`**: it shortens the
-privacy-effective staging depth *and* lowers `f` (EQ) *and* shrinks `|C| = Nk/n`
-(3A) — the same lever three ways.
+`ρ_perm`-regime staging depth, lowers `f` (EQ), and shrinks `|C| = Nk/n` (3A) —
+the same lever three ways.
 
 ---
 
@@ -200,20 +292,24 @@ privacy-effective staging depth *and* lowers `f` (EQ) *and* shrinks `|C| = Nk/n`
    pushing the functional distinction past the observation point. The simulation
    confirms that as long as the *acceptance* signal differs, AUC ≈ 1; such a
    construction would just relocate the observer to the downstream check.
-2. **Result B2** — already downgraded. Fails as a clean claim: it requires 3×
-   the naive depth, uniform staging, and uniform client failure, and even then
-   leaves an 8–15 % identifiable residual. It is dead for small `n` (`≤ ~100`),
-   where the privacy-effective depth is ~a year and its economic cost
-   prohibitive.
-3. **Theorem 10's quantification** fails if delayed revocation does not extend
-   attacker revenue proportionally — e.g. if fakes are caught downstream by other
-   means during staging. Measure the downstream detection rate before assuming
-   `(1 + Tλ)`.
-4. **`ρ_perm` band.** All of §2–3 uses the central `7.9e-4/day`. At the low end
-   (`4.4e-4`, retention-optimised) every staging depth roughly doubles; at the
-   high end (`1.4e-3`) it roughly halves. A deployment must measure its own
-   `ρ_perm` — it is now a **privacy parameter** alongside `n`, and belongs in the
-   falsification register (3A §5) next to `q`, `β`, `w`, `τ`, `B`.
+2. **Result B2** — downgraded. Without re-enrollment it requires 3× the naive
+   depth, uniform staging, and uniform client failure, and leaves an 8–15 %
+   residual; dead for small `n` (`≤ ~100`) on economic cost. **Re-enrollment
+   (Result 3) reopens small `n`** at a ~90-epoch staging cost.
+3. **Result 3** fails if re-enrollment delay does not overlap the natural gap
+   distribution (measured: it does, for `D` within the natural p90 ≈ 21 d), OR if
+   re-enrollment completion cannot be spread (synchronized re-enrollment at tight
+   staging is recovered, recall 0.36–0.68), OR if re-enrollment carries its own
+   on-chain/network signature (falsification #3 — requires one enrollment path
+   and a fresh unlinkable `C`).
+4. **Theorem 10's quantification** fails if delayed revocation does not extend
+   attacker revenue proportionally — e.g. if fakes are caught downstream during
+   staging. Measure the downstream detection rate before assuming `(1 + Tλ)`.
+5. **`ρ_perm` / `ρ_gap` / natural-gap-p90 bands.** §2–3 use central
+   `ρ_perm = 7.9e-4`, `ρ_gap = 0.30`; §3A uses a natural-gap p90 of 21 d from a
+   Beta(1.3, 4) engagement model. All three are deployment-specific **privacy
+   parameters** alongside `n`, and belong in the falsification register (3A §5)
+   next to `q`, `β`, `w`, `τ`, `B`. A deployment must measure its own.
 
 ---
 
@@ -221,13 +317,25 @@ privacy-effective staging depth *and* lowers `f` (EQ) *and* shrinks `|C| = Nk/n`
 
 The accumulator is the wrong layer: even perfect batch-update indistinguishability
 leaks the cohort through proof-failure timing (Theorem 9, AUC ≈ 1 measured).
-**Do not build the batch-indistinguishable accumulator.** The real mechanism is
-hiding the cohort inside natural permanent attrition — governed by
-`|C|/(ρ_perm N)` — via **uniform randomised staged revocation at ≈ 3× the naive
-depth, with uniform client failure**. Measured, that hides ~85–92 % of the
-cohort and leaves an 8–15 % identifiable residual; it works for large `n`
-(≥ ~1,000) and is a dead end for small `n`. It trades directly against
-Theorem 4's economic bound (Theorem 10): the staging depth is a disclosed
-parameter priced against `k(S+V) + 1.58kB ≥ βmE/q`, and the design answer is
-**large `n`**, which shortens the required depth, lowers `f`, and shrinks the
-cohort at once. Cohort privacy is a managed residual, not an eliminable leak.
+**Do not build the batch-indistinguishable accumulator.**
+
+The mechanism is hiding the cohort inside natural churn via **uniform randomised
+staged revocation with uniform client failure**, and pairing it with **automatic
+re-enrollment** (also the correct treatment of innocent revoked users). Measured:
+
+- Without re-enrollment, staging hides the cohort against the *permanent*-attrition
+  floor `ρ_perm` at `T ≳ 3k/(nρ_perm)` — ~85–92 % hidden, 8–15 % residual;
+  feasible for `n ≥ ~1,000`, prohibitive for `n ≤ ~100`.
+- With re-enrollment, the signal becomes a transient gap: the rate-detection
+  channel moves to `ρ_gap` (~380× more headroom), but the **gap co-timing**
+  channel imposes a `T_stage` floor of **~30–90 epochs** roughly independent of
+  `n`. Net staging cost drops ~3–10× versus the `ρ_perm` regime and **small `n`
+  becomes feasible** (weeks, not months). Requires wide staging, re-enrollment
+  delay within the natural gap p90 (~21 d), spread completion, and re-enrollment
+  shaped identically to fresh enrollment.
+
+Result 2: the depth `T = k/(nρ)` is **population-independent**. Theorem 10's
+economics–privacy trade is real but softened by re-enrollment (shorter staging →
+less extended attacker revenue). The design answer remains **large `n`**, which
+shortens the `ρ_perm`-regime depth, lowers `f`, and shrinks `|C| = Nk/n` at once.
+Cohort privacy is a managed, disclosed residual, not an eliminable leak.

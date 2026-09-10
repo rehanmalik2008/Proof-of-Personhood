@@ -1,18 +1,28 @@
 # Folk-theorem resistance in attester bribery: what rotation does not fix, and what does
 
-**Problem A of `two-mechanisms.md`.** Reports **measured** values from
-`scripts/sim/reporting_race.mjs` (output `docs/self-audit/sim_reporting_race.md`),
-not asserted ones. Builds on `docs/THEOREM-equilibrium-problem4.md` (**EQ**,
-Theorem 4) and `docs/THEOREM-three-attacks.md` (**3A**, Theorems 5–7).
+**Problem A of `two-mechanisms.md` and `the-attribution-bottleneck.md`.** Reports
+**measured** values from `scripts/sim/reporting_race.mjs` and
+`scripts/sim/bond_trigger.mjs` (outputs `docs/self-audit/sim_reporting_race.md`,
+`sim_bond_trigger.md`), not asserted ones. Builds on
+`docs/THEOREM-equilibrium-problem4.md` (**EQ**, Theorem 4) and
+`docs/THEOREM-three-attacks.md` (**3A**, Theorems 5–7).
 
-Result status is stated up front per item:
+**Lead result: A3's earlier downgrade is WITHDRAWN.** The prior round downgraded
+A3 to "conditional — a pre-paid bond `P ≈ B` defeats the race". The follow-up
+simulation (`bond_trigger.mjs`) models the bond's *trigger* explicitly and finds
+**no enforceable bond exists under anonymous reporting** (Theorem 11): no
+trustless attributing predicate; collective forfeiture self-defeats as
+`(1−π)^{k−1}`; an attacker-held bond is not a bond. A3 is restored to its
+original strength for the regime `f^k ≪ 1`.
 
 | item | claim | status after simulation |
 |---|---|---|
 | Result A1 | assignment rotation does not convert the game to one-shot | **CONFIRMED** (analytic; the repeated relationship is attacker↔attester) |
 | Result A2 | bounded tenure caps bribe amortization at `Rτ` | **CONFIRMED** (analytic; not simulated) |
 | Theorem 8 | anonymity defeats trigger strategies | **CONFIRMED, with a stated `f`-boundary** |
-| Result A3 | anonymous reporting + first-reporter bounty ⇒ a leniency race | **DOWNGRADED to conditional** — the pre-paid bond defeats the race whenever the attacker can credibly refund it (measured) |
+| **Theorem 11** | no enforceable loyalty bond exists under anonymous reporting | **CONFIRMED (measured)** — trigger analysis in `bond_trigger.mjs` |
+| **Theorem 12** | trigger strategy / reputation / Dark-DAO escrow / loyalty bond all need the same attributable observation | **CONFIRMED (structural)** |
+| Result A3 | anonymous reporting + first-reporter bounty ⇒ a leniency race | **RESTORED** (downgrade withdrawn) — the bond that would defeat it cannot be triggered; race is the operative outcome for `f^k ≪ 1` |
 
 ---
 
@@ -87,9 +97,46 @@ condition, not an unconditional result.**
 
 ---
 
-## 4. Result A3 — the leniency race, and the bond that defeats it [DOWNGRADED]
+## 4. Result A3 — the leniency race [RESTORED], and Theorem 11 — no enforceable bond
 
-### 4.1 What the simulation measured
+### 4.0 Lead: the bond that would defeat the race cannot be triggered
+
+The prior round's downgrade of A3 rested on the pre-paid bond `P`. The
+reporting-race sim treated `P` as a mechanically-enforced object; it never asked
+**how forfeiture is triggered**. `bond_trigger.mjs` models the trigger:
+
+> **Theorem 11 (bond attribution) [CONFIRMED, measured].** A pre-paid loyalty
+> bond must be held either trustlessly or by the attacker, and neither survives
+> anonymous reporting.
+
+| bond form | can forfeiture be triggered? | does it deter? |
+|---|---|---|
+| **(a) trustless, attributing** — on-chain predicate identifying the reporter | **No.** Anonymous reporting emits no per-attester identifier; the only predicate that references `i` ("`i`'s signing history correlates with the revoked cohort") is the Theorem 7 leak reduced to a 1-of-`k` guess (Theorem 8), not a clean predicate. | n/a |
+| **(b) trustless, collective** — forfeit all `k` bonds if the credential is revoked within `T` | **Yes** — conditions on the public revocation event, no attribution (the Dark-DAO-style escape). | **No.** `−P` now also falls in the "someone else reported" branch, so the effective deterrent on `i`'s silence is `(1−π)^{k−1}·P` where `π` = belief another reports. Measured `P/b` needed to hold all-silent a NE at `B/b=2, δ=0.95`: k=3 — `1.15` at π=0, `2.35` at π=0.3, `12.8` at π=0.7. k=5 — `1.15` at π=0, `4.79` at π=0.3, `>50` at π=0.5. Silence-NE region over the (δ,B,P) grid: **60 % at π=0 → 55.7 % at π=0.1 → 45 % at π=0.3 → 37.3 % at π=0.5.** Any real doubt collapses it. |
+| **(c) attacker-held** | Attacker can seize at will. With no attribution he cannot selectively withhold from a reporter: collective seizure = (b); uniform seizure = a flat tax with zero marginal deterrent on reporting. | **No** — it is not a bond. |
+
+**Verdict:** no enforceable bond exists under anonymous reporting. **A3's
+downgrade is withdrawn.** The `P ≈ B` result from `reporting_race.mjs` (§4.1)
+holds only for a bond that can be triggered, and Theorem 11 shows one cannot be
+constructed for `f^k ≪ 1`.
+
+**Residual.** A fully-coordinated attacker who can both commit a
+collective-forfeiture contract *and* enforce common knowledge that `π = 0` (no
+attester believes any other will report) can hold silence as a **fragile** Nash
+equilibrium (the `δb + P ≥ B` boundary still exists at `π = 0`). Enforcing
+`π = 0` requires observable coordination among the `k` — the out-of-band channel
+Theorem 12 closes.
+
+> **Result A3 (restored).** For `f^k ≪ 1`, anonymous unattributable reporting +
+> first-reporter bounty + immunity converts the `k`-set into a leniency race. No
+> pre-paid bond defeats it, because no bond can be triggered without either
+> attribution (absent by construction) or attacker trust (self-defeating) or
+> collective forfeiture (deterrent `(1−π)^{k−1}`, collapses under any doubt).
+> The one escape — an attacker enforcing `π = 0` — needs the coordination
+> channel that Theorem 12 identifies as the single thing the attester layer must
+> deny.
+
+### 4.1 The `reporting_race.mjs` grid (holds for a triggerable bond only)
 
 The `k`-attester leniency game: anonymous reporting; first reporter(s) split
 bounty `B` and get immunity (keep franchise `V`, no slash); escrowed bribe `b`
@@ -131,46 +178,43 @@ across `k`):
 |---:|---:|---:|---:|---:|---:|---:|---:|
 | min P/b | 0 | 0 | 0.25 | 1.5 | 2.5 | 5 | 10 |
 
-i.e. `P ≳ B − δb + p_d0(S+V)`. **The pre-paid bond defeats the race:** an
-attacker who sets `P ≈ B` neutralizes any fixed bounty.
+i.e. `P ≳ B − δb + p_d0(S+V)`. **This is the region where a *triggerable* bond
+would defeat the race** — but §4.0 (Theorem 11) shows no triggerable bond exists
+under anonymous reporting, so this grid is the counterfactual, not the operative
+result.
 
-### 4.2 The downgrade, and the residual defense
+### 4.2 Theorem 12 — the attribution bottleneck [CONFIRMED, structural]
 
-Result A3 as originally stated ("anonymous reporting + first-reporter bounty ⇒
-the `k`-set becomes a leniency race") is **not unconditional**. It holds only
-against an attacker who *cannot* post-and-refund bonds.
+> **Theorem 12.** Every mechanism by which an attacker secures attester loyalty
+> requires attributable observation of whether a specific attester reported.
 
-The bond is paid to the **attacker**, who must be trusted to refund it on
-silence. So:
+| mechanism | what it must observe |
+|---|---|
+| folk-theorem trigger strategy | who defected, to punish them |
+| out-of-band reputation ledger | who stayed loyal, to score them |
+| Dark DAO escrow | that a specific attester did not report |
+| pre-paid loyalty bond | that this attester triggered forfeiture |
 
-- A briber who **cannot** credibly commit to refunding bonds: the attester
-  discounts `P` toward 0 (fear of griefing), the condition reverts to `δb ≥ B`,
-  and any `B > δb` breaks the cartel. **The race works.**
-- A briber who **can** credibly refund bonds runs a **reputation among
-  attesters** — precisely the out-of-band reputation channel that anonymity was
-  meant to remove (§5). That channel is observable (attesters must locate and
-  transact with the briber) and attackable (sting operations, poisoned
-  reputation, forced disclosure). **The race fails, but only by re-creating the
-  channel the defender is separately trying to close.**
+Anonymous, unattributable reporting closes all four at once — they are **one
+property to achieve, not four defenses to build**. This makes anonymous
+unattributable reporting **the** headline requirement of the attester layer,
+above rotation, tenure bounding, or bespoke anti-collusion machinery. Specify it
+normatively.
 
-> **Result A3 (measured).** The leniency race is **conditional**: it destabilizes
-> the cartel against an attacker who cannot commit to refunding bonds, and is
-> defeated by a pre-paid bond `P ≳ B − δb` against one who can. The defender's
-> real lever is therefore **making a credible bond-refund reputation
-> unsustainable** — which is the same problem as closing the out-of-band
-> reputation channel (§5), not a separate mechanism. State the race as a
-> pressure that raises the attacker's coordination burden, not as a guaranteed
-> unravelling.
+The `f`-boundary carries: Theorem 12 is a statement about `f^k ≪ 1`. When the
+attacker controls most of the pool every `k`-set is his and the defector is drawn
+from a group he punishes wholesale; anonymity's protection scales `(1 − f^k)`
+(§3).
 
 ### 4.3 Design implication
 
-Anonymous reporting + first-reporter bounty + immunity remain **worth
-specifying** (none is currently in the protocol): they force the attacker to run
-a bonded, reputationed side-market instead of a cheap one-shot bribe, and they
-compound with bounded tenure (A2) and the bounty term `B` already in EQ Cor 4.1
-(`k(S+V) + 1.58kB ≥ βmE/q`, 3A §2.3). But the paper must **not** claim they
-"convert the `k`-set into a race" without the "…unless the attacker can post
-credible bonds" clause.
+Anonymous unattributable reporting + first-reporter bounty + immunity are the
+**primary** attester-layer mechanism (none is currently specified). They defeat
+the leniency-race counters — bond (Theorem 11), reputation (§5), Dark-DAO escrow
+(3A §4) — simultaneously, and compound with bounded tenure (A2) and the bounty
+term `B` in EQ Cor 4.1 (`k(S+V) + 1.58kB ≥ βmE/q`, 3A §2.3). The paper may state
+"anonymous reporting converts the `k`-set into a leniency race for `f^k ≪ 1`"
+without a bond caveat — Theorem 11 removes it.
 
 ---
 
@@ -185,9 +229,10 @@ Where it survives: if the attester *voluntarily* proves continued loyalty. By
 Theorem 6 (3A §4) an attester **can** prove they signed for the attacker (the
 knowledge justifying an attestation is provable) — but **cannot** prove they did
 *not* report. The reputation system verifies participation, not loyalty — exactly
-the Dark DAO limit from `three-attacks.md`, reappearing. And §4.2 shows this same
-channel is what an attacker needs to run the bond-refund reputation that defeats
-the leniency race, so **closing it does double duty**.
+the Dark DAO limit from `three-attacks.md`, reappearing. This is the same channel
+Theorem 12 lists: closing it denies the trigger strategy, the reputation ledger,
+Dark-DAO escrow, and the `π = 0` coordination an attacker would need to salvage a
+collective-forfeiture bond — one property, four defenses.
 
 ---
 
@@ -201,12 +246,16 @@ the leniency race, so **closing it does double duty**.
    `docs/RESEARCH-private-bulk-revocation.md` measures the cohort-leak side.
 2. **Result A2** fails if attesters re-enter under fresh identities after tenure
    expiry. Re-qualification must be costly or identity-bound.
-3. **Result A3** — already downgraded here. Fails as an unconditional claim
-   against any attacker who can post credible refundable bonds; the measured
-   boundary is `P ≥ B − δb + p_d0(S+V)`.
-4. The `f`-boundary: for `f` near 1 the whole anonymity defense degrades as
+3. **Theorem 11** fails if a bond trigger exists that is verifiable without
+   attributing the report — e.g. conditioned on an aggregate statistic that a
+   single defection reliably moves. `bond_trigger.mjs` (a) found none; the only
+   attribution-free trigger is collective forfeiture, whose deterrent is
+   `(1−π)^{k−1}` (b). Attack this first if challenged — it is the load-bearing
+   step for A3's restoration.
+4. **Result A3 (restored)** fails if Theorem 11 fails, or if `f^k` is not `≪ 1`.
+5. The `f`-boundary: for `f` near 1 the whole anonymity defense degrades as
    `(1 − f^k)`; measure the realistic corrupt fraction before relying on
-   Theorem 8.
+   Theorem 8 or 12.
 
 ---
 
@@ -214,11 +263,14 @@ the leniency race, so **closing it does double duty**.
 
 Rotation of assignments does not break the cartel — the repeated game is
 attacker↔attester (A1). Bounded tenure caps bribe amortization at `Rτ` and
-repairs EQ's decaying-cost problem (A2). Anonymous, unattributable reporting
-removes the folk-theorem trigger (Theorem 8) for `f` well below 1. The
-first-reporter bounty creates a leniency race **only against an attacker who
-cannot post credible refundable bonds** (A3, measured `P ≥ B − δb`); against one
-who can, the race is defeated, and defeating *that* attacker is the same problem
-as closing the out-of-band reputation channel. The honest claim is that
-anonymity + bounty + tenure raise the attacker's coordination burden to a
-bonded, reputationed side-market — not that they guarantee the cartel unravels.
+repairs EQ's decaying-cost problem (A2). **Anonymous unattributable reporting is
+the primary attester-layer mechanism**: it removes the folk-theorem trigger
+(Theorem 8), and by Theorem 12 the same property simultaneously denies the
+out-of-band reputation ledger, Dark-DAO escrow, and any enforceable loyalty bond.
+Theorem 11 (measured) shows the bond that the prior round used to downgrade A3
+**cannot be triggered** under anonymous reporting — no attributing predicate,
+collective forfeiture self-defeats as `(1−π)^{k−1}`, attacker-held is not a bond
+— so **A3's downgrade is withdrawn**: for `f^k ≪ 1` the first-reporter bounty
+converts the `k`-set into a leniency race, full stop. The residual is a
+fully-coordinated attacker enforcing `π = 0`, which needs the very coordination
+channel Theorem 12 says the layer must deny.
