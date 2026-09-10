@@ -1,0 +1,132 @@
+{
+  "params": {
+    "N": 40000,
+    "H": 200,
+    "T_REV": 100,
+    "RHO_GAP": 0.3,
+    "nPool": 100,
+    "k": 3
+  },
+  "scenario_A_hidden": {
+    "scenario": "A: subsets HIDDEN (paper Phase-2 design), k'=5 k=3",
+    "auc": 0.4987,
+    "recall_at_1pct_fpr": 0.009
+  },
+  "scenario_B_revealed": [
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 4,
+      "k": 3,
+      "background_rotation": 0,
+      "auc": 1,
+      "recall_at_1pct_fpr": 1,
+      "precision_at_1pct_fpr": 0.0405
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 4,
+      "k": 3,
+      "background_rotation": 0.001,
+      "auc": 0.9997,
+      "recall_at_1pct_fpr": 1,
+      "precision_at_1pct_fpr": 0.0408
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 4,
+      "k": 3,
+      "background_rotation": 0.005,
+      "auc": 0.9953,
+      "recall_at_1pct_fpr": 0.6057,
+      "precision_at_1pct_fpr": 0.6803
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 4,
+      "k": 3,
+      "background_rotation": 0.02,
+      "auc": 0.977,
+      "recall_at_1pct_fpr": 0.1383,
+      "precision_at_1pct_fpr": 0.1767
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 5,
+      "k": 3,
+      "background_rotation": 0,
+      "auc": 1,
+      "recall_at_1pct_fpr": 1,
+      "precision_at_1pct_fpr": 0.0495
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 5,
+      "k": 3,
+      "background_rotation": 0.001,
+      "auc": 0.9998,
+      "recall_at_1pct_fpr": 1,
+      "precision_at_1pct_fpr": 0.0505
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 5,
+      "k": 3,
+      "background_rotation": 0.005,
+      "auc": 0.9954,
+      "recall_at_1pct_fpr": 0.611,
+      "precision_at_1pct_fpr": 0.7322
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 5,
+      "k": 3,
+      "background_rotation": 0.02,
+      "auc": 0.9777,
+      "recall_at_1pct_fpr": 0.1363,
+      "precision_at_1pct_fpr": 0.2152
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 6,
+      "k": 3,
+      "background_rotation": 0,
+      "auc": 1,
+      "recall_at_1pct_fpr": 1,
+      "precision_at_1pct_fpr": 0.0597
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 6,
+      "k": 3,
+      "background_rotation": 0.001,
+      "auc": 0.9998,
+      "recall_at_1pct_fpr": 1,
+      "precision_at_1pct_fpr": 0.0602
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 6,
+      "k": 3,
+      "background_rotation": 0.005,
+      "auc": 0.9954,
+      "recall_at_1pct_fpr": 0.609,
+      "precision_at_1pct_fpr": 0.7718
+    },
+    {
+      "scenario": "B: subsets REVEALED",
+      "kp": 6,
+      "k": 3,
+      "background_rotation": 0.02,
+      "auc": 0.977,
+      "recall_at_1pct_fpr": 0.132,
+      "precision_at_1pct_fpr": 0.2447
+    }
+  ],
+  "verdict": [
+    "SCENARIO A (subsets hidden -- the paper's current Phase-2 design reveals only {N,y}): switching to a spare k-subset is INVISIBLE in proof content. With k'-1 >= k every cohort member re-proves at their next ordinary use with no gap, so AUC = 0.5 (hidden). Result 1 holds cleanly. The surplus itself (k' vs k) is set at enrolment and never appears in a Phase-2 proof.",
+    "SCENARIO B (subsets revealed -- the grinding-resistance construction from three-attacks.md exposes the k attester keys/indices as verifier-checked public inputs): a subset change between consecutive proofs, with the dropped element == the revoked attester, is a DIRECT per-user signal. AUC ~0.98+, recall@1%FPR high, even with background subset rotation as cover -- rotation adds false positives but does not hide the cohort because the DROPPED element identifies A.",
+    "=> Falsification #1 verdict: Result 1 (redundant pre-attestation) is SAFE ONLY IF the active k-subset is NOT revealed by Phase-2 proofs. This is a DIRECT CONFLICT with the grinding-resistance construction's 'verifier-checked assignment' variant, which reveals the k keys.",
+    "Resolution: keep the assignment check IN-CIRCUIT (the ~6.8k-11.2k constraint variant from three-attacks.md 1.3), so the proof attests 'my k signers were correctly derived from (commit, beacon)' WITHOUT revealing which k. Then grinding resistance and subset-switch privacy coexist. The cost is the added constraints; the alternative (verifier-checked, keys revealed) forecloses Result 1.",
+    "k' joins the parameter set. Recommended k'=5 at k=3 (surplus 2 -> survives one revocation with margin, 1.67x enrolment cost)."
+  ]
+}

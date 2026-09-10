@@ -63,13 +63,19 @@ Enrollment (one-time, off the per-login path):
 
 **In-circuit constraint cost.** Two designs:
 
-- **Verifier-checked assignment (recommended): 0 added constraints.** The base
-  circuit already proves `k` EdDSA signatures over `C` by `k` pubkeys. Expose
-  those `k` pubkeys (or their pool-indices) as public inputs; the verifier
-  checks `{pk_1..pk_k} = derive(assign, ·)` and that `assign = Poseidon(com, y,
-  ρ_e)` with `π_vdf` valid on chain. Same "prover-supplied, verifier-checked"
-  shape as `epochTree` in the split circuit.
-- **In-circuit assignment binding (self-contained credential):** `Poseidon(3)`
+- **Verifier-checked assignment: 0 added constraints.** The base circuit already
+  proves `k` EdDSA signatures over `C` by `k` pubkeys. Expose those `k` pubkeys
+  (or their pool-indices) as public inputs; the verifier checks
+  `{pk_1..pk_k} = derive(assign, ·)` and that `assign = Poseidon(com, y, ρ_e)`
+  with `π_vdf` valid on chain. Same "prover-supplied, verifier-checked" shape as
+  `epochTree`. **⚠ Do not use this variant if redundant pre-attestation
+  (`k' > k`, `RESEARCH-private-bulk-revocation.md` §3B) is deployed:** revealing
+  the `k` signer identities lets an observer see a user drop the revoked attester
+  and switch subsets, re-exposing the cohort at re-proof (measured: AUC ≈ 1,
+  `surplus_attestation_leak.mjs`). With redundancy, the in-circuit variant below
+  is **required**, not optional.
+- **In-circuit assignment binding (required with redundancy; self-contained
+  credential otherwise):** `Poseidon(3)`
   for `assign` (≈ 240) + `k` index derivations (≈ 240 each) + `k` Merkle
   openings against the attester-pool root, depth `⌈log2 n⌉`, ≈ 243/level. For
   `n = 256` (depth 8): per attester ≈ 240 + 8·243 = 2,184; **`k=3` → ≈ 6,800**,

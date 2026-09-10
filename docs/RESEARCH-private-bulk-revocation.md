@@ -1,29 +1,28 @@
 # Private bulk revocation: the accumulator is the wrong layer, and churn hides the cohort only partly
 
-**Problem B of `two-mechanisms.md` and `the-attribution-bottleneck.md`.** Reports
-**measured** values from `scripts/sim/churn_privacy_ratio.mjs`,
-`staging_correlation_attack.mjs`, and `reenrollment_gap.mjs` (outputs
-`docs/self-audit/sim_churn_privacy.md`, `sim_staging_attack.md`,
-`sim_reenrollment_gap.md`), not asserted ones. Builds on
+**Problem B of `two-mechanisms.md`, `the-attribution-bottleneck.md`, and the
+"Two Answers" note.** Reports **measured** values from
+`scripts/sim/churn_privacy_ratio.mjs`, `staging_correlation_attack.mjs`,
+`reenrollment_gap.mjs`, and `surplus_attestation_leak.mjs` (outputs under
+`docs/self-audit/sim_*`), not asserted ones. Builds on
 `docs/THEOREM-three-attacks.md` (**3A**, Theorem 7 — the cohort leak,
 `|C| ≈ Nk/n`) and `docs/THEOREM-equilibrium-problem4.md` (**EQ**, Theorem 4).
 
 | item | claim | status after simulation |
 |---|---|---|
-| Result B1 | the binding leak is the timing channel, not the accumulator | **CONFIRMED** — staging-attack AUC ≈ 1 in every cell (a revocation event is always detectable) |
+| Result B1 | the binding leak is the timing channel, not the accumulator | **CONFIRMED** — staging-attack AUC ≈ 1 in every cell |
 | Theorem 9 | cohort membership leaks through prover behaviour regardless of the accumulator | **CONFIRMED** |
-| Result B2 | cohort privacy governed by `\|C\|/(ρN)`; staged revocation to the churn floor hides it | **DOWNGRADED** — hides only under uniform randomised staging at ≈ 3× the naive depth, and only *partially* (a 1%-FPR observer still fingers 8–15 % of members) |
-| Result 2 | staging depth `T = k/(nρ)` is independent of population `N` | **CONFIRMED** — `\|C\| = Nk/n` and `ρN` both scale with `N`; `n` enters twice |
-| Result 3 | pairing revocation with automatic re-enrollment moves the floor `ρ_perm → ρ_gap` (~380×) | **HELD, but rescaled to ~3–10×** — a second channel (gap co-timing) imposes a `T_stage` floor of ~30–90 epochs that the `ρ_gap` substitution does not remove |
-| Theorem 10 | economics ↔ privacy ↔ latency, no config optimises both | **CONFIRMED, softened by re-enrollment** — staging depth drops from ~100–340 epochs (small `n`, `ρ_perm`) to ~30–90 epochs |
+| Result B2 | cohort privacy governed by `\|C\|/(ρN)`; staged revocation to the churn floor hides it | **DOWNGRADED** — uniform randomised staging at ≈ 3× the naive depth, partial (8–15 % residual) |
+| Result 2 | staging depth `T = k/(nρ)` is independent of population `N` | **CONFIRMED** |
+| Result 3 | pairing revocation with automatic re-enrollment moves the floor `ρ_perm → ρ_gap` (~380×) | **HELD, rescaled to ~3–10×** — a gap co-timing channel imposes a `T_stage` floor of ~30–90 epochs |
+| **TA-Result 1** | redundant pre-attestation (`k' > k`) collapses re-enrollment delay to one epoch | **CONFIRMED** — and it removes the gap-length attack of §3A entirely |
+| **TA-Result 2** | redundancy + bulk revocation are compatible only under cascading detection | **CONFIRMED** — single-attester revocation + redundancy shields the attacker's portfolio |
+| **Falsification #1** | is the surplus / subset switch observable? | **MEASURED** — safe iff Phase-2 does **not** reveal the `k`-subset; conflicts with the grinding-fix "verifier-checked assignment" variant (§3B.3) |
+| Theorem 10 | economics ↔ privacy ↔ latency, no config optimises both | **CONFIRMED, softened** by re-enrollment + redundancy |
 
 **Carry-over correction, still holds: do not build the batch-indistinguishable
-accumulator.** Result B1 is confirmed — the accumulator addresses a secondary
-leak while the timing channel is binding. Re-enrollment (Task 2) does not change
-this: it hides *which users* were in the cohort, not *that* a revocation
-occurred, and the accumulator would not touch either channel. If churn +
-re-enrollment hides the cohort the accumulator is redundant; if it does not, a
-hidden batch structure would not have saved it.
+accumulator.** The accumulator addresses a secondary leak while the timing
+channel is binding; nothing in this round changes that.
 
 ---
 
@@ -224,6 +223,13 @@ regime's **~100–340 epochs** (small `n`) to **~30–90 epochs** — roughly
 > staging `T_stage ≳ 90` epochs; (ii) re-enrollment `D` within ~ the natural gap
 > p90 (≈ 21 d here); (iii) per-member `D` variance, or rely on (i);
 > (iv) re-enrollment shaped identically to fresh enrollment (§3A.3).
+>
+> **Superseded for the delay concern by §3B:** redundant pre-attestation
+> (`k' > k`) collapses `D` to *one epoch* and, for users with surplus, removes
+> the gap entirely — so the "does `D` overlap the natural gap distribution"
+> question (§3A.2 requirement (ii)) is answered by *there is no gap to measure*.
+> Wide staging (requirement (i)) is still needed to spread the re-enrollment
+> *completion* cluster.
 
 ### 3A.3 Falsification #3 — does re-enrolling produce its own signature?
 
@@ -246,6 +252,93 @@ bribes `k·b`). That is the intended behaviour and it preserves EQ's logic:
 re-enrollment does not give the attacker a free portfolio refresh. Not
 separately simulated; the interaction is `γ(N) += k·b` per forced re-enrollment
 cycle, on top of the grinding term.
+
+---
+
+## 3B. Redundant pre-attestation — collapse the re-enrollment delay ("Two Answers" note)
+
+`3A.2` left a gap: obtaining `k` fresh attestations *reactively* after revocation
+is a human-timescale process (days–weeks), longer than a natural usage gap, so
+the re-enrolled cohort can be separated by gap **length** unless `D` stays within
+the natural p90 (~21 d). The "Two Answers" note closes this by obtaining the
+attestations **proactively**.
+
+### 3B.1 The mechanism [TA-Result 1]
+
+Each user collects `k' > k` attestations at enrollment and holds the surplus in
+reserve. When attester `A` is revoked, the credential loses one attestation and
+retains `k' − 1`. If `k' − 1 ≥ k`, the user **resubmits immediately with
+attestations they already hold** — no institutional latency. Re-enrollment delay
+collapses from days/weeks to **one tree-update epoch**, a parameter the system
+controls. For users with surplus ≥ 1 the interruption need never become
+observable: they re-prove at their next ordinary use with a different `k`-subset.
+
+Cost: a one-time enrollment multiplier `k'/k` — at `k=3, k'=5` that is **1.67×**
+the attestation burden, paid once, when the user is already engaged. `k'` joins
+the parameter set (`k, n, q, β, B, τ, ρ_perm, ρ_gap, gap-p90`).
+
+> **TA-Result 1.** Redundant pre-attestation reduces re-enrollment delay to a
+> single epoch, trivially satisfying the gap-length overlap requirement of §3A.
+> The gap-length attack is closed by *eliminating the gap*, not by matching the
+> natural distribution.
+
+### 3B.2 Cost: redundancy shields the attacker too [TA-Result 2]
+
+If the attacker's fakes also carry `k'` attestations from his bribed set,
+revoking one corrupt attester leaves them with `k' − 1 ≥ k` and they **survive**.
+Bulk revocation stops destroying his portfolio, and Theorem 4's economic bound —
+which depends on portfolio destruction — weakens. This is Theorem 10's tension in
+a new place: the mechanism that protects innocent users' privacy also protects
+the attacker's inventory.
+
+**Resolution — cascading revocation.** Detecting attester `A` as corrupt must
+trigger scrutiny of the attesters who co-signed with `A` at anomalous rates —
+the attestation-correlation monitoring already identified (`inalienability-and-detection.md`)
+as the primary driver of `q`. If corruption is found in **clusters**, redundancy
+does not save the attacker: his whole bribed set is revoked together, so
+`k' − j < k` for a fake carrying `j` corrupt signers.
+
+> **TA-Result 2.** Redundancy and bulk revocation are compatible only under
+> cascading detection. Single-attester revocation + redundancy leaves the
+> attacker intact; **cluster detection + redundancy** protects honest users while
+> still destroying correlated corrupt sets. Correlation monitoring does triple
+> duty: it raises `q` (EQ), it makes redundancy safe here, and it caps the
+> loyalty bond at `b` (`RESEARCH-folk-theorem-resistance.md` §4.4).
+
+### 3B.3 Falsification #1 (now the critical measurement) — is the surplus / subset switch observable?
+
+`scripts/sim/surplus_attestation_leak.mjs`. Measured (`N=40k`, pool `n=100`,
+`k=3`):
+
+| scenario | AUC | recall @1%FPR |
+|---|---:|---:|
+| **A — subsets hidden** (paper Phase-2 reveals only `{N, y}`), `k'=5` | **0.499** | 0.01 |
+| **B — subsets revealed** (grinding-fix "verifier-checked assignment" exposes the `k` keys), `k'=5`, no cover rotation | **1.00** | 1.00 |
+| B, with background subset-rotation rate 0.005 as cover | 0.995 | 0.61 |
+| B, background rotation 0.02 | 0.977 | 0.14 |
+
+**Scenario A — safe.** The active `k`-subset never appears in a Phase-2 proof
+(no attester keys, no category labels — paper §2.5, §6). Switching to a spare
+subset produces **no proof-content signal**; with `k' − 1 ≥ k` there is no gap
+either. AUC = 0.5.
+
+**Scenario B — the cohort is re-exposed at re-proof.** If the `k` signer
+identities are public (which the grinding-resistance construction's
+*verifier-checked assignment* variant, `3A §1.3` of `THEOREM-three-attacks.md`,
+does), then a subset change between consecutive proofs whose *dropped element* is
+the revoked attester is a direct per-user signal. AUC ≈ 1; background rotation
+adds false positives but does not hide the cohort.
+
+> **Falsification #1 verdict [measured].** Redundant pre-attestation (TA-Result 1)
+> is **safe only if the active `k`-subset is not revealed by Phase-2 proofs** —
+> a direct conflict with the grinding-resistance construction's verifier-checked
+> variant. **Resolution:** keep the assignment check **in-circuit**
+> (`THEOREM-three-attacks.md` §1.3, the ≈ 6.8k–11.2k-constraint variant), so the
+> proof attests "my `k` signers were correctly derived from `(commit, beacon)`"
+> *without revealing which `k`*. Then grinding resistance and subset-switch
+> privacy coexist; the price is the added constraints. The verifier-checked
+> variant (0 added constraints, keys revealed) **forecloses TA-Result 1** and
+> must not be used if redundancy is deployed.
 
 ---
 
@@ -296,20 +389,30 @@ the same lever three ways.
    depth, uniform staging, and uniform client failure, and leaves an 8–15 %
    residual; dead for small `n` (`≤ ~100`) on economic cost. **Re-enrollment
    (Result 3) reopens small `n`** at a ~90-epoch staging cost.
-3. **Result 3** fails if re-enrollment delay does not overlap the natural gap
-   distribution (measured: it does, for `D` within the natural p90 ≈ 21 d), OR if
-   re-enrollment completion cannot be spread (synchronized re-enrollment at tight
-   staging is recovered, recall 0.36–0.68), OR if re-enrollment carries its own
-   on-chain/network signature (falsification #3 — requires one enrollment path
-   and a fresh unlinkable `C`).
-4. **Theorem 10's quantification** fails if delayed revocation does not extend
-   attacker revenue proportionally — e.g. if fakes are caught downstream during
-   staging. Measure the downstream detection rate before assuming `(1 + Tλ)`.
-5. **`ρ_perm` / `ρ_gap` / natural-gap-p90 bands.** §2–3 use central
+3. **Result 3** — the gap-length concern is superseded by **TA-Result 1**
+   (redundant pre-attestation collapses `D` to one epoch). What remains: fails if
+   re-enrollment *completion* cannot be spread (synchronized completion at tight
+   staging is recovered, recall 0.36–0.68), or if re-enrollment carries its own
+   on-chain/network signature (falsification #3 — one enrollment path, fresh
+   unlinkable `C`).
+4. **TA-Result 1 (Falsification #1, the critical measurement)** fails if the
+   active `k`-subset is observable in a Phase-2 proof. Measured: safe when hidden
+   (AUC 0.5), fully recovered when revealed (AUC ≈ 1). **The grinding-resistance
+   construction must therefore keep its assignment check in-circuit** (§3B.3), not
+   verifier-checked.
+5. **TA-Result 2** fails if cascading correlation detection cannot identify
+   clusters at realistic attacker randomisation — the `m ≈ k(N/τ)^{1/k}` counter
+   (`inalienability-and-detection.md`): the attacker rotates *which* of his
+   bribed attesters sign each fake. If cascade detection is weak, redundancy
+   shields the attacker's portfolio and Theorem 4's bound weakens.
+6. **Theorem 10's quantification** fails if delayed revocation does not extend
+   attacker revenue proportionally. Measure the downstream detection rate before
+   assuming `(1 + Tλ)`.
+7. **`ρ_perm` / `ρ_gap` / natural-gap-p90 / `k'` bands.** §2–3 use central
    `ρ_perm = 7.9e-4`, `ρ_gap = 0.30`; §3A uses a natural-gap p90 of 21 d from a
-   Beta(1.3, 4) engagement model. All three are deployment-specific **privacy
-   parameters** alongside `n`, and belong in the falsification register (3A §5)
-   next to `q`, `β`, `w`, `τ`, `B`. A deployment must measure its own.
+   Beta(1.3, 4) engagement model; §3B recommends `k' = 5` at `k = 3`. All are
+   deployment-specific **privacy parameters** and belong in the falsification
+   register (3A §5) next to `q`, `β`, `w`, `τ`, `B`, `n`.
 
 ---
 
@@ -327,15 +430,22 @@ re-enrollment** (also the correct treatment of innocent revoked users). Measured
   floor `ρ_perm` at `T ≳ 3k/(nρ_perm)` — ~85–92 % hidden, 8–15 % residual;
   feasible for `n ≥ ~1,000`, prohibitive for `n ≤ ~100`.
 - With re-enrollment, the signal becomes a transient gap: the rate-detection
-  channel moves to `ρ_gap` (~380× more headroom), but the **gap co-timing**
-  channel imposes a `T_stage` floor of **~30–90 epochs** roughly independent of
-  `n`. Net staging cost drops ~3–10× versus the `ρ_perm` regime and **small `n`
-  becomes feasible** (weeks, not months). Requires wide staging, re-enrollment
-  delay within the natural gap p90 (~21 d), spread completion, and re-enrollment
-  shaped identically to fresh enrollment.
+  channel moves to `ρ_gap` (~380× more headroom), but a **gap co-timing** channel
+  imposes a `T_stage` floor of **~30–90 epochs** roughly independent of `n`. Net
+  staging cost drops ~3–10× and **small `n` becomes feasible** (weeks, not
+  months).
+- **Redundant pre-attestation (`k' > k`, TA-Result 1)** collapses the
+  re-enrollment *delay* to one epoch and, for users with surplus, removes the gap
+  entirely — so the gap-length question disappears. Cost: `k'/k` ≈ 1.67×
+  enrollment attestation burden at `k'=5, k=3`; and it **shields the attacker's
+  portfolio** unless revocation **cascades** over correlated co-signers
+  (TA-Result 2). It is **safe only if Phase-2 proofs do not reveal the active
+  `k`-subset** — which forces the grinding-resistance assignment check to stay
+  **in-circuit** (Falsification #1, measured: AUC 0.5 hidden vs ≈ 1 revealed).
 
 Result 2: the depth `T = k/(nρ)` is **population-independent**. Theorem 10's
-economics–privacy trade is real but softened by re-enrollment (shorter staging →
-less extended attacker revenue). The design answer remains **large `n`**, which
-shortens the `ρ_perm`-regime depth, lowers `f`, and shrinks `|C| = Nk/n` at once.
-Cohort privacy is a managed, disclosed residual, not an eliminable leak.
+economics–privacy trade is real but softened by re-enrollment + redundancy. The
+design answer remains **large `n`** (shorter depth, lower `f`, smaller `|C|`),
+plus **cascading correlation-driven detection** — now load-bearing for `q`, for
+redundancy safety, and for the loyalty-bond cap. Cohort privacy is a managed,
+disclosed residual, not an eliminable leak.
