@@ -7,9 +7,12 @@
 // the binding noise floor is rho_perm ~ 7.9e-4/day, and staging depth
 // T ~ 3k/(n rho_perm). The-attribution-bottleneck.md argues that pairing
 // revocation with AUTOMATIC RE-ENROLLMENT turns the signal from a permanent stop
-// into a transient gap, so the floor becomes rho_gap ~ 0.30/day (~380x larger)
-// and T ~ 3k/(n rho_gap). Result 3 rests on the re-enrollment delay distribution
-// OVERLAPPING the natural usage-gap distribution.
+// into a transient gap, claiming the floor becomes rho_gap ~ 0.30/day (~380x)
+// and T ~ 3k/(n rho_gap) (sub-day). This sim MEASURES that the rate-detection
+// floor does move ~380x but a gap CO-TIMING channel then binds, imposing a
+// T_stage floor of ~30-90 epochs -- net improvement ~3-10x, not 380x. Result 3
+// also rests on the re-enrollment delay OVERLAPPING the natural usage-gap
+// distribution (superseded for the delay itself by redundant pre-attestation).
 //
 // Model:
 //  - population heterogeneity: each user has a daily proof prob p_u ~ Beta(a,b),

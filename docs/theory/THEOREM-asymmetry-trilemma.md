@@ -1,7 +1,7 @@
 # The asymmetry theorem and the personhood trilemma
 
 **Formalizes `the-asymmetry-theorem.md`.** Builds on
-`docs/REDUCTION-personhood-impossibility.md` (cited as **REDUCTION**): its
+`docs/theory/REDUCTION-personhood-impossibility.md` (cited as **REDUCTION**): its
 Theorem 1 (digital-only ⇒ the accept predicate is a human–machine distinguisher,
 via a *distributional* separation that holds against unbounded adversaries), its
 Corollary 1 (personhood needs a *robust* such distinguisher, of which none is
@@ -10,7 +10,7 @@ per-identity expense).
 
 Claim status is labelled: **[KNOWN]**, **[THIS WORK]**, **[CONJECTURE]**,
 **[OPEN]**. The empirical falsification tests that this theory's survival depends
-on are in `docs/EMPIRICAL-personhood-systems.md` (**EMPIRICAL**); §6 here records
+on are in `docs/theory/EMPIRICAL-personhood-systems.md` (**EMPIRICAL**); §6 here records
 their verdict.
 
 ---
@@ -305,7 +305,7 @@ there determines whether Theorem 2 survives.
 **On the trilemma.**
 - Falsified by any deployed system in all three corners. EMPIRICAL Task 2
   extends the table to every proof-of-personhood system found. **Verdict:
-  _pending EMPIRICAL_ — see `docs/EMPIRICAL-personhood-systems.md` §5.** If a
+  _pending EMPIRICAL_ — see `docs/theory/EMPIRICAL-personhood-systems.md` §5.** If a
   genuine all-three system is found, this section and everything downstream is
   revised, and that finding leads the report.
 
@@ -421,7 +421,7 @@ that decays in proportion to adoption cannot found an identity layer.
 
 (Task 3 — EMPIRICAL-followup — asks whether a challenge can re-randomize its
 target function faster than it can be learned, which would break this property.
-Verdict recorded in `docs/MOVING-TARGET-captcha-analysis.md`: no viable
+Verdict recorded in `docs/theory/MOVING-TARGET-captcha-analysis.md`: no viable
 construction; a family learnable *in aggregate* is not saved by per-instance
 re-randomization, and a family that genuinely re-randomizes the *learnable
 structure* also re-randomizes what makes it human-solvable at `T_H`.)
@@ -475,4 +475,4 @@ not a proof; cite it as such.
 
 Shared with REDUCTION (Douceur IPTPS'02; Nakamoto '08; von Ahn et al.
 EUROCRYPT'03; Yu et al. SybilGuard SIGCOMM'06, SybilLimit S&P'08; Boneh et al.
-CRYPTO'18). System-specific citations in `docs/EMPIRICAL-personhood-systems.md`.
+CRYPTO'18). System-specific citations in `docs/theory/EMPIRICAL-personhood-systems.md`.

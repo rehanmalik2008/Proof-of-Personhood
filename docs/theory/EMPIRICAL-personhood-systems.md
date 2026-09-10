@@ -1,8 +1,8 @@
 # Empirical test of the asymmetry theorem: every proof-of-personhood system in the trilemma
 
 **Task 2 of `the-asymmetry-theorem.md`.** Companion to
-`docs/THEOREM-asymmetry-trilemma.md` (**TRILEMMA**) and
-`docs/REDUCTION-personhood-impossibility.md` (**REDUCTION**). This is the part
+`docs/theory/THEOREM-asymmetry-trilemma.md` (**TRILEMMA**) and
+`docs/theory/REDUCTION-personhood-impossibility.md` (**REDUCTION**). This is the part
 that decides whether Theorem 2 survives: if a deployed system is genuinely
 institution-free **and** accessible **and** Sybil-resistant, Theorem 2 and the
 trilemma are falsified and TRILEMMA must be revised from the top.

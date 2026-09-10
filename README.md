@@ -94,6 +94,51 @@ are in [MASTER-SPECIFICATION §8](MASTER-SPECIFICATION.md) and §8 of the paper.
 
 ---
 
+## Two tracks
+
+This repository holds two separable bodies of work. A reader can engage with
+either without the other.
+
+### Track 1 — the protocol (measured engineering)
+
+The working system: circuits, prover, benchmarks, integration, and the protocol
+paper. Everything here is measured on real hardware and reproducible.
+
+- **[paper/proof-of-personhood-without-a-registry.pdf](paper/proof-of-personhood-without-a-registry.pdf)**
+  — the protocol paper (v1.2, 28 pages).
+- **[MASTER-SPECIFICATION.md](MASTER-SPECIFICATION.md)** — authoritative spec; the
+  six gates.
+- Code: [`circuits/`](circuits/), [`scripts/`](scripts/), [`web/`](web/),
+  [`integration/`](integration/). Verify: [`docs/EVALUATION.md`](docs/EVALUATION.md).
+
+### Track 2 — the theory (impossibility results and an equilibrium)
+
+The theory outgrew the protocol paper and lives on its own. Twelve numbered
+results across nine documents, several retractions, all mapped.
+
+- **[docs/theory/THEORY-INDEX.md](docs/theory/THEORY-INDEX.md)** — the map: every
+  Theorem / Corollary / Result → source document, status
+  (proved / grounding argument / conjecture / narrowed / withdrawn), falsification
+  criteria, and the simulation that measured it. **Start here.**
+- **[docs/theory/PAPER-limits-of-proof-of-personhood.md](docs/theory/PAPER-limits-of-proof-of-personhood.md)**
+  — the theory paper draft: *Three Impossibility Results and an Equilibrium*.
+- **[docs/theory/](docs/theory/)** — the nine source notes (Theorems 1–12, the
+  Trilemma, the equilibrium, the mechanism-design results).
+- **[scripts/sim/](scripts/sim/)** — the simulations. Every theory number cited to
+  a script; outputs under [`docs/self-audit/sim_*`](docs/self-audit/).
+
+```bash
+for s in scripts/sim/*.mjs; do node "$s"; done   # regenerate every measured number (~3 min)
+```
+
+The one ecosystem finding worth a stranger's time on its own:
+**[docs/DISCOVERY-lessthan-hash-soundness.md](docs/DISCOVERY-lessthan-hash-soundness.md)**
+— circomlib `LessThan(252)` silently certifies `p−1 < 1` on hash outputs;
+reproducer `scripts/repro_lessthan_hash.mjs`; filings drafted in
+[`docs/filings/`](docs/filings/).
+
+---
+
 ## Verify this yourself in under an hour
 
 Don't trust the prose. The full reviewer walkthrough is

@@ -5,8 +5,8 @@
 `scripts/sim/churn_privacy_ratio.mjs`, `staging_correlation_attack.mjs`,
 `reenrollment_gap.mjs`, and `surplus_attestation_leak.mjs` (outputs under
 `docs/self-audit/sim_*`), not asserted ones. Builds on
-`docs/THEOREM-three-attacks.md` (**3A**, Theorem 7 — the cohort leak,
-`|C| ≈ Nk/n`) and `docs/THEOREM-equilibrium-problem4.md` (**EQ**, Theorem 4).
+`docs/theory/THEOREM-three-attacks.md` (**3A**, Theorem 7 — the cohort leak,
+`|C| ≈ Nk/n`) and `docs/theory/THEOREM-equilibrium-problem4.md` (**EQ**, Theorem 4).
 
 | item | claim | status after simulation |
 |---|---|---|
@@ -174,7 +174,11 @@ permanent lockout of an innocent revoked user is a **defect**, not a requirement
 the correct behaviour is **automatic re-enrollment** (obtain `k` fresh
 attestations from uncorrupted attesters, resume proving). That changes the
 observable from a *permanent stop* (noise floor `ρ_perm ≈ 7.9e-4/day`) to a
-*transient gap* (noise floor `ρ_gap ≈ 0.30/day`, ~380× larger).
+*transient gap*. The note takes the new floor to be `ρ_gap ≈ 0.30/day` (~380×
+larger) and concludes `T ≈ 3k/(nρ_gap)` (sub-day). **That is wrong** (§3A.2): the
+*rate*-detection floor does move by ~380×, but a second channel — **gap
+co-timing** — becomes binding and imposes a `T_stage` floor of ~30–90 epochs.
+**Net staging improvement is ~3–10×, not 380×.**
 
 ### 3A.1 Result 2 — the staging depth is population-independent [CONFIRMED]
 

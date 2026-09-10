@@ -11,7 +11,7 @@ _`scripts/sim/bond_trigger.mjs`. Units of b (bribe=1). V=3, S=2, pd=0.35, pd0=0.
 | forfeit ALL k bonds if the credential is revoked within T | true | false | THIS is the Dark-DAO-style escape: conditions on a public event, not on attribution. Triggerable. Deterrent analysed in (b). |
 | forfeit i's bond if i fails to periodically re-prove loyalty (produce a fresh signing receipt) | true | true | works, but requires i to VOLUNTARILY produce a receipt (Thm 6) -- re-creates the out-of-band reputation channel; not anonymous-reporting-safe, it is a different mechanism |
 
-**No on-chain predicate is both verifiable AND attributable to i under anonymous reporting. The only triggerable predicate is collective (forfeit all k on revocation-within-T); analysed in (b).**
+**No on-chain predicate is both verifiable AND attributable to i under anonymous reporting. But the COLLECTIVE predicate (forfeit all k on revocation-within-T) IS verifiable-and-trustless -- it conditions on the public revocation event, not on attribution. A non-attributing TRIGGER therefore exists; whether it DETERS is analysed in (b).**
 
 ## (b) Collective forfeiture -- forfeit all k bonds if the credential is revoked within T
 
@@ -35,12 +35,13 @@ With no attribution the attacker cannot selectively withhold P from a reporter. 
 
 ## Verdict
 
-- (a) trustless attributing bond: DOES NOT EXIST under anonymous reporting -- no verifiable+attributable predicate.
-- (b) trustless collective-forfeiture bond: CAN be triggered (public revocation event), but the deterrent scales (1-pi)^{k-1}. Silence-NE region over the (delta,B,P) grid: 60% at belief pi=0, 55.7% at pi=0.1, 45% at pi=0.3, 37.3% at pi=0.5. Any real doubt that another reports collapses the bond.
-- (c) attacker-held bond: collapses to (b) or to a zero-deterrent tax. No enforceable bond.
-- => Theorem 11 HOLDS. No enforceable attributing bond exists under anonymous reporting.
-- => A3's downgrade does NOT stand. The reporting race is restored as the operative outcome, with one residual: a well-coordinated attacker who can credibly commit a collective-forfeiture contract AND enforce the belief pi=0 (no attester thinks any other will report) can hold silence as a FRAGILE Nash equilibrium. Enforcing pi=0 requires observable coordination among the k -- the out-of-band channel Theorem 12 closes.
+- CANONICAL Theorem 11 (bond attribution): a non-attributing bond TRIGGER exists -- collective forfeiture conditioned on the public revocation event (the inverse of Dark-DAO escrow-on-non-revocation). But no non-attributing bond DETERS.
+- (a) trustless ATTRIBUTING predicate: does not exist -- anonymous reporting emits no per-attester identifier.
+- (b) trustless COLLECTIVE-forfeiture trigger: exists and is enforceable, but the deterrent scales (1-pi)^{k-1} in the per-attester belief pi that another of the k reports. Silence-NE region over the (delta,B,P) grid: 60% at pi=0, 55.7% at pi=0.1, 45% at pi=0.3, 37.3% at pi=0.5. Any real doubt collapses it.
+- (c) attacker-held bond: with no attribution the attacker cannot selectively withhold from a reporter -> collapses to (b) or to a zero-deterrent tax. Not a bond.
+- BOUND: the bond is the attester's OWN capital, so P <~ b (single corruption) or P <~ M*b (amortised over M). Worst case pi=0: reporting dominates iff B > (1-pi)^{k-1} P = P, so B > 2b dominates for every pi against any rationally-posted bond.
+- => Result A3 recovered in bounded form: for f^k << 1 the leniency race survives the bond provided B > 2b, with b >= p_d(S+V). The amortised bond pushes required B toward M*b ONLY without cascading correlation-driven detection (amortized_bond.mjs).
 
-## Re-statement of A3
+## Canonical Theorem 11 (propagated to every document)
 
-Result A3 (anonymous reporting + first-reporter bounty => a leniency race) is **NOT downgraded**. Theorem 11 shows the bond that would defeat the race cannot be enforced under anonymous reporting: no attributing predicate exists (a), collective forfeiture self-defeats as (1-pi)^{k-1} (b), and an attacker-held bond is not a bond (c). The race is the operative outcome for f^k << 1. Residual: an attacker who can both commit a collective-forfeiture contract and enforce common knowledge that no attester will report can sustain silence as a fragile NE -- but enforcing that belief needs the observable coordination channel Theorem 12 closes.
+A non-attributing bond **trigger** exists (collective forfeiture conditioned on the public revocation event), but no non-attributing bond **deters**: the collective trigger's deterrent decays as `(1-pi)^{k-1}`, and `P <~ b` because the bond is the attester's own capital, so `B > 2b` dominates for every `pi`. Result A3 is recovered in that bounded form. Supersedes both "no enforceable bond" (commit 4009065) and "trustless branch withdrawn" (85a80a4) -- same mechanics, one headline.

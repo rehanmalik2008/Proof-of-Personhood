@@ -3,8 +3,8 @@
 **Formalizes `the-equilibrium.md`.** This is Problem 4 of the four-problems
 document (formal game-theoretic equilibrium for `γ ≥ β·m·E`), which that
 document's own ranking put first for tractability. It is the recommended next
-target after `docs/REDUCTION-personhood-impossibility.md` and
-`docs/THEOREM-asymmetry-trilemma.md`.
+target after `docs/theory/REDUCTION-personhood-impossibility.md` and
+`docs/theory/THEOREM-asymmetry-trilemma.md`.
 
 The bribe micro-foundation from the source is kept (it is correct). Three of the
 source's four downstream claims are corrected here; the corrections produce a

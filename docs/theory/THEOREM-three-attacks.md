@@ -1,7 +1,7 @@
 # Three attacks: grinding, trustless bribery, and the revocation–privacy tension
 
 **Formalizes `three-attacks.md`.** Extends the Problem 4 line
-(`docs/THEOREM-equilibrium-problem4.md`, cited **EQ**) with three results:
+(`docs/theory/THEOREM-equilibrium-problem4.md`, cited **EQ**) with three results:
 Theorem 5 (grinding asymmetry — a *positive* result), the whistleblower-bounty
 parameter `B` in EQ's security condition, and Theorem 7 (the tension between
 EQ's bulk-revocation requirement and cohort anonymity). Theorem 6 records why

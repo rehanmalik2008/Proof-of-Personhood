@@ -5,37 +5,40 @@
 `scripts/sim/reporting_race.mjs`, `bond_trigger.mjs`, and `amortized_bond.mjs`
 (outputs `docs/self-audit/sim_reporting_race.md`, `sim_bond_trigger.md`,
 `sim_amortized_bond.md`), not asserted ones. Builds on
-`docs/THEOREM-equilibrium-problem4.md` (**EQ**, Theorem 4) and
-`docs/THEOREM-three-attacks.md` (**3A**, Theorems 5–7).
+`docs/theory/THEOREM-equilibrium-problem4.md` (**EQ**, Theorem 4) and
+`docs/theory/THEOREM-three-attacks.md` (**3A**, Theorems 5–7).
 
-**Lead result: Theorem 11's trustless branch is WITHDRAWN, and A3 is recovered in
-a bounded form.** A non-attributable bond trigger *does* exist — condition
-forfeiture on **revocation** (public, verifiable on-chain) rather than on
-**reporting** (anonymous). This is the inverse of the Dark-DAO
-escrow-on-non-revocation construction (3A §4). What survives:
+**Canonical statement of Theorem 11** (single wording, propagated to every
+document; supersedes both the "no enforceable bond" phrasing of commit `4009065`
+and the "trustless branch withdrawn" phrasing of `85a80a4` — those were the same
+mechanics reported with different headlines):
 
-1. The trustless trigger is necessarily **collective** (all `k` bonds forfeited
-   on revocation, regardless of who filed), so the deterrent scales `(1−π)`
-   (measured, `bond_trigger.mjs`).
-2. The bond is the **attester's own capital**, bounded by what the corruption
-   pays: `P ≲ b` (single corruption) or `P ≲ M·b` (a bond amortised over `M`
-   corruptions).
-3. Therefore **`B > 2·b` makes reporting dominant for every belief `π`** against
-   a singly-posted bond — a design rule the defender can compute, since
-   `b ≥ p_d(S+V)` from the bribe micro-foundation (EQ §1).
-4. The amortised bond (Falsification #3) inflates the required `B` toward `M·b`
-   **only without cascading detection**; with it (`amortized_bond.mjs`), the bond
-   is forfeit / the batch is scrutinised regardless of the attester's choice, and
-   `B > 2b` survives.
+> **Theorem 11 (bond attribution).** A non-attributing bond *trigger* exists:
+> collective forfeiture conditioned on the **public revocation event** (the
+> inverse of the Dark-DAO escrow-on-non-revocation construction, 3A §4). But no
+> non-attributing bond *deters*. The collective trigger forfeits all `k` bonds
+> regardless of who filed, so its deterrent decays as `(1−π)^{k−1}` in the
+> per-attester belief `π` that another of the `k` reports (measured,
+> `bond_trigger.mjs`); and the bond is the **attester's own capital**, so
+> `P ≲ b` (a singly-posted bond) — `P ≲ M·b` if amortised over `M` corruptions.
+> Hence a bounty **`B > 2b`** makes reporting dominant for every `π` against any
+> rationally-posted bond. The *attacker-held* bond branch also fails: an attacker
+> who can seize the bond at will has taken a payment, not accepted a commitment.
+
+`b` is computable per deployment: `b ≥ p_d(S+V)` from the bribe micro-foundation
+(EQ §1). The amortised bond (`P ≲ M·b`) inflates the required `B` toward `M·b`
+**only without cascading correlation-driven detection**; with it
+(`amortized_bond.mjs`), the bond is forfeit / the batch scrutinised regardless of
+the attester's choice, and `B > 2b` survives (§4.4).
 
 | item | claim | status |
 |---|---|---|
 | Result A1 | assignment rotation does not convert the game to one-shot | **CONFIRMED** (analytic) |
 | Result A2 | bounded tenure caps bribe amortization at `Rτ` | **CONFIRMED** (analytic) |
 | Theorem 8 | anonymity defeats trigger strategies | **CONFIRMED, with an `f`-boundary** |
-| Theorem 11 | a trustless loyalty bond cannot be triggered under anonymous reporting | **TRUSTLESS BRANCH WITHDRAWN** — condition on revocation, not reporting. Attacker-held branch stands. |
-| Theorem 12 | trigger strategy / reputation / Dark-DAO escrow / loyalty bond all need attribution | **NARROWED** — bond *forfeiture* is the exception (it conditions on the public revocation event); trigger strategies, reputation ledgers, and targeted punishment still require attribution |
-| Result A3 | anonymous reporting + first-reporter bounty ⇒ a leniency race | **RECOVERED, bounded** — survives the bond provided `B > 2b`; `b` is estimable from `p_d(S+V)` |
+| Theorem 11 | a non-attributing bond *triggers* but does not *deter*; `B > 2b` dominates | **NARROWED** (canonical statement above) — the "trigger cannot exist" claim is withdrawn; the "no bond defeats the race" conclusion stands, now via `B > 2b` |
+| Theorem 12 | trigger strategy / reputation / Dark-DAO escrow / loyalty bond all need attribution | **NARROWED** — bond *forfeiture* is the exception (conditions on the public revocation event); trigger strategies, reputation ledgers, and targeted punishment still require attribution |
+| Result A3 | anonymous reporting + first-reporter bounty ⇒ a leniency race | **RECOVERED, bounded** — survives the bond provided `B > 2b` |
 | Result 3 (bounty bound) | `B > 2b` defeats any rationally-posted bond, ∀`π` | **CONFIRMED (measured)**, conditional on cascading detection vs the amortised bond |
 
 ---
@@ -111,28 +114,20 @@ condition, not an unconditional result.**
 
 ---
 
-## 4. Result A3 — the leniency race [RECOVERED, bounded], and Theorem 11 corrected
+## 4. Result A3 — the leniency race [RECOVERED, bounded]
 
-### 4.0 A non-attributable bond trigger exists — condition on revocation, not reporting
+### 4.0 Theorem 11 — a trigger exists, but no bond deters (see canonical statement above)
 
-The prior round claimed a trustless bond cannot be triggered because forfeiture
-needs to attribute the report. **That was wrong.** Condition forfeiture on the
-**revocation event** instead: *the attester posts a bond `P`; if the credential
-they signed is revoked within `T`, `P` is forfeited.* Revocation is public and
-on-chain-verifiable; the contract never asks who reported. It is the exact
-inverse of the Dark-DAO escrow-on-non-revocation construction (3A §4), which the
-prior work had already written down in the forward direction.
-
-> **Theorem 11 (corrected).** The *trustless* branch is withdrawn — a
-> revocation-conditioned bond is trustless and triggerable under anonymous
-> reporting. The *attacker-held* branch stands (an attacker who can seize the
-> bond at will turns it into a payment, not a commitment).
-
-**But the trustless trigger is necessarily collective**, and three facts bound it:
+Condition forfeiture on the **revocation event**, not on the report: *the attester
+posts a bond `P`; if the credential they signed is revoked within `T`, `P` is
+forfeited.* Revocation is public and on-chain-verifiable; the contract never asks
+who reported. It is the exact inverse of the Dark-DAO escrow-on-non-revocation
+construction (3A §4). So a non-attributing **trigger** exists. Three facts show
+no non-attributing bond **deters**:
 
 | fact | consequence |
 |---|---|
-| conditioning on revocation ⇒ **all `k`** bonds forfeited regardless of who filed | the `(1−π)` deterrent argument applies: reporting dominates iff `B > P·(1−π)`, and as `π → 1` the deterrent vanishes (bond lost anyway ⇒ bounty is free money). Measured (`bond_trigger.mjs`): silence-NE region over the (δ,B,P) grid **60 % (π=0) → 45 % (π=0.3) → 37 % (π=0.5)**; `P/b` to hold silence at `B/b=2, δ=0.95` goes `1.15 → 4.79 (k=5, π=0.3) → >50 (π=0.5)`. |
+| conditioning on revocation ⇒ **all `k`** bonds forfeited regardless of who filed | the collective-forfeiture deterrent scales `(1−π)^{k−1}` where `π` is the per-attester belief another of the `k` reports (`bond_trigger.mjs`; the "Two Answers" note's `(1−π)` is the `k=2` case, where `π` is the single other attester's report probability). Reporting dominates once the effective bond `(1−π)^{k−1}·P` drops below `B`; as `π → 1` it vanishes (bond lost anyway ⇒ bounty is free money). Measured: silence-NE region over the (δ,B,P) grid **60 % (π=0) → 45 % (π=0.3) → 37 % (π=0.5)**; `P/b` to hold silence at `B/b=2, δ=0.95` goes `1.15 → 4.79 (k=5, π=0.3) → >50 (π=0.5)`. |
 | `P` is the **attester's own capital**, and no rational attester risks more than the corruption pays | `P ≲ b` for a singly-posted bond (`P ≲ M·b` if amortised over `M` corruptions — §4.4). |
 | worst case `π = 0` (attester believes all others stay silent): reporting dominates iff `B > P` | with `P ≲ b`: **`B > b` suffices, `B > 2b` gives comfortable margin, for every `π`.** |
 
@@ -213,7 +208,7 @@ it with margin.
 | folk-theorem trigger strategy (punish the defector) | **yes** |
 | out-of-band reputation ledger (score the loyal) | **yes** |
 | Dark DAO escrow (verify a specific attester did not report) | **yes** |
-| revocation-conditioned loyalty bond | **no** — but it is collective (`(1−π)`) and capped at `b` (§4.0), so `B > 2b` defeats it |
+| revocation-conditioned loyalty bond | **no** — but it is collective (deterrent `(1−π)^{k−1}`) and capped at `b` (§4.0), so `B > 2b` defeats it |
 
 Anonymous unattributable reporting still closes the first three at once, and
 neutralises the fourth via the `B > 2b` bound. It remains **the** headline
@@ -252,7 +247,7 @@ dominates.
 > **Result 3 caveat.** Without cascading detection, an amortised bond breaks
 > `B > 2b` and the required bounty scales toward `M·b`. **With** cascading
 > detection (already mandatory for redundancy to be safe — see
-> `docs/RESEARCH-private-bulk-revocation.md` §3A) the amortised advantage is
+> `docs/theory/RESEARCH-private-bulk-revocation.md` §3A) the amortised advantage is
 > gone. Correlation monitoring now does *triple* duty: it raises `q` (EQ), makes
 > redundant pre-attestation safe, and caps the loyalty bond at `b`.
 
@@ -283,7 +278,7 @@ by `B > 2b` instead (§4.0).
    (this is exactly 3A Theorem 7's cohort leak, so the two are linked: a
    revocation that reveals *which* `k`-set was hit narrows the defector), or
    through a side channel in the reporting mechanism. **Attack this first**;
-   `docs/RESEARCH-private-bulk-revocation.md` measures the cohort-leak side.
+   `docs/theory/RESEARCH-private-bulk-revocation.md` measures the cohort-leak side.
 2. **Result A2** fails if attesters re-enter under fresh identities after tenure
    expiry. Re-qualification must be costly or identity-bound.
 3. **Result 3 (`B > 2b`)** fails if attesters rationally post `P ≫ b` — the
@@ -315,7 +310,7 @@ reputation ledger and Dark-DAO escrow (Theorem 12).
 A **non-attributable bond trigger does exist** — condition forfeiture on the
 public revocation event, not on the anonymous report (Theorem 11's trustless
 branch withdrawn; it is the inverse of the Dark-DAO escrow construction). But it
-is necessarily **collective** (deterrent `(1−π)`), and the bond is the
+is necessarily **collective** (deterrent `(1−π)^{k−1}`), and the bond is the
 **attester's own capital**, so `P ≲ b`. Therefore a whistleblower bounty
 **`B > 2b`** makes reporting dominant for every belief `π` (Result 3), with `b`
 computable as `≥ p_d(S+V)`. The amortised bond (post once, cover `M` corruptions)
